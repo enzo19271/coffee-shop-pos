@@ -1,0 +1,23 @@
+{
+  "version": 2,
+  "buildCommand": "npm run build",
+  "outputDirectory": "public",
+  "env": {
+    "GITHUB_TOKEN": "@GITHUB_TOKEN",
+    "GITHUB_OWNER": "@GITHUB_OWNER",
+    "GITHUB_REPO": "@GITHUB_REPO",
+    "GITHUB_BRANCH": "@GITHUB_BRANCH",
+    "JWT_SECRET": "@JWT_SECRET"
+  },
+  "functions": {
+    "api/*.js": {
+      "runtime": "nodejs18.x"
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "name": "coffee-shop-pos",
+  "version": "1.0.0",
+  "description": "Coffee Shop Online POS System",
+  "main": "api/index.js",
+  "scripts": {
+    "dev": "vercel dev",
+    "build": "echo 'Build complete'",
+    "start": "node server.js"
+  },
+  "keywords": [
+    "pos",
+    "coffee",
+    "shop",
+    "online"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {}
+}
