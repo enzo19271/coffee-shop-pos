@@ -1,7 +1,5 @@
 {
   "version": 2,
-  "buildCommand": "npm run build",
-  "outputDirectory": "public",
   "env": {
     "GITHUB_TOKEN": "@GITHUB_TOKEN",
     "GITHUB_OWNER": "@GITHUB_OWNER",
@@ -10,14 +8,12 @@
     "JWT_SECRET": "@JWT_SECRET"
   },
   "functions": {
-    "api/*.js": {
-      "runtime": "nodejs18.x"
+    "api/**/*.js": {
+      "runtime": "nodejs18.x",
+      "memory": 256,
+      "maxDuration": 10
     }
   },
-  "rewrites": [
-    {
-      "source": "/(.*)",
-      "destination": "/index.html"
-    }
-  ]
+  "buildCommand": "echo 'Build complete'",
+  "outputDirectory": "./"
 }
