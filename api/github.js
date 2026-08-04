@@ -3,13 +3,20 @@ const GITHUB_API = 'https://api.github.com';
 
 async function getGitHubFile(path) {
   try {
+    // Cache-busting param prevents GitHub's CDN from serving a stale cached
+    // version right after a write (updateGitHubFile).
+    const cacheBuster = Date.now();
+    const branch = process.env.GITHUB_BRANCH || 'main';
+
     const response = await fetch(
-      `${GITHUB_API}/repos/${process.env.GITHUB_OWNER}/${process.env.GITHUB_REPO}/contents/${path}`,
+      `${GITHUB_API}/repos/${process.env.GITHUB_OWNER}/${process.env.GITHUB_REPO}/contents/${path}?ref=${branch}&_=${cacheBuster}`,
       {
         headers: {
           Authorization: `Bearer ${process.env.GITHUB_TOKEN}`,
-          Accept: 'application/vnd.github.v3.raw'
-        }
+          Accept: 'application/vnd.github.v3.raw',
+          'Cache-Control': 'no-cache'
+        },
+        cache: 'no-store'
       }
     );
 
