@@ -1,0 +1,24 @@
+{
+  "shopName": "Coffee Shop Online",
+  "taxRate": 0.1,
+  "currency": "IDR",
+  "timezone": "Asia/Jakarta",
+  "businessHours": {
+    "open": "08:00",
+    "close": "22:00"
+  },
+  "paymentMethods": {
+    "cash": {
+      "enabled": true,
+      "label": "Cash ke Meja Kasir"
+    },
+    "transfer": {
+      "enabled": true,
+      "label": "Transfer Bank"
+    },
+    "barcode": {
+      "enabled": true,
+      "label": "QRIS/E-Wallet"
+    }
+  }
+}
