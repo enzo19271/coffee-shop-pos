@@ -101,7 +101,9 @@
     "paymentMethod": "cash",
     "paymentProof": null,
     "notes": "Kurangin gula",
-    "status": "pending",
-    "createdAt": "2026-08-04T10:54:40.260Z"
+    "status": "confirmed",
+    "createdAt": "2026-08-04T10:54:40.260Z",
+    "updatedAt": "2026-08-04T10:56:34.811Z",
+    "updatedBy": "staff"
   }
 ]
