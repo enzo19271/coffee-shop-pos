@@ -2,7 +2,7 @@
   {
     "id": "staff_001",
     "username": "staff",
-    "passwordHash": "staff-demo-hash",
+    "passwordHash": "ZGVmYXVsdC1zZWNyZXQta2V5OnBhc3N3b3Jk",
     "role": "staff",
     "name": "Budi Santoso",
     "status": "active",
@@ -11,7 +11,7 @@
   {
     "id": "admin_001",
     "username": "admin",
-    "passwordHash": "admin-demo-hash",
+    "passwordHash": "ZGVmYXVsdC1zZWNyZXQta2V5OmFkbWlu",
     "role": "admin",
     "name": "Admin Coffee Shop",
     "status": "active",
@@ -20,7 +20,7 @@
   {
     "id": "staff_002",
     "username": "ani",
-    "passwordHash": "staff-demo-hash",
+    "passwordHash": "ZGVmYXVsdC1zZWNyZXQta2V5OnBhc3N3b3Jk",
     "role": "staff",
     "name": "Ani Wijaya",
     "status": "active",
