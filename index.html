@@ -520,7 +520,8 @@
     // Load menu saat page load
     async function loadMenu() {
       try {
-        const response = await fetch('/api/list');
+        const response = await fetch('/api/list', { cache: 'no-store' });
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
         const data = await response.json();
         displayMenu(data.data);
       } catch (error) {
@@ -540,7 +541,7 @@
           
           <select class="variant-select" data-menu-id="${item.id}">
             <option value="">Pilih varian...</option>
-            ${item.variants.map(v => `<option value="${v}">${v}</option>`).join('')}
+            ${(item.variants || []).map(v => `<option value="${v}">${v}</option>`).join('')}
           </select>
 
           <div class="quantity-control">
