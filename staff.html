@@ -722,9 +722,38 @@
     }
 
     async function loadExpenses() {
-      // In a real app, we'd fetch all expenses
-      // For now, just show the form
-      document.querySelector('#expensesList').innerHTML = '<p style="text-align: center; color: #999; padding: 40px;">Daftar pengeluaran akan ditampilkan di sini</p>';
+      const listEl = document.querySelector('#expensesList');
+      listEl.innerHTML = '<p style="text-align: center; color: #999; padding: 40px;">Memuat...</p>';
+
+      try {
+        const response = await fetch('/api/expenses?period=today', {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        if (!response.ok) throw new Error('Failed to fetch expenses');
+
+        const result = await response.json();
+        const expenses = result.data || [];
+
+        if (expenses.length === 0) {
+          listEl.innerHTML = '<p style="text-align: center; color: #999; padding: 40px;">Belum ada pengeluaran hari ini</p>';
+          return;
+        }
+
+        listEl.innerHTML = expenses.map(exp => `
+          <div class="expense-item">
+            <div class="expense-info">
+              <div class="expense-category">${exp.category}</div>
+              <div class="expense-note">${exp.description || '-'}</div>
+            </div>
+            <div class="expense-amount">Rp ${exp.amount.toLocaleString('id-ID')}</div>
+          </div>
+        `).join('');
+      } catch (error) {
+        listEl.innerHTML = '<p style="text-align: center; color: #e74c3c; padding: 40px;">Gagal memuat daftar pengeluaran</p>';
+      }
     }
 
     function showImage(src) {
