@@ -29,7 +29,10 @@
     "category": "Coffee",
     "price": 35000,
     "description": "Espresso with more steamed milk",
-    "image": "☕"
+    "image": "☕",
+    "variants": [
+      "Medium"
+    ]
   },
   {
     "id": 5,
