@@ -1,35 +1,7 @@
 {
   "version": 2,
   "functions": {
-    "api/orders/[action].js": {
-      "memory": 128,
-      "maxDuration": 10
-    },
-    "api/menu/[action].js": {
-      "memory": 128,
-      "maxDuration": 10
-    },
-    "api/staff/[action].js": {
-      "memory": 128,
-      "maxDuration": 10
-    },
-    "api/analytics/[action].js": {
-      "memory": 128,
-      "maxDuration": 10
-    },
-    "api/auth/[action].js": {
-      "memory": 128,
-      "maxDuration": 10
-    },
-    "api/github.js": {
-      "memory": 128,
-      "maxDuration": 10
-    },
-    "api/create.js": {
-      "memory": 128,
-      "maxDuration": 10
-    },
-    "api/summary.js": {
+    "api/*.js": {
       "memory": 128,
       "maxDuration": 10
     }
