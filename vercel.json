@@ -1,5 +1,6 @@
 {
   "version": 2,
+  "outputDirectory": ".",
   "env": {
     "GITHUB_TOKEN": "@GITHUB_TOKEN",
     "GITHUB_OWNER": "@GITHUB_OWNER",
@@ -9,11 +10,7 @@
   },
   "functions": {
     "api/**/*.js": {
-      "runtime": "nodejs18.x",
-      "memory": 256,
-      "maxDuration": 10
+      "runtime": "nodejs18.x"
     }
-  },
-  "buildCommand": "echo 'Build complete'",
-  "outputDirectory": "./"
+  }
 }
