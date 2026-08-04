@@ -1,0 +1,162 @@
+[
+  {
+    "id": 1,
+    "name": "Espresso",
+    "category": "Coffee",
+    "price": 25000,
+    "description": "Strong and concentrated black coffee",
+    "image": "☕"
+  },
+  {
+    "id": 2,
+    "name": "Americano",
+    "category": "Coffee",
+    "price": 28000,
+    "description": "Espresso diluted with hot water",
+    "image": "☕"
+  },
+  {
+    "id": 3,
+    "name": "Cappuccino",
+    "category": "Coffee",
+    "price": 35000,
+    "description": "Espresso with steamed milk and foam",
+    "image": "☕"
+  },
+  {
+    "id": 4,
+    "name": "Latte",
+    "category": "Coffee",
+    "price": 35000,
+    "description": "Espresso with more steamed milk",
+    "image": "☕"
+  },
+  {
+    "id": 5,
+    "name": "Macchiato",
+    "category": "Coffee",
+    "price": 32000,
+    "description": "Espresso marked with a little milk",
+    "image": "☕"
+  },
+  {
+    "id": 6,
+    "name": "Mocha",
+    "category": "Coffee",
+    "price": 38000,
+    "description": "Espresso with chocolate and steamed milk",
+    "image": "☕"
+  },
+  {
+    "id": 7,
+    "name": "Iced Coffee",
+    "category": "Cold Drinks",
+    "price": 30000,
+    "description": "Chilled espresso with ice",
+    "image": "🧊"
+  },
+  {
+    "id": 8,
+    "name": "Iced Latte",
+    "category": "Cold Drinks",
+    "price": 35000,
+    "description": "Cold espresso with milk and ice",
+    "image": "🧊"
+  },
+  {
+    "id": 9,
+    "name": "Iced Cappuccino",
+    "category": "Cold Drinks",
+    "price": 36000,
+    "description": "Cold cappuccino with ice",
+    "image": "🧊"
+  },
+  {
+    "id": 10,
+    "name": "Hot Chocolate",
+    "category": "Non-Coffee",
+    "price": 32000,
+    "description": "Rich and creamy hot chocolate",
+    "image": "🍫"
+  },
+  {
+    "id": 11,
+    "name": "Tea",
+    "category": "Non-Coffee",
+    "price": 20000,
+    "description": "Hot brewed tea",
+    "image": "🫖"
+  },
+  {
+    "id": 12,
+    "name": "Matcha Latte",
+    "category": "Non-Coffee",
+    "price": 38000,
+    "description": "Creamy matcha tea with milk",
+    "image": "🫖"
+  },
+  {
+    "id": 13,
+    "name": "Croissant",
+    "category": "Pastry",
+    "price": 25000,
+    "description": "Buttery and flaky croissant",
+    "image": "🥐"
+  },
+  {
+    "id": 14,
+    "name": "Muffin",
+    "category": "Pastry",
+    "price": 20000,
+    "description": "Soft chocolate muffin",
+    "image": "🧁"
+  },
+  {
+    "id": 15,
+    "name": "Donut",
+    "category": "Pastry",
+    "price": 18000,
+    "description": "Sweet glazed donut",
+    "image": "🍩"
+  },
+  {
+    "id": 16,
+    "name": "Sandwich",
+    "category": "Food",
+    "price": 45000,
+    "description": "Ham and cheese sandwich",
+    "image": "🥪"
+  },
+  {
+    "id": 17,
+    "name": "Caesar Salad",
+    "category": "Food",
+    "price": 35000,
+    "description": "Fresh caesar salad with croutons",
+    "image": "🥗"
+  },
+  {
+    "id": 18,
+    "name": "Pasta Carbonara",
+    "category": "Food",
+    "price": 55000,
+    "description": "Creamy pasta with bacon",
+    "image": "🍝"
+  },
+  {
+    "id": 19,
+    "name": "Iced Tea",
+    "category": "Cold Drinks",
+    "price": 22000,
+    "description": "Refreshing cold tea",
+    "image": "🧊"
+  },
+  {
+    "id": 20,
+    "name": "Smoothie Strawberry",
+    "category": "Cold Drinks",
+    "price": 32000,
+    "description": "Fresh strawberry smoothie",
+    "image": "🍓"
+  }
+]
