@@ -273,6 +273,100 @@
       margin-bottom: 15px;
     }
 
+    .txn-card {
+      background: white;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 15px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      border-left: 4px solid #3498db;
+    }
+
+    .txn-card.completed { border-left-color: #27ae60; }
+    .txn-card.rejected { border-left-color: #e74c3c; }
+    .txn-card.pending, .txn-card.pending_verification { border-left-color: #f39c12; }
+
+    .txn-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .txn-id { font-weight: bold; font-size: 14px; color: #666; }
+
+    .txn-status {
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: bold;
+      text-transform: uppercase;
+      background: #eee;
+    }
+
+    .txn-body {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      font-size: 14px;
+      margin-bottom: 10px;
+    }
+
+    .txn-body div strong { display: block; color: #999; font-size: 11px; margin-bottom: 2px; }
+
+    .txn-items {
+      font-size: 13px;
+      color: #555;
+      background: #f9f9f9;
+      padding: 10px;
+      border-radius: 4px;
+      margin-bottom: 10px;
+    }
+
+    .txn-total {
+      font-weight: bold;
+      font-size: 18px;
+      color: #e74c3c;
+      text-align: right;
+    }
+
+    .proof-thumb {
+      max-width: 120px;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-top: 5px;
+    }
+
+    .staff-card {
+      background: white;
+      border-radius: 8px;
+      padding: 15px 20px;
+      margin-bottom: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .staff-info strong { display: block; font-size: 16px; }
+    .staff-info span { color: #999; font-size: 13px; }
+
+    .staff-role-badge {
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: bold;
+      text-transform: uppercase;
+      background: #d1ecf1;
+      color: #0c5460;
+    }
+
+    .staff-role-badge.admin { background: #f8d7da; color: #721c24; }
+
     @media (max-width: 768px) {
       .stats-grid {
         grid-template-columns: 1fr;
@@ -300,6 +394,8 @@
     <div class="tabs">
       <button class="tab-btn active" onclick="switchTab('analytics')">📊 Analytics</button>
       <button class="tab-btn" onclick="switchTab('menu')">🍽️ Menu Management</button>
+      <button class="tab-btn" onclick="switchTab('transactions')">🧾 Riwayat Transaksi</button>
+      <button class="tab-btn" onclick="switchTab('staff')">👥 Staff Management</button>
       <button class="tab-btn" onclick="switchTab('finance')">💹 Financial Report</button>
     </div>
 
@@ -315,8 +411,8 @@
       <div id="errorMessage" class="error-message"></div>
 
       <div class="add-menu-form">
-        <h3 style="margin-bottom: 20px;">➕ Tambah Menu Baru</h3>
-        <form onsubmit="addMenu(event)">
+        <h3 style="margin-bottom: 20px;" id="menuFormTitle">➕ Tambah Menu Baru</h3>
+        <form id="menuForm" onsubmit="submitMenuForm(event)">
           <div class="form-group">
             <label>Nama Menu *</label>
             <input type="text" id="menuName" required>
@@ -353,12 +449,74 @@
             <textarea id="menuVariants" placeholder="Contoh: Small,Medium,Large" rows="2"></textarea>
           </div>
 
-          <button type="submit" class="btn-primary">Tambah Menu</button>
+          <button type="submit" class="btn-primary" id="menuFormSubmitBtn">Tambah Menu</button>
+          <button type="button" class="btn-primary" id="menuFormCancelBtn" style="background: #999; margin-top: 10px; display: none;" onclick="cancelEditMenu()">Batal Edit</button>
         </form>
       </div>
 
       <h3 style="margin-bottom: 20px;">📋 Daftar Menu</h3>
       <div class="menu-grid" id="menuList"></div>
+    </div>
+
+    <!-- Tab: Transaction History -->
+    <div id="tab-transactions" class="tab-content">
+      <h2 style="margin-bottom: 20px;">🧾 Riwayat Transaksi</h2>
+
+      <div style="background: white; padding: 15px; border-radius: 8px; margin-bottom: 20px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+        <label style="font-weight: bold; font-size: 14px;">Bulan:</label>
+        <input type="month" id="txnMonth" style="padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+        <label style="font-weight: bold; font-size: 14px; margin-left: 10px;">Status:</label>
+        <select id="txnStatus" style="padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+          <option value="">Semua</option>
+          <option value="pending">Pending</option>
+          <option value="pending_verification">Menunggu Verifikasi</option>
+          <option value="confirmed">Confirmed</option>
+          <option value="completed">Selesai</option>
+          <option value="rejected">Ditolak</option>
+        </select>
+        <button class="btn-primary" style="width: auto; padding: 8px 20px;" onclick="loadTransactions()">Filter</button>
+      </div>
+
+      <div id="transactionsList"></div>
+    </div>
+
+    <!-- Tab: Staff Management -->
+    <div id="tab-staff" class="tab-content">
+      <div id="successMessageStaff" class="success-message"></div>
+      <div id="errorMessageStaff" class="error-message"></div>
+
+      <div class="add-menu-form">
+        <h3 style="margin-bottom: 20px;">➕ Tambah Staff/Pegawai Baru</h3>
+        <form onsubmit="addStaff(event)">
+          <div class="form-group">
+            <label>Nama Lengkap *</label>
+            <input type="text" id="staffName" required>
+          </div>
+
+          <div class="form-group">
+            <label>Username *</label>
+            <input type="text" id="staffUsername" required>
+          </div>
+
+          <div class="form-group">
+            <label>Password *</label>
+            <input type="password" id="staffPassword" minlength="4" required>
+          </div>
+
+          <div class="form-group">
+            <label>Role *</label>
+            <select id="staffRole" required>
+              <option value="staff">Staff</option>
+              <option value="admin">Admin</option>
+            </select>
+          </div>
+
+          <button type="submit" class="btn-primary">Tambah Staff</button>
+        </form>
+      </div>
+
+      <h3 style="margin-bottom: 20px;">👥 Daftar Staff</h3>
+      <div id="staffList"></div>
     </div>
 
     <!-- Tab: Financial Report -->
@@ -404,6 +562,10 @@
         loadAnalytics();
       } else if (tabName === 'menu') {
         loadMenu();
+      } else if (tabName === 'transactions') {
+        loadTransactions();
+      } else if (tabName === 'staff') {
+        loadStaff();
       } else if (tabName === 'finance') {
         loadFinance();
       }
@@ -420,7 +582,11 @@
       }
     }
 
+    let editingMenuId = null;
+    let currentMenuItems = [];
+
     function displayMenu(items) {
+      currentMenuItems = items;
       const container = document.querySelector('#menuList');
       container.innerHTML = items.map(item => `
         <div class="menu-card">
@@ -434,6 +600,14 @@
           </div>
         </div>
       `).join('');
+    }
+
+    function submitMenuForm(event) {
+      if (editingMenuId) {
+        updateMenu(event);
+      } else {
+        addMenu(event);
+      }
     }
 
     async function addMenu(event) {
@@ -474,7 +648,68 @@
     }
 
     function editMenu(menuId) {
-      alert('Edit menu - feature akan diimplement');
+      const item = currentMenuItems.find(i => String(i.id) === String(menuId));
+      if (!item) return;
+
+      editingMenuId = item.id;
+
+      document.querySelector('#menuName').value = item.name;
+      document.querySelector('#menuCategory').value = item.category;
+      document.querySelector('#menuPrice').value = item.price;
+      document.querySelector('#menuEmoji').value = item.image;
+      document.querySelector('#menuDesc').value = item.description || '';
+      document.querySelector('#menuVariants').value = (item.variants || []).join(', ');
+
+      document.querySelector('#menuFormTitle').textContent = `✏️ Edit Menu: ${item.name}`;
+      document.querySelector('#menuFormSubmitBtn').textContent = 'Update Menu';
+      document.querySelector('#menuFormCancelBtn').style.display = 'block';
+
+      document.querySelector('.add-menu-form').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function cancelEditMenu() {
+      editingMenuId = null;
+      document.querySelector('#menuForm').reset();
+      document.querySelector('#menuFormTitle').textContent = '➕ Tambah Menu Baru';
+      document.querySelector('#menuFormSubmitBtn').textContent = 'Tambah Menu';
+      document.querySelector('#menuFormCancelBtn').style.display = 'none';
+    }
+
+    async function updateMenu(event) {
+      event.preventDefault();
+      clearMessages();
+
+      const name = document.querySelector('#menuName').value;
+      const category = document.querySelector('#menuCategory').value;
+      const price = parseInt(document.querySelector('#menuPrice').value);
+      const emoji = document.querySelector('#menuEmoji').value;
+      const description = document.querySelector('#menuDesc').value;
+      const variantsStr = document.querySelector('#menuVariants').value;
+
+      const variants = variantsStr ? variantsStr.split(',').map(v => v.trim()) : [];
+
+      try {
+        const response = await fetch(`/api/update-menu?id=${editingMenuId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ name, category, price, image: emoji, description, variants })
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+          throw new Error(result.error || 'Failed to update menu');
+        }
+
+        showSuccess('✓ Menu berhasil diupdate!');
+        cancelEditMenu();
+        loadMenu();
+      } catch (error) {
+        showError(error.message || 'Gagal mengupdate menu');
+      }
     }
 
     async function deleteMenu(menuId) {
@@ -499,6 +734,169 @@
       } catch (error) {
         showError(error.message || 'Gagal menghapus menu');
       }
+    }
+
+    // ===== Transaction History =====
+    const statusLabels = {
+      pending: 'Pending',
+      pending_verification: 'Menunggu Verifikasi',
+      confirmed: 'Confirmed',
+      completed: 'Selesai',
+      rejected: 'Ditolak'
+    };
+
+    function initTxnMonthInput() {
+      const now = new Date();
+      const val = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+      document.querySelector('#txnMonth').value = val;
+    }
+
+    async function loadTransactions() {
+      const container = document.querySelector('#transactionsList');
+      container.innerHTML = '<p style="text-align:center; color:#999; padding:40px;">Memuat...</p>';
+
+      const monthInput = document.querySelector('#txnMonth');
+      if (!monthInput.value) initTxnMonthInput();
+      const month = monthInput.value;
+      const status = document.querySelector('#txnStatus').value;
+
+      try {
+        const params = new URLSearchParams({ month });
+        if (status) params.set('status', status);
+
+        const response = await fetch(`/api/orders?${params.toString()}`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (!response.ok) throw new Error('Failed to load transactions');
+
+        const result = await response.json();
+        displayTransactions(result.data || []);
+      } catch (error) {
+        console.error('Error:', error);
+        container.innerHTML = '<p style="text-align:center; color:#e74c3c; padding:40px;">Gagal memuat riwayat transaksi</p>';
+      }
+    }
+
+    function displayTransactions(orders) {
+      const container = document.querySelector('#transactionsList');
+
+      if (orders.length === 0) {
+        container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🧾</div><p>Belum ada transaksi untuk periode ini</p></div>';
+        return;
+      }
+
+      container.innerHTML = orders.map(order => `
+        <div class="txn-card ${order.status}">
+          <div class="txn-header">
+            <div class="txn-id">${order.id} • ${new Date(order.timestamp).toLocaleString('id-ID')}</div>
+            <div class="txn-status">${statusLabels[order.status] || order.status}</div>
+          </div>
+          <div class="txn-body">
+            <div><strong>Nama Pembeli</strong>${order.customer?.name || '-'}</div>
+            <div><strong>Nomor Meja</strong>${order.customer?.tableNo || '-'}</div>
+            <div><strong>Metode Pembayaran</strong>${(order.paymentMethod || '-').toUpperCase()}</div>
+            <div><strong>Dicatat Oleh</strong>${order.recordedBy || '-'}</div>
+          </div>
+          <div class="txn-items">
+            ${(order.items || []).map(it => `${it.quantity}x ${it.name}${it.variant ? ' (' + it.variant + ')' : ''}`).join(', ')}
+          </div>
+          ${order.notes ? `<div style="font-size:13px; color:#666; margin-bottom:10px;"><strong>Catatan:</strong> ${order.notes}</div>` : ''}
+          ${order.paymentProof ? `<img src="${order.paymentProof}" class="proof-thumb" onclick="window.open('${order.paymentProof}', '_blank')" alt="Bukti pembayaran">` : ''}
+          <div class="txn-total">Rp ${(order.totalPrice || 0).toLocaleString('id-ID')}</div>
+        </div>
+      `).join('');
+    }
+
+    // ===== Staff Management =====
+    async function loadStaff() {
+      const container = document.querySelector('#staffList');
+      container.innerHTML = '<p style="text-align:center; color:#999; padding:40px;">Memuat...</p>';
+
+      try {
+        const response = await fetch('/api/staff', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (!response.ok) throw new Error('Failed to load staff');
+
+        const result = await response.json();
+        displayStaff(result.data || []);
+      } catch (error) {
+        console.error('Error:', error);
+        container.innerHTML = '<p style="text-align:center; color:#e74c3c; padding:40px;">Gagal memuat daftar staff</p>';
+      }
+    }
+
+    function displayStaff(users) {
+      const container = document.querySelector('#staffList');
+
+      if (users.length === 0) {
+        container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">👥</div><p>Belum ada staff</p></div>';
+        return;
+      }
+
+      container.innerHTML = users.map(u => `
+        <div class="staff-card">
+          <div class="staff-info">
+            <strong>${u.name}</strong>
+            <span>@${u.username} • Bergabung ${new Date(u.createdAt).toLocaleDateString('id-ID')}</span>
+          </div>
+          <span class="staff-role-badge ${u.role}">${u.role}</span>
+        </div>
+      `).join('');
+    }
+
+    async function addStaff(event) {
+      event.preventDefault();
+      clearStaffMessages();
+
+      const name = document.querySelector('#staffName').value;
+      const username = document.querySelector('#staffUsername').value;
+      const password = document.querySelector('#staffPassword').value;
+      const role = document.querySelector('#staffRole').value;
+
+      try {
+        const response = await fetch('/api/add-staff', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ name, username, password, role })
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+          throw new Error(result.error || 'Failed to add staff');
+        }
+
+        showSuccessStaff('✓ Staff berhasil ditambahkan!');
+        event.target.reset();
+        loadStaff();
+      } catch (error) {
+        showErrorStaff(error.message || 'Gagal menambahkan staff');
+      }
+    }
+
+    function showSuccessStaff(msg) {
+      const el = document.querySelector('#successMessageStaff');
+      el.textContent = msg;
+      el.classList.add('show');
+      setTimeout(() => el.classList.remove('show'), 3000);
+    }
+
+    function showErrorStaff(msg) {
+      const el = document.querySelector('#errorMessageStaff');
+      el.textContent = msg;
+      el.classList.add('show');
+      setTimeout(() => el.classList.remove('show'), 3000);
+    }
+
+    function clearStaffMessages() {
+      document.querySelector('#successMessageStaff').classList.remove('show');
+      document.querySelector('#errorMessageStaff').classList.remove('show');
     }
 
     async function loadAnalytics() {
@@ -610,6 +1008,7 @@
     }
 
     // Load initial data
+    initTxnMonthInput();
     loadAnalytics();
     loadMenu();
   </script>
