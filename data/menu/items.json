@@ -158,5 +158,18 @@
     "price": 32000,
     "description": "Fresh strawberry smoothie",
     "image": "🍓"
+  },
+  {
+    "id": 21,
+    "name": "Sawit reko",
+    "category": "Food",
+    "price": 45000,
+    "description": "Gatauw",
+    "image": "🍢",
+    "variants": [
+      "Small",
+      "Medium",
+      "Large"
+    ]
   }
 ]
