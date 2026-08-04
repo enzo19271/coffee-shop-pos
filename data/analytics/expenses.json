@@ -1,1 +1,11 @@
-[]
+[
+  {
+    "id": "EXP-1785834176098",
+    "category": "peralatan",
+    "amount": 2000,
+    "description": "Gatau coba",
+    "date": "2026-08-04",
+    "recordedBy": "staff",
+    "createdAt": "2026-08-04T09:02:56.098Z"
+  }
+]
