@@ -449,22 +449,55 @@
 
       const variants = variantsStr ? variantsStr.split(',').map(v => v.trim()) : [];
 
-      showSuccess('✓ Menu berhasil ditambahkan! (Demo - tidak menyimpan ke GitHub)');
-      event.target.reset();
+      try {
+        const response = await fetch('/api/add-menu', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ name, category, price, image: emoji, description, variants })
+        });
 
-      setTimeout(() => {
+        const result = await response.json();
+
+        if (!response.ok) {
+          throw new Error(result.error || 'Failed to add menu');
+        }
+
+        showSuccess('✓ Menu berhasil ditambahkan!');
+        event.target.reset();
         loadMenu();
-      }, 1500);
+      } catch (error) {
+        showError(error.message || 'Gagal menambahkan menu');
+      }
     }
 
     function editMenu(menuId) {
       alert('Edit menu - feature akan diimplement');
     }
 
-    function deleteMenu(menuId) {
-      if (confirm('Hapus menu ini?')) {
+    async function deleteMenu(menuId) {
+      if (!confirm('Hapus menu ini?')) return;
+
+      try {
+        const response = await fetch(`/api/update-menu?id=${menuId}`, {
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+          throw new Error(result.error || 'Failed to delete menu');
+        }
+
         showSuccess('✓ Menu berhasil dihapus!');
         loadMenu();
+      } catch (error) {
+        showError(error.message || 'Gagal menghapus menu');
       }
     }
 
