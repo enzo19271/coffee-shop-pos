@@ -51,19 +51,15 @@ function verifyToken(token) {
   }
 }
 
-function simplePasswordVerify(inputPassword, storedHash) {
-  // For testing purposes, kita gunakan simple string comparison
-  // Password sebenarnya: "password" untuk staff, "admin" untuk admin
-  const staffPassword = 'password';
-  const adminPassword = 'admin';
-
-  if (storedHash.includes('staff') && inputPassword === staffPassword) {
-    return true;
-  }
-  if (storedHash.includes('admin') && inputPassword === adminPassword) {
-    return true;
-  }
-  return false;
+function hashPassword(password) {
+  // Simple reversible encoding for demo purposes (no bcrypt dependency).
+  // In production, use a proper hashing library like bcrypt.
+  const secret = process.env.JWT_SECRET || 'default-secret-key';
+  return Buffer.from(`${secret}:${password}`).toString('base64');
 }
 
-export { generateToken, verifyToken, simplePasswordVerify };
+function simplePasswordVerify(inputPassword, storedHash) {
+  return hashPassword(inputPassword) === storedHash;
+}
+
+export { generateToken, verifyToken, simplePasswordVerify, hashPassword };
