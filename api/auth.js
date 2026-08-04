@@ -1,5 +1,5 @@
 // Simple JWT implementation (untuk production gunakan jsonwebtoken package)
-const crypto = require('crypto');
+import crypto from 'crypto';
 
 function generateToken(payload) {
   const secret = process.env.JWT_SECRET || 'default-secret-key';
@@ -66,8 +66,4 @@ function simplePasswordVerify(inputPassword, storedHash) {
   return false;
 }
 
-module.exports = {
-  generateToken,
-  verifyToken,
-  simplePasswordVerify
-};
+export { generateToken, verifyToken, simplePasswordVerify };
