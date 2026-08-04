@@ -72,7 +72,4 @@ async function updateGitHubFile(path, content, message) {
   }
 }
 
-module.exports = {
-  getGitHubFile,
-  updateGitHubFile
-};
+export { getGitHubFile, updateGitHubFile };
