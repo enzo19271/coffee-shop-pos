@@ -71,5 +71,35 @@
     "notes": "Pedas Manis",
     "status": "pending_verification",
     "createdAt": "2026-08-04T10:19:28.864Z"
+  },
+  {
+    "id": "ORD-MSEJJU69-G6550",
+    "timestamp": "2026-08-04T10:54:40.259Z",
+    "customer": {
+      "name": "Dea",
+      "tableNo": "A6"
+    },
+    "items": [
+      {
+        "menuId": "4",
+        "name": "Latte",
+        "price": 35000,
+        "variant": "Medium",
+        "quantity": 1
+      },
+      {
+        "menuId": "21",
+        "name": "Sawit reko",
+        "price": 45000,
+        "variant": "Large",
+        "quantity": 1
+      }
+    ],
+    "totalPrice": 80000,
+    "paymentMethod": "cash",
+    "paymentProof": null,
+    "notes": "Kurangin gula",
+    "status": "pending",
+    "createdAt": "2026-08-04T10:54:40.260Z"
   }
 ]
