@@ -520,7 +520,7 @@
     // Load menu saat page load
     async function loadMenu() {
       try {
-        const response = await fetch('/api/menu/list');
+        const response = await fetch('/api/list');
         const data = await response.json();
         displayMenu(data.data);
       } catch (error) {
@@ -708,7 +708,7 @@
       }
 
       try {
-        const response = await fetch('/api/orders/create', {
+        const response = await fetch('/api/create', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'

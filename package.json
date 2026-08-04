@@ -1,0 +1,18 @@
+{
+  "name": "coffee-shop-pos",
+  "version": "1.0.0",
+  "description": "Coffee Shop Online POS System",
+  "scripts": {
+    "dev": "vercel dev",
+    "build": "echo 'Build complete'"
+  },
+  "keywords": [
+    "pos",
+    "coffee",
+    "shop",
+    "online"
+  ],
+  "author": "",
+  "license": "MIT",
+  "type": "module"
+}
