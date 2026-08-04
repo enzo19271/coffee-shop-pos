@@ -16,5 +16,14 @@
     "date": "2026-08-04",
     "recordedBy": "staff",
     "createdAt": "2026-08-04T09:03:05.102Z"
+  },
+  {
+    "id": "EXP-1785834520752",
+    "category": "stok",
+    "amount": 50000,
+    "description": "daging sapi",
+    "date": "2026-08-04",
+    "recordedBy": "staff",
+    "createdAt": "2026-08-04T09:08:40.752Z"
   }
 ]
