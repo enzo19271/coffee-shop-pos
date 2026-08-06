@@ -11,363 +11,733 @@
       box-sizing: border-box;
     }
 
+    :root {
+      --primary: #6F4E37;
+      --primary-dark: #5a4231;
+      --primary-light: #8B6F47;
+      --accent: #D4A574;
+      --success: #52B788;
+      --danger: #E63946;
+      --warning: #F77F00;
+      --info: #457B9D;
+      --bg: #FEFDF7;
+      --bg-secondary: #F8F6F1;
+      --border: #E8DCC8;
+      --text: #2B2520;
+      --text-light: #7A6F67;
+      --shadow: 0 4px 20px rgba(111, 78, 55, 0.12);
+      --shadow-sm: 0 2px 8px rgba(111, 78, 55, 0.08);
+    }
+
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: #f5f5f5;
-      color: #333;
+      font-family: 'Segoe UI', 'Trebuchet MS', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
     }
 
     header {
-      background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
       color: white;
-      padding: 20px;
+      padding: 16px 28px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+      box-shadow: var(--shadow);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
     }
 
-    header h1 {
-      font-size: 24px;
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .header-title {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+
+    .header-subtitle {
+      font-size: 12px;
+      opacity: 0.85;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .user-badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,0.15);
+      padding: 8px 12px;
+      border-radius: 20px;
+      font-size: 13px;
     }
 
     .logout-btn {
-      background: #e74c3c;
+      background: var(--danger);
       color: white;
       border: none;
-      padding: 10px 20px;
-      border-radius: 4px;
+      padding: 8px 16px;
+      border-radius: 6px;
       cursor: pointer;
-      font-weight: bold;
+      font-weight: 600;
+      font-size: 13px;
+      transition: all 0.3s ease;
     }
 
     .logout-btn:hover {
-      background: #c0392b;
+      background: #d62828;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(230, 57, 70, 0.3);
     }
 
     .container {
-      max-width: 1400px;
+      max-width: 1600px;
       margin: 0 auto;
-      padding: 20px;
+      padding: 24px;
+    }
+
+    .welcome-card {
+      background: linear-gradient(135deg, rgba(111, 78, 55, 0.05) 0%, rgba(212, 165, 116, 0.05) 100%);
+      border: 1px solid var(--border);
+      padding: 20px 24px;
+      border-radius: 12px;
+      margin-bottom: 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      backdrop-filter: blur(10px);
+    }
+
+    .welcome-text {
+      font-size: 16px;
+    }
+
+    .welcome-text strong {
+      color: var(--primary);
+      font-weight: 700;
+    }
+
+    .welcome-time {
+      font-size: 12px;
+      color: var(--text-light);
+      margin-top: 4px;
     }
 
     .tabs {
       display: flex;
-      gap: 10px;
-      margin-bottom: 20px;
-      border-bottom: 2px solid #ddd;
+      gap: 8px;
+      margin-bottom: 28px;
+      border-bottom: 2px solid var(--border);
+      overflow-x: auto;
+      padding-bottom: 0;
+      flex-wrap: wrap;
     }
 
     .tab-btn {
-      padding: 12px 20px;
-      background: white;
+      padding: 12px 18px;
+      background: transparent;
       border: none;
       cursor: pointer;
-      font-size: 16px;
-      font-weight: bold;
+      font-size: 14px;
+      font-weight: 600;
       border-bottom: 3px solid transparent;
-      transition: all 0.2s;
+      transition: all 0.3s ease;
+      color: var(--text-light);
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
 
     .tab-btn:hover {
-      background: #f9f9f9;
+      color: var(--primary);
+      background: rgba(111, 78, 55, 0.05);
     }
 
     .tab-btn.active {
-      color: #1a1a1a;
-      border-bottom-color: #1a1a1a;
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+      background: rgba(111, 78, 55, 0.05);
     }
 
     .tab-content {
       display: none;
+      animation: fadeIn 0.3s ease;
     }
 
     .tab-content.active {
       display: block;
     }
 
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .section-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Stats Grid */
     .stats-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 20px;
-      margin-bottom: 30px;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-bottom: 28px;
     }
 
     .stat-card {
       background: white;
+      border: 1px solid var(--border);
       padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      text-align: center;
+      border-radius: 12px;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+    }
+
+    .stat-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow);
+      border-color: var(--accent);
     }
 
     .stat-value {
-      font-size: 32px;
-      font-weight: bold;
-      color: #1a1a1a;
-      margin-bottom: 5px;
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 8px;
     }
 
     .stat-label {
-      color: #999;
-      font-size: 14px;
+      color: var(--text-light);
+      font-size: 13px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
 
-    .menu-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-      gap: 20px;
-      margin-bottom: 30px;
-    }
-
-    .menu-card {
+    /* Form Styles */
+    .form-card {
       background: white;
-      border-radius: 8px;
-      padding: 20px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      position: relative;
+      border: 1px solid var(--border);
+      padding: 24px;
+      border-radius: 12px;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 28px;
     }
 
-    .menu-emoji {
-      font-size: 48px;
-      text-align: center;
-      margin-bottom: 10px;
-    }
-
-    .menu-name {
-      font-weight: bold;
+    .form-title {
       font-size: 16px;
-      margin-bottom: 5px;
-    }
-
-    .menu-price {
-      color: #e74c3c;
-      font-weight: bold;
-      font-size: 18px;
-      margin-bottom: 10px;
-    }
-
-    .menu-category {
-      font-size: 12px;
-      color: #999;
-      margin-bottom: 15px;
-    }
-
-    .menu-actions {
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 20px;
       display: flex;
-      gap: 10px;
+      align-items: center;
+      gap: 8px;
     }
 
-    .btn-small {
-      flex: 1;
-      padding: 8px;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      font-weight: bold;
-      font-size: 12px;
-      transition: all 0.2s;
-    }
-
-    .btn-edit {
-      background: #3498db;
-      color: white;
-    }
-
-    .btn-edit:hover {
-      background: #2980b9;
-    }
-
-    .btn-delete {
-      background: #e74c3c;
-      color: white;
-    }
-
-    .btn-delete:hover {
-      background: #c0392b;
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
     }
 
     .form-group {
-      margin-bottom: 15px;
+      margin-bottom: 16px;
     }
 
     .form-group label {
       display: block;
-      margin-bottom: 5px;
-      font-weight: bold;
-      font-size: 14px;
+      margin-bottom: 6px;
+      font-weight: 600;
+      font-size: 13px;
+      color: var(--text);
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
     }
 
     .form-group input,
     .form-group select,
     .form-group textarea {
       width: 100%;
-      padding: 10px;
-      border: 1px solid #ddd;
-      border-radius: 4px;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
       font-size: 14px;
       font-family: inherit;
+      color: var(--text);
+      background: var(--bg-secondary);
+      transition: all 0.3s ease;
     }
 
-    .add-menu-form {
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: var(--primary);
       background: white;
-      padding: 30px;
-      border-radius: 8px;
-      max-width: 500px;
-      margin-bottom: 30px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      box-shadow: 0 0 0 3px rgba(111, 78, 55, 0.1);
+    }
+
+    .form-group textarea {
+      resize: vertical;
+      min-height: 80px;
     }
 
     .btn-primary {
       width: 100%;
-      padding: 12px;
-      background: #27ae60;
+      padding: 11px 16px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
       color: white;
       border: none;
-      border-radius: 4px;
-      font-weight: bold;
+      border-radius: 8px;
+      font-weight: 600;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: all 0.3s ease;
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
 
     .btn-primary:hover {
-      background: #229954;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(111, 78, 55, 0.3);
+    }
+
+    .btn-primary:active {
+      transform: translateY(0);
+    }
+
+    .btn-primary.secondary {
+      background: var(--bg-secondary);
+      color: var(--primary);
+      border: 1px solid var(--border);
+      margin-top: 8px;
+    }
+
+    .btn-primary.secondary:hover {
+      background: var(--border);
+      box-shadow: var(--shadow-sm);
+    }
+
+    /* Menu Grid */
+    .menu-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .menu-card {
+      background: white;
+      border-radius: 12px;
+      padding: 16px;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border);
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .menu-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow);
+      border-color: var(--accent);
+    }
+
+    .menu-emoji {
+      font-size: 48px;
+      text-align: center;
+      margin-bottom: 12px;
+      background: var(--bg-secondary);
+      padding: 16px;
+      border-radius: 8px;
+    }
+
+    .menu-name {
+      font-weight: 700;
+      font-size: 15px;
+      margin-bottom: 4px;
+      color: var(--primary);
+    }
+
+    .menu-category {
+      font-size: 12px;
+      color: var(--text-light);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .menu-price {
+      color: var(--accent);
+      font-weight: 700;
+      font-size: 16px;
+      margin-bottom: 12px;
+    }
+
+    .menu-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn-small {
+      flex: 1;
+      padding: 8px 12px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 12px;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .btn-edit {
+      background: var(--info);
+      color: white;
+    }
+
+    .btn-edit:hover {
+      background: #386c93;
+      transform: translateY(-2px);
+    }
+
+    .btn-delete {
+      background: var(--danger);
+      color: white;
+    }
+
+    .btn-delete:hover {
+      background: #d62828;
+      transform: translateY(-2px);
+    }
+
+    /* Messages */
+    .message {
+      padding: 14px 16px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      font-size: 14px;
+      display: none;
+      animation: slideIn 0.3s ease;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .message.show {
+      display: flex;
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateY(-10px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
     }
 
     .success-message {
-      display: none;
-      background: #d4edda;
-      color: #155724;
-      padding: 15px;
-      border-radius: 4px;
-      margin-bottom: 20px;
-      border: 1px solid #c3e6cb;
-    }
-
-    .success-message.show {
-      display: block;
+      background: rgba(82, 183, 136, 0.1);
+      color: #2d6a4f;
+      border: 1px solid rgba(82, 183, 136, 0.3);
     }
 
     .error-message {
-      display: none;
-      background: #f8d7da;
-      color: #721c24;
-      padding: 15px;
-      border-radius: 4px;
-      margin-bottom: 20px;
-      border: 1px solid #f5c6cb;
+      background: rgba(230, 57, 70, 0.1);
+      color: #9e2c2c;
+      border: 1px solid rgba(230, 57, 70, 0.3);
     }
 
-    .error-message.show {
-      display: block;
-    }
-
-    .empty-state {
-      text-align: center;
-      padding: 60px 20px;
-      color: #999;
-    }
-
-    .empty-state-icon {
-      font-size: 48px;
-      margin-bottom: 15px;
-    }
-
+    /* Transaction Cards */
     .txn-card {
       background: white;
-      border-radius: 8px;
-      padding: 20px;
-      margin-bottom: 15px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      border-left: 4px solid #3498db;
+      border-radius: 12px;
+      padding: 18px;
+      margin-bottom: 12px;
+      box-shadow: var(--shadow-sm);
+      border-left: 4px solid var(--info);
+      transition: all 0.3s ease;
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--info);
     }
 
-    .txn-card.completed { border-left-color: #27ae60; }
-    .txn-card.rejected { border-left-color: #e74c3c; }
-    .txn-card.pending, .txn-card.pending_verification { border-left-color: #f39c12; }
+    .txn-card:hover {
+      transform: translateX(4px);
+      box-shadow: var(--shadow);
+    }
+
+    .txn-card.completed {
+      border-left-color: var(--success);
+    }
+
+    .txn-card.rejected {
+      border-left-color: var(--danger);
+    }
+
+    .txn-card.pending,
+    .txn-card.pending_verification {
+      border-left-color: var(--warning);
+    }
 
     .txn-header {
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
-      margin-bottom: 10px;
+      margin-bottom: 12px;
       flex-wrap: wrap;
-      gap: 10px;
+      gap: 8px;
     }
 
-    .txn-id { font-weight: bold; font-size: 14px; color: #666; }
+    .txn-id {
+      font-weight: 700;
+      font-size: 13px;
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
 
     .txn-status {
-      padding: 4px 12px;
+      padding: 6px 12px;
       border-radius: 20px;
       font-size: 11px;
-      font-weight: bold;
+      font-weight: 700;
       text-transform: uppercase;
-      background: #eee;
+      background: var(--bg-secondary);
+      color: var(--primary);
+      letter-spacing: 0.3px;
     }
 
     .txn-body {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      font-size: 14px;
-      margin-bottom: 10px;
+      gap: 12px;
+      font-size: 13px;
+      margin-bottom: 12px;
     }
 
-    .txn-body div strong { display: block; color: #999; font-size: 11px; margin-bottom: 2px; }
+    .txn-body div strong {
+      display: block;
+      color: var(--text-light);
+      font-size: 11px;
+      margin-bottom: 3px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
 
     .txn-items {
       font-size: 13px;
-      color: #555;
-      background: #f9f9f9;
-      padding: 10px;
-      border-radius: 4px;
-      margin-bottom: 10px;
+      color: var(--text);
+      background: var(--bg-secondary);
+      padding: 12px;
+      border-radius: 6px;
+      margin-bottom: 12px;
+      border: 1px solid var(--border);
     }
 
     .txn-total {
-      font-weight: bold;
+      font-weight: 700;
       font-size: 18px;
-      color: #e74c3c;
+      color: var(--primary);
       text-align: right;
     }
 
     .proof-thumb {
-      max-width: 120px;
-      border-radius: 4px;
+      max-width: 100px;
+      border-radius: 6px;
       cursor: pointer;
-      margin-top: 5px;
+      margin-top: 8px;
+      border: 1px solid var(--border);
+      transition: all 0.3s ease;
     }
 
+    .proof-thumb:hover {
+      transform: scale(1.05);
+      box-shadow: var(--shadow-sm);
+    }
+
+    /* Staff Cards */
     .staff-card {
       background: white;
-      border-radius: 8px;
-      padding: 15px 20px;
-      margin-bottom: 10px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 12px;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border);
       display: flex;
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
-      gap: 10px;
+      gap: 12px;
+      transition: all 0.3s ease;
     }
 
-    .staff-info strong { display: block; font-size: 16px; }
-    .staff-info span { color: #999; font-size: 13px; }
+    .staff-card:hover {
+      box-shadow: var(--shadow);
+      border-color: var(--accent);
+    }
+
+    .staff-info strong {
+      display: block;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .staff-info span {
+      color: var(--text-light);
+      font-size: 12px;
+    }
 
     .staff-role-badge {
-      padding: 4px 12px;
+      padding: 6px 12px;
       border-radius: 20px;
       font-size: 11px;
-      font-weight: bold;
+      font-weight: 700;
       text-transform: uppercase;
-      background: #d1ecf1;
-      color: #0c5460;
+      background: linear-gradient(135deg, rgba(82, 183, 136, 0.2), rgba(82, 183, 136, 0.1));
+      color: #2d6a4f;
+      letter-spacing: 0.3px;
     }
 
-    .staff-role-badge.admin { background: #f8d7da; color: #721c24; }
+    .staff-role-badge.admin {
+      background: linear-gradient(135deg, rgba(230, 57, 70, 0.2), rgba(230, 57, 70, 0.1));
+      color: #9e2c2c;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-light);
+    }
+
+    .empty-state-icon {
+      font-size: 48px;
+      margin-bottom: 12px;
+      opacity: 0.6;
+    }
+
+    .filter-bar {
+      background: white;
+      padding: 16px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      border: 1px solid var(--border);
+      display: flex;
+      gap: 12px;
+      align-items: flex-end;
+      flex-wrap: wrap;
+    }
+
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .filter-group label {
+      font-weight: 600;
+      font-size: 12px;
+      color: var(--text);
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .filter-group input,
+    .filter-group select {
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 13px;
+      background: var(--bg-secondary);
+      color: var(--text);
+      min-width: 150px;
+    }
+
+    .filter-group input:focus,
+    .filter-group select:focus {
+      outline: none;
+      border-color: var(--primary);
+      background: white;
+    }
+
+    .finance-details {
+      background: white;
+      padding: 24px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+      margin-top: 20px;
+    }
+
+    .finance-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 14px;
+    }
+
+    .finance-row:last-child {
+      border-bottom: none;
+    }
+
+    .finance-row strong {
+      color: var(--primary);
+      font-weight: 700;
+    }
+
+    .finance-row .value {
+      font-weight: 700;
+      color: var(--accent);
+      font-size: 16px;
+    }
 
     @media (max-width: 768px) {
+      .container {
+        padding: 16px;
+      }
+
       .stats-grid {
         grid-template-columns: 1fr;
       }
@@ -375,106 +745,169 @@
       .menu-grid {
         grid-template-columns: 1fr;
       }
+
+      header {
+        flex-direction: column;
+        gap: 12px;
+        padding: 12px 16px;
+      }
+
+      .header-left,
+      .header-right {
+        width: 100%;
+        justify-content: space-between;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .tabs {
+        gap: 4px;
+      }
+
+      .tab-btn {
+        padding: 10px 12px;
+        font-size: 12px;
+      }
+
+      .welcome-card {
+        flex-direction: column;
+        text-align: center;
+        gap: 12px;
+      }
+
+      .txn-body {
+        grid-template-columns: 1fr;
+      }
+
+      .filter-bar {
+        flex-direction: column;
+      }
+
+      .filter-group input,
+      .filter-group select {
+        width: 100%;
+        min-width: unset;
+      }
     }
   </style>
 </head>
 <body>
   <header>
-    <h1>👑 Admin Dashboard</h1>
-    <button class="logout-btn" onclick="logout()">Logout</button>
+    <div class="header-left">
+      <div>
+        <div class="header-title">☕ Coffee Admin</div>
+        <div class="header-subtitle">Dashboard Management System</div>
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="user-badge">
+        👤 <span id="adminName">Admin</span>
+      </div>
+      <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
   </header>
 
   <div class="container">
-    <!-- Welcome message -->
-    <div id="welcomeMsg" style="background: white; padding: 15px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-      Selamat datang, <strong id="adminName"></strong>! 🎉
+    <div class="welcome-card">
+      <div>
+        <div class="welcome-text">Selamat datang kembali, <strong id="adminNameFull">Admin</strong>! 🎉</div>
+        <div class="welcome-time" id="welcomeTime"></div>
+      </div>
     </div>
 
     <!-- Tabs -->
     <div class="tabs">
       <button class="tab-btn active" onclick="switchTab('analytics')">📊 Analytics</button>
-      <button class="tab-btn" onclick="switchTab('menu')">🍽️ Menu Management</button>
-      <button class="tab-btn" onclick="switchTab('transactions')">🧾 Riwayat Transaksi</button>
-      <button class="tab-btn" onclick="switchTab('staff')">👥 Staff Management</button>
-      <button class="tab-btn" onclick="switchTab('finance')">💹 Financial Report</button>
+      <button class="tab-btn" onclick="switchTab('menu')">🍽️ Menu</button>
+      <button class="tab-btn" onclick="switchTab('transactions')">🧾 Transaksi</button>
+      <button class="tab-btn" onclick="switchTab('staff')">👥 Staff</button>
+      <button class="tab-btn" onclick="switchTab('finance')">💹 Keuangan</button>
     </div>
 
     <!-- Tab: Analytics -->
     <div id="tab-analytics" class="tab-content active">
-      <h2 style="margin-bottom: 20px;">📊 Ringkasan Penjualan</h2>
+      <div class="section-title">📊 Ringkasan Penjualan Hari Ini</div>
       <div class="stats-grid" id="analyticsStats"></div>
     </div>
 
     <!-- Tab: Menu Management -->
     <div id="tab-menu" class="tab-content">
-      <div id="successMessage" class="success-message"></div>
-      <div id="errorMessage" class="error-message"></div>
+      <div id="successMessage" class="message success-message"></div>
+      <div id="errorMessage" class="message error-message"></div>
 
-      <div class="add-menu-form">
-        <h3 style="margin-bottom: 20px;" id="menuFormTitle">➕ Tambah Menu Baru</h3>
+      <div class="form-card">
+        <div class="form-title" id="menuFormTitle">➕ Tambah Menu Baru</div>
         <form id="menuForm" onsubmit="submitMenuForm(event)">
-          <div class="form-group">
-            <label>Nama Menu *</label>
-            <input type="text" id="menuName" required>
-          </div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Nama Menu *</label>
+              <input type="text" id="menuName" required>
+            </div>
 
-          <div class="form-group">
-            <label>Kategori *</label>
-            <select id="menuCategory" required>
-              <option value="">Pilih kategori...</option>
-              <option value="Coffee">Coffee</option>
-              <option value="Cold Drinks">Cold Drinks</option>
-              <option value="Pastry">Pastry</option>
-              <option value="Food">Food</option>
-            </select>
-          </div>
+            <div class="form-group">
+              <label>Kategori *</label>
+              <select id="menuCategory" required>
+                <option value="">Pilih kategori...</option>
+                <option value="Coffee">☕ Coffee</option>
+                <option value="Cold Drinks">🧊 Cold Drinks</option>
+                <option value="Pastry">🥐 Pastry</option>
+                <option value="Food">🍲 Food</option>
+              </select>
+            </div>
 
-          <div class="form-group">
-            <label>Harga (Rp) *</label>
-            <input type="number" id="menuPrice" min="1000" step="1000" required>
-          </div>
+            <div class="form-group">
+              <label>Harga (Rp) *</label>
+              <input type="number" id="menuPrice" min="1000" step="1000" required>
+            </div>
 
-          <div class="form-group">
-            <label>Emoji/Icon *</label>
-            <input type="text" id="menuEmoji" placeholder="Contoh: ☕" required>
+            <div class="form-group">
+              <label>Emoji/Icon *</label>
+              <input type="text" id="menuEmoji" placeholder="Contoh: ☕" required>
+            </div>
           </div>
 
           <div class="form-group">
             <label>Deskripsi</label>
-            <textarea id="menuDesc" placeholder="Deskripsi singkat menu..." rows="3"></textarea>
+            <textarea id="menuDesc" placeholder="Deskripsi singkat menu..."></textarea>
           </div>
 
           <div class="form-group">
             <label>Varian (pisahkan dengan koma)</label>
-            <textarea id="menuVariants" placeholder="Contoh: Small,Medium,Large" rows="2"></textarea>
+            <textarea id="menuVariants" placeholder="Contoh: Small,Medium,Large"></textarea>
           </div>
 
-          <button type="submit" class="btn-primary" id="menuFormSubmitBtn">Tambah Menu</button>
-          <button type="button" class="btn-primary" id="menuFormCancelBtn" style="background: #999; margin-top: 10px; display: none;" onclick="cancelEditMenu()">Batal Edit</button>
+          <button type="submit" class="btn-primary" id="menuFormSubmitBtn">➕ Tambah Menu</button>
+          <button type="button" class="btn-primary secondary" id="menuFormCancelBtn" style="display: none;" onclick="cancelEditMenu()">❌ Batal Edit</button>
         </form>
       </div>
 
-      <h3 style="margin-bottom: 20px;">📋 Daftar Menu</h3>
+      <div class="section-title">📋 Daftar Menu</div>
       <div class="menu-grid" id="menuList"></div>
     </div>
 
     <!-- Tab: Transaction History -->
     <div id="tab-transactions" class="tab-content">
-      <h2 style="margin-bottom: 20px;">🧾 Riwayat Transaksi</h2>
+      <div class="section-title">🧾 Riwayat Transaksi</div>
 
-      <div style="background: white; padding: 15px; border-radius: 8px; margin-bottom: 20px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
-        <label style="font-weight: bold; font-size: 14px;">Bulan:</label>
-        <input type="month" id="txnMonth" style="padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
-        <label style="font-weight: bold; font-size: 14px; margin-left: 10px;">Status:</label>
-        <select id="txnStatus" style="padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
-          <option value="">Semua</option>
-          <option value="pending">Pending</option>
-          <option value="pending_verification">Menunggu Verifikasi</option>
-          <option value="confirmed">Confirmed</option>
-          <option value="completed">Selesai</option>
-          <option value="rejected">Ditolak</option>
-        </select>
-        <button class="btn-primary" style="width: auto; padding: 8px 20px;" onclick="loadTransactions()">Filter</button>
+      <div class="filter-bar">
+        <div class="filter-group">
+          <label>Bulan</label>
+          <input type="month" id="txnMonth">
+        </div>
+        <div class="filter-group">
+          <label>Status</label>
+          <select id="txnStatus">
+            <option value="">Semua Status</option>
+            <option value="pending">Pending</option>
+            <option value="pending_verification">Menunggu Verifikasi</option>
+            <option value="confirmed">Confirmed</option>
+            <option value="completed">Selesai</option>
+            <option value="rejected">Ditolak</option>
+          </select>
+        </div>
+        <button class="btn-primary" style="padding: 8px 20px; font-size: 13px;" onclick="loadTransactions()">🔍 Filter</button>
       </div>
 
       <div id="transactionsList"></div>
@@ -482,50 +915,53 @@
 
     <!-- Tab: Staff Management -->
     <div id="tab-staff" class="tab-content">
-      <div id="successMessageStaff" class="success-message"></div>
-      <div id="errorMessageStaff" class="error-message"></div>
+      <div id="successMessageStaff" class="message success-message"></div>
+      <div id="errorMessageStaff" class="message error-message"></div>
 
-      <div class="add-menu-form">
-        <h3 style="margin-bottom: 20px;">➕ Tambah Staff/Pegawai Baru</h3>
+      <div class="form-card">
+        <div class="form-title">➕ Tambah Staff Baru</div>
         <form onsubmit="addStaff(event)">
-          <div class="form-group">
-            <label>Nama Lengkap *</label>
-            <input type="text" id="staffName" required>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Nama Lengkap *</label>
+              <input type="text" id="staffName" required>
+            </div>
+
+            <div class="form-group">
+              <label>Username *</label>
+              <input type="text" id="staffUsername" required>
+            </div>
+
+            <div class="form-group">
+              <label>Password *</label>
+              <input type="password" id="staffPassword" minlength="4" required>
+            </div>
+
+            <div class="form-group">
+              <label>Role *</label>
+              <select id="staffRole" required>
+                <option value="staff">👤 Staff</option>
+                <option value="admin">👑 Admin</option>
+              </select>
+            </div>
           </div>
 
-          <div class="form-group">
-            <label>Username *</label>
-            <input type="text" id="staffUsername" required>
-          </div>
-
-          <div class="form-group">
-            <label>Password *</label>
-            <input type="password" id="staffPassword" minlength="4" required>
-          </div>
-
-          <div class="form-group">
-            <label>Role *</label>
-            <select id="staffRole" required>
-              <option value="staff">Staff</option>
-              <option value="admin">Admin</option>
-            </select>
-          </div>
-
-          <button type="submit" class="btn-primary">Tambah Staff</button>
+          <button type="submit" class="btn-primary">➕ Tambah Staff</button>
         </form>
       </div>
 
-      <h3 style="margin-bottom: 20px;">👥 Daftar Staff</h3>
+      <div class="section-title">👥 Daftar Staff</div>
       <div id="staffList"></div>
     </div>
 
     <!-- Tab: Financial Report -->
     <div id="tab-finance" class="tab-content">
-      <h2 style="margin-bottom: 20px;">💹 Laporan Keuangan</h2>
+      <div class="section-title">💹 Laporan Keuangan Bulan Ini</div>
       <div class="stats-grid" id="financeStats"></div>
-      <div style="background: white; padding: 30px; border-radius: 8px; margin-top: 20px;">
-        <h3 style="margin-bottom: 15px;">📈 Rincian</h3>
-        <div id="financeDetails" style="line-height: 2; font-size: 16px;"></div>
+      
+      <div class="finance-details">
+        <div class="section-title" style="margin-bottom: 16px;">📈 Rincian Keuangan</div>
+        <div id="financeDetails"></div>
       </div>
     </div>
   </div>
@@ -541,6 +977,20 @@
 
     // Set welcome message
     document.querySelector('#adminName').textContent = currentUser.name;
+    document.querySelector('#adminNameFull').textContent = currentUser.name;
+
+    // Update welcome time
+    function updateWelcomeTime() {
+      const now = new Date();
+      const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+      const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+      const dayName = days[now.getDay()];
+      const monthName = months[now.getMonth()];
+      const timeStr = `${dayName}, ${now.getDate()} ${monthName} ${now.getFullYear()} - ${now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}`;
+      document.querySelector('#welcomeTime').textContent = timeStr;
+    }
+    updateWelcomeTime();
+    setInterval(updateWelcomeTime, 60000);
 
     function logout() {
       localStorage.removeItem('staffToken');
@@ -549,15 +999,12 @@
     }
 
     function switchTab(tabName) {
-      // Hide all tabs
       document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
       document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
 
-      // Show selected tab
       document.querySelector(`#tab-${tabName}`).classList.add('active');
       event.target.classList.add('active');
 
-      // Load content
       if (tabName === 'analytics') {
         loadAnalytics();
       } else if (tabName === 'menu') {
@@ -588,6 +1035,10 @@
     function displayMenu(items) {
       currentMenuItems = items;
       const container = document.querySelector('#menuList');
+      if (!items || items.length === 0) {
+        container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🍽️</div><p>Belum ada menu. Tambahkan menu baru untuk memulai!</p></div>';
+        return;
+      }
       container.innerHTML = items.map(item => `
         <div class="menu-card">
           <div class="menu-emoji">${item.image}</div>
@@ -595,8 +1046,8 @@
           <div class="menu-category">${item.category}</div>
           <div class="menu-price">Rp ${item.price.toLocaleString('id-ID')}</div>
           <div class="menu-actions">
-            <button class="btn-small btn-edit" onclick="editMenu('${item.id}')">Edit</button>
-            <button class="btn-small btn-delete" onclick="deleteMenu('${item.id}')">Hapus</button>
+            <button class="btn-small btn-edit" onclick="editMenu('${item.id}')">✏️ Edit</button>
+            <button class="btn-small btn-delete" onclick="deleteMenu('${item.id}')">🗑️ Hapus</button>
           </div>
         </div>
       `).join('');
@@ -639,11 +1090,11 @@
           throw new Error(result.error || 'Failed to add menu');
         }
 
-        showSuccess('✓ Menu berhasil ditambahkan!');
+        showSuccess('✅ Menu berhasil ditambahkan!');
         event.target.reset();
         loadMenu();
       } catch (error) {
-        showError(error.message || 'Gagal menambahkan menu');
+        showError('❌ ' + (error.message || 'Gagal menambahkan menu'));
       }
     }
 
@@ -661,17 +1112,17 @@
       document.querySelector('#menuVariants').value = (item.variants || []).join(', ');
 
       document.querySelector('#menuFormTitle').textContent = `✏️ Edit Menu: ${item.name}`;
-      document.querySelector('#menuFormSubmitBtn').textContent = 'Update Menu';
+      document.querySelector('#menuFormSubmitBtn').textContent = '✏️ Update Menu';
       document.querySelector('#menuFormCancelBtn').style.display = 'block';
 
-      document.querySelector('.add-menu-form').scrollIntoView({ behavior: 'smooth' });
+      document.querySelector('.form-card').scrollIntoView({ behavior: 'smooth' });
     }
 
     function cancelEditMenu() {
       editingMenuId = null;
       document.querySelector('#menuForm').reset();
       document.querySelector('#menuFormTitle').textContent = '➕ Tambah Menu Baru';
-      document.querySelector('#menuFormSubmitBtn').textContent = 'Tambah Menu';
+      document.querySelector('#menuFormSubmitBtn').textContent = '➕ Tambah Menu';
       document.querySelector('#menuFormCancelBtn').style.display = 'none';
     }
 
@@ -704,11 +1155,11 @@
           throw new Error(result.error || 'Failed to update menu');
         }
 
-        showSuccess('✓ Menu berhasil diupdate!');
+        showSuccess('✅ Menu berhasil diupdate!');
         cancelEditMenu();
         loadMenu();
       } catch (error) {
-        showError(error.message || 'Gagal mengupdate menu');
+        showError('❌ ' + (error.message || 'Gagal mengupdate menu'));
       }
     }
 
@@ -729,10 +1180,10 @@
           throw new Error(result.error || 'Failed to delete menu');
         }
 
-        showSuccess('✓ Menu berhasil dihapus!');
+        showSuccess('✅ Menu berhasil dihapus!');
         loadMenu();
       } catch (error) {
-        showError(error.message || 'Gagal menghapus menu');
+        showError('❌ ' + (error.message || 'Gagal menghapus menu'));
       }
     }
 
@@ -741,8 +1192,8 @@
       pending: 'Pending',
       pending_verification: 'Menunggu Verifikasi',
       confirmed: 'Confirmed',
-      completed: 'Selesai',
-      rejected: 'Ditolak'
+      completed: 'Selesai ✅',
+      rejected: 'Ditolak ❌'
     };
 
     function initTxnMonthInput() {
@@ -753,7 +1204,7 @@
 
     async function loadTransactions() {
       const container = document.querySelector('#transactionsList');
-      container.innerHTML = '<p style="text-align:center; color:#999; padding:40px;">Memuat...</p>';
+      container.innerHTML = '<div class="empty-state"><p>Memuat...</p></div>';
 
       const monthInput = document.querySelector('#txnMonth');
       if (!monthInput.value) initTxnMonthInput();
@@ -774,7 +1225,7 @@
         displayTransactions(result.data || []);
       } catch (error) {
         console.error('Error:', error);
-        container.innerHTML = '<p style="text-align:center; color:#e74c3c; padding:40px;">Gagal memuat riwayat transaksi</p>';
+        container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">⚠️</div><p>Gagal memuat riwayat transaksi</p></div>';
       }
     }
 
@@ -789,21 +1240,25 @@
       container.innerHTML = orders.map(order => `
         <div class="txn-card ${order.status}">
           <div class="txn-header">
-            <div class="txn-id">${order.id} • ${new Date(order.timestamp).toLocaleString('id-ID')}</div>
+            <div class="txn-id">${order.id}</div>
             <div class="txn-status">${statusLabels[order.status] || order.status}</div>
           </div>
+          <div style="font-size: 12px; color: var(--text-light); margin-bottom: 12px;">
+            ${new Date(order.timestamp).toLocaleString('id-ID')}
+          </div>
           <div class="txn-body">
-            <div><strong>Nama Pembeli</strong>${order.customer?.name || '-'}</div>
-            <div><strong>Nomor Meja</strong>${order.customer?.tableNo || '-'}</div>
-            <div><strong>Metode Pembayaran</strong>${(order.paymentMethod || '-').toUpperCase()}</div>
-            <div><strong>Dicatat Oleh</strong>${order.recordedBy || '-'}</div>
+            <div><strong>👤 Nama Pembeli</strong>${order.customer?.name || '-'}</div>
+            <div><strong>🪑 Nomor Meja</strong>${order.customer?.tableNo || '-'}</div>
+            <div><strong>💳 Metode Pembayaran</strong>${(order.paymentMethod || '-').toUpperCase()}</div>
+            <div><strong>📝 Dicatat Oleh</strong>${order.recordedBy || '-'}</div>
           </div>
           <div class="txn-items">
-            ${(order.items || []).map(it => `${it.quantity}x ${it.name}${it.variant ? ' (' + it.variant + ')' : ''}`).join(', ')}
+            <strong>📦 Items:</strong><br>
+            ${(order.items || []).map(it => `• ${it.quantity}x ${it.name}${it.variant ? ' (' + it.variant + ')' : ''}`).join('<br>')}
           </div>
-          ${order.notes ? `<div style="font-size:13px; color:#666; margin-bottom:10px;"><strong>Catatan:</strong> ${order.notes}</div>` : ''}
+          ${order.notes ? `<div style="font-size:13px; color:var(--text); margin-bottom:12px; padding:10px; background: var(--bg-secondary); border-radius: 6px;"><strong>📌 Catatan:</strong> ${order.notes}</div>` : ''}
           ${order.paymentProof ? `<img src="${order.paymentProof}" class="proof-thumb" onclick="window.open('${order.paymentProof}', '_blank')" alt="Bukti pembayaran">` : ''}
-          <div class="txn-total">Rp ${(order.totalPrice || 0).toLocaleString('id-ID')}</div>
+          <div class="txn-total">Total: Rp ${(order.totalPrice || 0).toLocaleString('id-ID')}</div>
         </div>
       `).join('');
     }
@@ -811,7 +1266,7 @@
     // ===== Staff Management =====
     async function loadStaff() {
       const container = document.querySelector('#staffList');
-      container.innerHTML = '<p style="text-align:center; color:#999; padding:40px;">Memuat...</p>';
+      container.innerHTML = '<div class="empty-state"><p>Memuat...</p></div>';
 
       try {
         const response = await fetch('/api/staff', {
@@ -824,7 +1279,7 @@
         displayStaff(result.data || []);
       } catch (error) {
         console.error('Error:', error);
-        container.innerHTML = '<p style="text-align:center; color:#e74c3c; padding:40px;">Gagal memuat daftar staff</p>';
+        container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">⚠️</div><p>Gagal memuat daftar staff</p></div>';
       }
     }
 
@@ -832,7 +1287,7 @@
       const container = document.querySelector('#staffList');
 
       if (users.length === 0) {
-        container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">👥</div><p>Belum ada staff</p></div>';
+        container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">👥</div><p>Belum ada staff. Tambahkan staff baru untuk memulai!</p></div>';
         return;
       }
 
@@ -842,7 +1297,7 @@
             <strong>${u.name}</strong>
             <span>@${u.username} • Bergabung ${new Date(u.createdAt).toLocaleDateString('id-ID')}</span>
           </div>
-          <span class="staff-role-badge ${u.role}">${u.role}</span>
+          <span class="staff-role-badge ${u.role}">${u.role === 'admin' ? '👑 Admin' : '👤 Staff'}</span>
         </div>
       `).join('');
     }
@@ -872,11 +1327,11 @@
           throw new Error(result.error || 'Failed to add staff');
         }
 
-        showSuccessStaff('✓ Staff berhasil ditambahkan!');
+        showSuccessStaff('✅ Staff berhasil ditambahkan!');
         event.target.reset();
         loadStaff();
       } catch (error) {
-        showErrorStaff(error.message || 'Gagal menambahkan staff');
+        showErrorStaff('❌ ' + (error.message || 'Gagal menambahkan staff'));
       }
     }
 
@@ -921,19 +1376,19 @@
       container.innerHTML = `
         <div class="stat-card">
           <div class="stat-value">${stats.totalOrders}</div>
-          <div class="stat-label">Total Pesanan Hari Ini</div>
+          <div class="stat-label">📦 Total Pesanan</div>
         </div>
         <div class="stat-card">
           <div class="stat-value">${stats.completedOrders}</div>
-          <div class="stat-label">Pesanan Selesai</div>
+          <div class="stat-label">✅ Pesanan Selesai</div>
         </div>
         <div class="stat-card">
           <div class="stat-value">Rp ${stats.totalRevenue.toLocaleString('id-ID')}</div>
-          <div class="stat-label">Total Penjualan</div>
+          <div class="stat-label">💰 Total Penjualan</div>
         </div>
         <div class="stat-card">
           <div class="stat-value">Rp ${stats.totalExpenses.toLocaleString('id-ID')}</div>
-          <div class="stat-label">Total Pengeluaran</div>
+          <div class="stat-label">📤 Total Pengeluaran</div>
         </div>
       `;
     }
@@ -960,31 +1415,46 @@
       container.innerHTML = `
         <div class="stat-card">
           <div class="stat-value">Rp ${stats.totalRevenue.toLocaleString('id-ID')}</div>
-          <div class="stat-label">Total Penjualan Bulan Ini</div>
+          <div class="stat-label">💰 Total Penjualan</div>
         </div>
         <div class="stat-card">
           <div class="stat-value">Rp ${stats.totalExpenses.toLocaleString('id-ID')}</div>
-          <div class="stat-label">Total Pengeluaran</div>
+          <div class="stat-label">📤 Total Pengeluaran</div>
         </div>
         <div class="stat-card">
-          <div class="stat-value" style="color: ${stats.netProfit >= 0 ? '#27ae60' : '#e74c3c'};">
+          <div class="stat-value" style="color: ${stats.netProfit >= 0 ? 'var(--success)' : 'var(--danger)'};">
             Rp ${stats.netProfit.toLocaleString('id-ID')}
           </div>
-          <div class="stat-label">Net Profit</div>
+          <div class="stat-label">📊 Net Profit</div>
         </div>
         <div class="stat-card">
           <div class="stat-value">${stats.totalOrders}</div>
-          <div class="stat-label">Total Transaksi</div>
+          <div class="stat-label">📋 Total Transaksi</div>
         </div>
       `;
 
       const details = document.querySelector('#financeDetails');
       details.innerHTML = `
-        <p><strong>📊 Total Penjualan:</strong> Rp ${stats.totalRevenue.toLocaleString('id-ID')}</p>
-        <p><strong>📤 Total Pengeluaran:</strong> Rp ${stats.totalExpenses.toLocaleString('id-ID')}</p>
-        <p><strong>💰 Keuntungan Bersih:</strong> Rp ${stats.netProfit.toLocaleString('id-ID')}</p>
-        <p><strong>📋 Jumlah Transaksi:</strong> ${stats.totalOrders}</p>
-        <p><strong>💵 Rata-rata Per Transaksi:</strong> Rp ${Math.round(stats.averageOrderValue).toLocaleString('id-ID')}</p>
+        <div class="finance-row">
+          <strong>💰 Total Penjualan:</strong>
+          <span class="value">Rp ${stats.totalRevenue.toLocaleString('id-ID')}</span>
+        </div>
+        <div class="finance-row">
+          <strong>📤 Total Pengeluaran:</strong>
+          <span class="value">Rp ${stats.totalExpenses.toLocaleString('id-ID')}</span>
+        </div>
+        <div class="finance-row">
+          <strong>📊 Keuntungan Bersih:</strong>
+          <span class="value" style="color: ${stats.netProfit >= 0 ? 'var(--success)' : 'var(--danger)'};">Rp ${stats.netProfit.toLocaleString('id-ID')}</span>
+        </div>
+        <div class="finance-row">
+          <strong>📋 Jumlah Transaksi:</strong>
+          <span class="value">${stats.totalOrders}</span>
+        </div>
+        <div class="finance-row">
+          <strong>💵 Rata-rata Per Transaksi:</strong>
+          <span class="value">Rp ${Math.round(stats.averageOrderValue).toLocaleString('id-ID')}</span>
+        </div>
       `;
     }
 
