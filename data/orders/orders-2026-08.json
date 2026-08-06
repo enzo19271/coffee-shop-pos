@@ -105,5 +105,28 @@
     "createdAt": "2026-08-04T10:54:40.260Z",
     "updatedAt": "2026-08-04T10:56:53.373Z",
     "updatedBy": "staff"
+  },
+  {
+    "id": "ORD-MSH75NLD-M96QI",
+    "timestamp": "2026-08-06T07:31:01.681Z",
+    "customer": {
+      "name": "Devi",
+      "tableNo": "A7"
+    },
+    "items": [
+      {
+        "menuId": "1",
+        "name": "Espresso",
+        "price": 25000,
+        "variant": "Sedang",
+        "quantity": 1
+      }
+    ],
+    "totalPrice": 25000,
+    "paymentMethod": "cash",
+    "paymentProof": null,
+    "notes": "Anjay",
+    "status": "pending",
+    "createdAt": "2026-08-06T07:31:01.681Z"
   }
 ]
