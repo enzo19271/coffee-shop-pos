@@ -151,7 +151,9 @@
     "paymentMethod": "cash",
     "paymentProof": null,
     "notes": "Tambahin sambel pedes bang",
-    "status": "pending",
-    "createdAt": "2026-08-06T09:01:07.639Z"
+    "status": "confirmed",
+    "createdAt": "2026-08-06T09:01:07.639Z",
+    "updatedAt": "2026-08-06T09:05:35.906Z",
+    "updatedBy": "staff"
   }
 ]
