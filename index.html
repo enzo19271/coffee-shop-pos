@@ -156,6 +156,7 @@
       transition: var(--transition);
       border: 2px solid rgba(255, 255, 255, 0.2);
       letter-spacing: 0.3px;
+      gap: 8px;
     }
 
     .cart-badge:hover {
@@ -338,6 +339,10 @@
       transition: var(--transition);
       letter-spacing: 0.3px;
       box-shadow: var(--shadow-sm);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
     }
 
     .add-to-cart:hover {
@@ -406,7 +411,7 @@
       width: 36px;
       height: 36px;
       border-radius: 50%;
-      font-size: 20px;
+      font-size: 18px;
       cursor: pointer;
       color: var(--text-muted);
       display: flex;
@@ -556,9 +561,15 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      gap: 8px;
       font-size: 12.5px;
       font-weight: 700;
       color: var(--text-muted);
+    }
+
+    .payment-option i {
+      font-size: 14px;
+      color: var(--brand-accent);
     }
 
     .payment-option:hover {
@@ -606,6 +617,10 @@
       text-transform: uppercase;
       letter-spacing: 0.4px;
       font-family: inherit;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
     }
 
     .btn-primary {
@@ -641,6 +656,7 @@
     .empty-cart-icon {
       font-size: 48px;
       margin-bottom: 12px;
+      color: var(--brand-accent);
       opacity: 0.8;
     }
 
@@ -732,14 +748,14 @@
     <div id="menuGrid" class="menu-grid"></div>
   </div>
 
-  <div class="cart-badge" id="cartBadge"><i class="fas fa-shopping-cart" style="margin-right: 8px;"></i> 🛒 0</div>
+  <div class="cart-badge" id="cartBadge"><i class="fas fa-cart-shopping"></i> 0</div>
 
   <!-- Cart Modal -->
   <div class="modal" id="cartModal">
     <div class="modal-content">
       <div class="modal-header">
         <h2><i class="fas fa-receipt" style="color: var(--brand-accent); margin-right: 8px;"></i> Keranjang Belanja</h2>
-        <button class="close-btn" onclick="closeCart()">×</button>
+        <button class="close-btn" onclick="closeCart()"><i class="fas fa-xmark"></i></button>
       </div>
 
       <div id="successMessage" class="success-message"></div>
@@ -778,15 +794,15 @@
           <div class="payment-methods">
             <label class="payment-option">
               <input type="radio" name="paymentMethod" value="cash" checked onchange="toggleProofUpload()">
-              <span>💰 Cash</span>
+              <span><i class="fas fa-money-bill-wave"></i> Cash</span>
             </label>
             <label class="payment-option">
               <input type="radio" name="paymentMethod" value="transfer" onchange="toggleProofUpload()">
-              <span>🏦 Transfer</span>
+              <span><i class="fas fa-building-columns"></i> Transfer</span>
             </label>
             <label class="payment-option">
               <input type="radio" name="paymentMethod" value="barcode" onchange="toggleProofUpload()">
-              <span>📱 QRIS</span>
+              <span><i class="fas fa-qrcode"></i> QRIS</span>
             </label>
           </div>
         </div>
@@ -806,7 +822,7 @@
 
         <div class="btn-group">
           <button type="button" class="btn btn-secondary" onclick="closeCart()">Batal</button>
-          <button type="submit" class="btn btn-primary">Pesan Sekarang</button>
+          <button type="submit" class="btn btn-primary"><i class="fas fa-paper-plane"></i> Pesan Sekarang</button>
         </div>
       </form>
     </div>
@@ -832,7 +848,7 @@
       const grid = document.querySelector('.menu-grid');
       grid.innerHTML = menuItems.map(item => `
         <div class="menu-item">
-          <div class="menu-emoji">${item.image}</div>
+          <div class="menu-emoji">${item.image || '<i class="fas fa-mug-hot"></i>'}</div>
           <div class="menu-category">${item.category}</div>
           <div class="menu-name">${item.name}</div>
           <div class="menu-price">Rp ${item.price.toLocaleString('id-ID')}</div>
@@ -858,7 +874,7 @@
           </div>
 
           <button class="add-to-cart" onclick="addToCart('${item.id}', '${item.name}', ${item.price}, this)">
-            🛒 Tambah ke Keranjang
+            <i class="fas fa-cart-plus"></i> Tambah ke Keranjang
           </button>
         </div>
       `).join('');
@@ -923,16 +939,16 @@
       container.querySelectorAll('.variant-chip').forEach(c => c.classList.remove('active'));
 
       // Show feedback
-      button.textContent = '✓ Ditambahkan';
-      button.style.background = '#27ae60';
+      button.innerHTML = '<i class="fas fa-check"></i> Ditambahkan';
+      button.style.background = 'var(--success)';
       setTimeout(() => {
-        button.textContent = '🛒 Tambah ke Keranjang';
+        button.innerHTML = '<i class="fas fa-cart-plus"></i> Tambah ke Keranjang';
         button.style.background = '';
       }, 1500);
     }
 
     function updateCartBadge() {
-      document.querySelector('#cartBadge').textContent = `🛒 ${cart.length}`;
+      document.querySelector('#cartBadge').innerHTML = `<i class="fas fa-cart-shopping"></i> ${cart.length}`;
     }
 
     document.querySelector('#cartBadge').addEventListener('click', openCart);
@@ -952,7 +968,7 @@
       const cartSummary = document.querySelector('#cartSummary');
 
       if (cart.length === 0) {
-        container.innerHTML = '<div class="empty-cart"><div class="empty-cart-icon">📦</div><p>Keranjang Anda masih kosong</p></div>';
+        container.innerHTML = '<div class="empty-cart"><div class="empty-cart-icon"><i class="fas fa-box-open"></i></div><p>Keranjang Anda masih kosong</p></div>';
         cartSummary.style.display = 'none';
         document.querySelector('#orderForm').style.display = 'none';
         return;
@@ -972,7 +988,7 @@
               <div class="cart-item-variant">${item.variant}</div>
             </div>
             <div class="cart-item-price">Rp ${itemTotal.toLocaleString('id-ID')}</div>
-            <button type="button" onclick="removeFromCart(${idx})" style="background: var(--danger-bg); color: var(--danger); border: 1px solid rgba(198,40,40,0.2); padding: 6px 10px; border-radius: var(--radius-sm); cursor: pointer; font-weight: bold;">✕</button>
+            <button type="button" onclick="removeFromCart(${idx})" style="background: var(--danger-bg); color: var(--danger); border: 1px solid rgba(198,40,40,0.2); padding: 6px 10px; border-radius: var(--radius-sm); cursor: pointer; font-weight: bold;"><i class="fas fa-trash-can"></i></button>
           </div>
         `;
       }).join('');
@@ -1057,7 +1073,7 @@
           return;
         }
 
-        showSuccess(`✓ Pesanan berhasil dibuat! ID: ${data.orderId}`);
+        showSuccess(`<i class="fas fa-circle-check"></i> Pesanan berhasil dibuat! ID: ${data.orderId}`);
         
         // Clear cart
         cart = [];
@@ -1090,13 +1106,13 @@
 
     function showSuccess(message) {
       const el = document.querySelector('#successMessage');
-      el.textContent = message;
+      el.innerHTML = message;
       el.classList.add('show');
     }
 
     function showError(message) {
       const el = document.querySelector('#errorMessage');
-      el.textContent = message;
+      el.innerHTML = message;
       el.classList.add('show');
     }
 
