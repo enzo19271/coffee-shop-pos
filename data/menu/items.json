@@ -1,13 +1,5 @@
 [
   {
-    "id": 3,
-    "name": "Cappuccino",
-    "category": "Coffee",
-    "price": 35000,
-    "description": "Espresso with steamed milk and foam",
-    "image": "☕"
-  },
-  {
     "id": 4,
     "name": "Latte",
     "category": "Coffee",
