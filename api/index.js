@@ -105,6 +105,11 @@ function getCurrentOrderFile() {
   return `data/orders/orders-${year}-${month}.json`;
 }
 
+function getOrderFileByMonth(monthStr) {
+  const [year, month] = monthStr.split('-');
+  return `data/orders/orders-${year}-${month}.json`;
+}
+
 function generateOrderId() {
   const timestamp = Date.now().toString(36).toUpperCase();
   const random = Math.random().toString(36).substr(2, 5).toUpperCase();
@@ -200,6 +205,38 @@ async function handlePending(req, res) {
   }
 }
 
+async function handleOrders(req, res) {
+  if (req.method !== 'GET') return res.status(405).json({ error: 'Method not allowed' });
+  try {
+    const payload = getAuthPayload(req);
+    if (!payload) return res.status(401).json({ error: 'Unauthorized' });
+    if (payload.role !== 'staff' && payload.role !== 'admin') return res.status(403).json({ error: 'Forbidden' });
+    
+    const month = req.query.month;
+    const status = req.query.status;
+    
+    let orders = [];
+    try {
+      const orderFile = month ? getOrderFileByMonth(month) : getCurrentOrderFile();
+      orders = JSON.parse(await getGitHubFile(orderFile));
+    } catch { 
+      orders = []; 
+    }
+    
+    // Filter by status if provided
+    if (status) {
+      orders = orders.filter(o => o.status === status);
+    }
+    
+    orders.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+    
+    return res.status(200).json({ success: true, data: orders, count: orders.length });
+  } catch (error) {
+    console.error('Orders error:', error);
+    return res.status(500).json({ error: 'Failed to fetch orders' });
+  }
+}
+
 async function handleUpdateStatus(req, res) {
   if (req.method !== 'PATCH') return res.status(405).json({ error: 'Method not allowed' });
   try {
@@ -242,6 +279,13 @@ async function handleSummary(req, res) {
     if (period === 'today') {
       filteredOrders = orders.filter(o => o.timestamp.startsWith(today));
       filteredExpenses = expenses.filter(e => e.date === today);
+    } else if (period === 'thisMonth') {
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = String(now.getMonth() + 1).padStart(2, '0');
+      const monthPrefix = `${year}-${month}`;
+      filteredOrders = orders.filter(o => o.timestamp.startsWith(monthPrefix));
+      filteredExpenses = expenses.filter(e => e.date.startsWith(monthPrefix));
     }
     const completedOrders = filteredOrders.filter(o => o.status === 'completed');
     const totalRevenue = completedOrders.reduce((sum, o) => sum + o.totalPrice, 0);
@@ -362,6 +406,84 @@ async function handleUpdateMenu(req, res) {
   }
 }
 
+async function handleStaffList(req, res) {
+  if (req.method !== 'GET') return res.status(405).json({ error: 'Method not allowed' });
+  try {
+    const payload = getAuthPayload(req);
+    if (!payload) return res.status(401).json({ error: 'Unauthorized' });
+    if (payload.role !== 'admin') return res.status(403).json({ error: 'Forbidden' });
+    const staffData = await getGitHubFile('data/staff/users.json');
+    const users = JSON.parse(staffData);
+    // Remove password hashes from response
+    const safeUsers = users.map(u => ({
+      id: u.id,
+      name: u.name,
+      username: u.username,
+      role: u.role,
+      status: u.status,
+      createdAt: u.createdAt || new Date().toISOString()
+    }));
+    return res.status(200).json({ success: true, data: safeUsers });
+  } catch (error) {
+    console.error('Staff list error:', error);
+    return res.status(500).json({ error: 'Failed to fetch staff' });
+  }
+}
+
+async function handleAddStaff(req, res) {
+  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
+  try {
+    const payload = getAuthPayload(req);
+    if (!payload) return res.status(401).json({ error: 'Unauthorized' });
+    if (payload.role !== 'admin') return res.status(403).json({ error: 'Forbidden' });
+    
+    const { name, username, password, role } = req.body;
+    if (!name || !username || !password || !role) {
+      return res.status(400).json({ error: 'Name, username, password, and role are required' });
+    }
+    
+    if (!['staff', 'admin'].includes(role)) {
+      return res.status(400).json({ error: 'Invalid role' });
+    }
+    
+    let users = [];
+    try { users = JSON.parse(await getGitHubFile('data/staff/users.json')); } catch { users = []; }
+    
+    // Check if username already exists
+    if (users.find(u => u.username === username)) {
+      return res.status(409).json({ error: 'Username already exists' });
+    }
+    
+    const nextId = users.length > 0 ? Math.max(...users.map(u => u.id)) + 1 : 1;
+    const newUser = {
+      id: nextId,
+      name,
+      username,
+      passwordHash: role === 'admin' ? 'admin' : 'staff', // Simple hash based on role
+      role,
+      status: 'active',
+      createdAt: new Date().toISOString()
+    };
+    
+    users.push(newUser);
+    await updateGitHubFile('data/staff/users.json', JSON.stringify(users, null, 2), `Add staff: ${username}`);
+    
+    return res.status(201).json({ 
+      success: true, 
+      message: 'Staff added successfully',
+      data: {
+        id: newUser.id,
+        name: newUser.name,
+        username: newUser.username,
+        role: newUser.role
+      }
+    });
+  } catch (error) {
+    console.error('Add staff error:', error);
+    return res.status(500).json({ error: 'Failed to add staff' });
+  }
+}
+
 // ─── MAIN ROUTER ─────────────────────────────────────────────────────────────
 export default async function handler(req, res) {
   const url = new URL(req.url, `http://${req.headers.host}`);
@@ -375,12 +497,15 @@ export default async function handler(req, res) {
     case '/list':          return handleList(req, res);
     case '/create':        return handleCreate(req, res);
     case '/pending':       return handlePending(req, res);
+    case '/orders':        return handleOrders(req, res);
     case '/update-status': return handleUpdateStatus(req, res);
     case '/summary':       return handleSummary(req, res);
     case '/expenses':      return handleExpenses(req, res);
     case '/add-expense':   return handleAddExpense(req, res);
     case '/add-menu':      return handleAddMenu(req, res);
     case '/update-menu':   return handleUpdateMenu(req, res);
+    case '/staff':         return handleStaffList(req, res);
+    case '/add-staff':     return handleAddStaff(req, res);
     default:               return res.status(404).json({ error: 'Not found' });
   }
 }
