@@ -67,14 +67,6 @@
     "image": "🥪"
   },
   {
-    "id": 18,
-    "name": "Pasta Carbonara",
-    "category": "Food",
-    "price": 55000,
-    "description": "Creamy pasta with bacon",
-    "image": "🍝"
-  },
-  {
     "id": 19,
     "name": "Iced Tea",
     "category": "Cold Drinks",
