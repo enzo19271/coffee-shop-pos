@@ -43,14 +43,6 @@
     "image": "🫖"
   },
   {
-    "id": 14,
-    "name": "Muffin",
-    "category": "Pastry",
-    "price": 20000,
-    "description": "Soft chocolate muffin",
-    "image": "🧁"
-  },
-  {
     "id": 16,
     "name": "Sandwich",
     "category": "Food",
