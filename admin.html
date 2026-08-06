@@ -56,7 +56,6 @@
       gap: 10px;
       margin-bottom: 20px;
       border-bottom: 2px solid #ddd;
-      overflow-x: auto;
     }
 
     .tab-btn {
@@ -68,7 +67,6 @@
       font-weight: bold;
       border-bottom: 3px solid transparent;
       transition: all 0.2s;
-      white-space: nowrap;
     }
 
     .tab-btn:hover {
@@ -236,56 +234,6 @@
       background: #229954;
     }
 
-    .btn-secondary {
-      width: auto;
-      padding: 8px 16px;
-      background: #95a5a6;
-      color: white;
-      border: none;
-      border-radius: 4px;
-      font-weight: bold;
-      cursor: pointer;
-      transition: all 0.2s;
-      margin-right: 5px;
-    }
-
-    .btn-secondary:hover {
-      background: #7f8c8d;
-    }
-
-    .btn-success {
-      width: auto;
-      padding: 8px 16px;
-      background: #27ae60;
-      color: white;
-      border: none;
-      border-radius: 4px;
-      font-weight: bold;
-      cursor: pointer;
-      transition: all 0.2s;
-      margin-right: 5px;
-    }
-
-    .btn-success:hover {
-      background: #229954;
-    }
-
-    .btn-danger {
-      width: auto;
-      padding: 8px 16px;
-      background: #e74c3c;
-      color: white;
-      border: none;
-      border-radius: 4px;
-      font-weight: bold;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-
-    .btn-danger:hover {
-      background: #c0392b;
-    }
-
     .success-message {
       display: none;
       background: #d4edda;
@@ -382,13 +330,6 @@
       font-size: 18px;
       color: #e74c3c;
       text-align: right;
-      margin-bottom: 15px;
-    }
-
-    .txn-actions {
-      display: flex;
-      gap: 5px;
-      flex-wrap: wrap;
     }
 
     .proof-thumb {
@@ -411,7 +352,6 @@
       gap: 10px;
     }
 
-    .staff-info { flex: 1; min-width: 200px; }
     .staff-info strong { display: block; font-size: 16px; }
     .staff-info span { color: #999; font-size: 13px; }
 
@@ -427,90 +367,6 @@
 
     .staff-role-badge.admin { background: #f8d7da; color: #721c24; }
 
-    .staff-actions {
-      display: flex;
-      gap: 5px;
-    }
-
-    .expense-card {
-      background: white;
-      border-radius: 8px;
-      padding: 15px 20px;
-      margin-bottom: 10px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-
-    .expense-info { flex: 1; min-width: 200px; }
-    .expense-info strong { display: block; font-size: 16px; }
-    .expense-info span { color: #999; font-size: 13px; }
-
-    .expense-amount {
-      font-weight: bold;
-      color: #e74c3c;
-      font-size: 18px;
-    }
-
-    .expense-actions {
-      display: flex;
-      gap: 5px;
-    }
-
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 1000;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0,0,0,0.5);
-    }
-
-    .modal.show {
-      display: block;
-    }
-
-    .modal-content {
-      background-color: white;
-      margin: 5% auto;
-      padding: 30px;
-      border-radius: 8px;
-      width: 90%;
-      max-width: 500px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-    }
-
-    .modal-header {
-      font-size: 20px;
-      font-weight: bold;
-      margin-bottom: 20px;
-    }
-
-    .modal-footer {
-      margin-top: 20px;
-      text-align: right;
-    }
-
-    .close-modal {
-      background: #95a5a6;
-      color: white;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 4px;
-      cursor: pointer;
-      font-weight: bold;
-      margin-right: 10px;
-    }
-
-    .close-modal:hover {
-      background: #7f8c8d;
-    }
-
     @media (max-width: 768px) {
       .stats-grid {
         grid-template-columns: 1fr;
@@ -518,15 +374,6 @@
 
       .menu-grid {
         grid-template-columns: 1fr;
-      }
-
-      .txn-body {
-        grid-template-columns: 1fr;
-      }
-
-      .staff-card, .expense-card {
-        flex-direction: column;
-        align-items: flex-start;
       }
     }
   </style>
@@ -549,9 +396,7 @@
       <button class="tab-btn" onclick="switchTab('menu')">🍽️ Menu Management</button>
       <button class="tab-btn" onclick="switchTab('transactions')">🧾 Riwayat Transaksi</button>
       <button class="tab-btn" onclick="switchTab('staff')">👥 Staff Management</button>
-      <button class="tab-btn" onclick="switchTab('expenses')">💰 Pengeluaran</button>
       <button class="tab-btn" onclick="switchTab('finance')">💹 Financial Report</button>
-      <button class="tab-btn" onclick="switchTab('settings')">⚙️ Pengaturan</button>
     </div>
 
     <!-- Tab: Analytics -->
@@ -674,56 +519,6 @@
       <div id="staffList"></div>
     </div>
 
-    <!-- Tab: Expenses Management -->
-    <div id="tab-expenses" class="tab-content">
-      <div id="successMessageExpense" class="success-message"></div>
-      <div id="errorMessageExpense" class="error-message"></div>
-
-      <div class="add-menu-form">
-        <h3 style="margin-bottom: 20px;">➕ Tambah Pengeluaran</h3>
-        <form id="expenseForm" onsubmit="submitExpenseForm(event)">
-          <div class="form-group">
-            <label>Deskripsi Pengeluaran *</label>
-            <input type="text" id="expenseDesc" placeholder="Contoh: Beli biji kopi, Perbaikan mesin, dll" required>
-          </div>
-
-          <div class="form-group">
-            <label>Jumlah (Rp) *</label>
-            <input type="number" id="expenseAmount" min="1000" step="1000" required>
-          </div>
-
-          <div class="form-group">
-            <label>Kategori *</label>
-            <select id="expenseCategory" required>
-              <option value="">Pilih kategori...</option>
-              <option value="Supplies">Supplies/Perlengkapan</option>
-              <option value="Maintenance">Maintenance/Perbaikan</option>
-              <option value="Salary">Gaji Karyawan</option>
-              <option value="Rent">Sewa Tempat</option>
-              <option value="Utilities">Listrik & Air</option>
-              <option value="Other">Lainnya</option>
-            </select>
-          </div>
-
-          <div class="form-group">
-            <label>Tanggal *</label>
-            <input type="date" id="expenseDate" required>
-          </div>
-
-          <div class="form-group">
-            <label>Catatan</label>
-            <textarea id="expenseNotes" placeholder="Catatan tambahan..." rows="2"></textarea>
-          </div>
-
-          <button type="submit" class="btn-primary" id="expenseFormSubmitBtn">Tambah Pengeluaran</button>
-          <button type="button" class="btn-primary" id="expenseFormCancelBtn" style="background: #999; margin-top: 10px; display: none;" onclick="cancelEditExpense()">Batal Edit</button>
-        </form>
-      </div>
-
-      <h3 style="margin-bottom: 20px;">💰 Daftar Pengeluaran</h3>
-      <div id="expenseList"></div>
-    </div>
-
     <!-- Tab: Financial Report -->
     <div id="tab-finance" class="tab-content">
       <h2 style="margin-bottom: 20px;">💹 Laporan Keuangan</h2>
@@ -733,79 +528,11 @@
         <div id="financeDetails" style="line-height: 2; font-size: 16px;"></div>
       </div>
     </div>
-
-    <!-- Tab: Settings -->
-    <div id="tab-settings" class="tab-content">
-      <div id="successMessageSettings" class="success-message"></div>
-      <div id="errorMessageSettings" class="error-message"></div>
-
-      <div class="add-menu-form">
-        <h3 style="margin-bottom: 20px;">⚙️ Pengaturan Toko</h3>
-        <form onsubmit="saveSettings(event)">
-          <div class="form-group">
-            <label>Nama Toko *</label>
-            <input type="text" id="shopName" required>
-          </div>
-
-          <div class="form-group">
-            <label>Alamat *</label>
-            <textarea id="shopAddress" required rows="3"></textarea>
-          </div>
-
-          <div class="form-group">
-            <label>Nomor Telepon *</label>
-            <input type="tel" id="shopPhone" required>
-          </div>
-
-          <div class="form-group">
-            <label>Email *</label>
-            <input type="email" id="shopEmail" required>
-          </div>
-
-          <div class="form-group">
-            <label>Jam Operasional *</label>
-            <input type="text" id="shopHours" placeholder="Contoh: 08:00 - 22:00" required>
-          </div>
-
-          <div class="form-group">
-            <label>Metode Pembayaran (pisahkan dengan koma)</label>
-            <textarea id="paymentMethods" placeholder="Contoh: Cash,Transfer,E-wallet" rows="2"></textarea>
-          </div>
-
-          <button type="submit" class="btn-primary">Simpan Pengaturan</button>
-        </form>
-      </div>
-    </div>
-  </div>
-
-  <!-- Modal for Transaction Status Update -->
-  <div id="txnStatusModal" class="modal">
-    <div class="modal-content">
-      <div class="modal-header">Ubah Status Transaksi</div>
-      <form onsubmit="updateTransactionStatus(event)">
-        <div class="form-group">
-          <label>Status Baru *</label>
-          <select id="txnNewStatus" required>
-            <option value="pending">Pending</option>
-            <option value="pending_verification">Menunggu Verifikasi</option>
-            <option value="confirmed">Confirmed</option>
-            <option value="completed">Selesai</option>
-            <option value="rejected">Ditolak</option>
-          </select>
-        </div>
-        <input type="hidden" id="txnUpdateId">
-        <div class="modal-footer">
-          <button type="button" class="close-modal" onclick="closeTxnStatusModal()">Batal</button>
-          <button type="submit" class="btn-success">Simpan</button>
-        </div>
-      </form>
-    </div>
   </div>
 
   <script>
     let token = localStorage.getItem('staffToken');
     let currentUser = JSON.parse(localStorage.getItem('currentStaff'));
-    let editingExpenseId = null;
 
     // Check if logged in and is admin
     if (!token || !currentUser || currentUser.role !== 'admin') {
@@ -814,16 +541,6 @@
 
     // Set welcome message
     document.querySelector('#adminName').textContent = currentUser.name;
-
-    // Initialize date input with today's date
-    document.addEventListener('DOMContentLoaded', function() {
-      const today = new Date().toISOString().split('T')[0];
-      const expenseDate = document.querySelector('#expenseDate');
-      if (expenseDate) {
-        expenseDate.value = today;
-      }
-      loadSettings();
-    });
 
     function logout() {
       localStorage.removeItem('staffToken');
@@ -849,16 +566,11 @@
         loadTransactions();
       } else if (tabName === 'staff') {
         loadStaff();
-      } else if (tabName === 'expenses') {
-        loadExpenses();
       } else if (tabName === 'finance') {
         loadFinance();
-      } else if (tabName === 'settings') {
-        loadSettings();
       }
     }
 
-    // ===== MENU MANAGEMENT =====
     async function loadMenu() {
       try {
         const response = await fetch('/api/list');
@@ -1024,7 +736,7 @@
       }
     }
 
-    // ===== TRANSACTION HISTORY =====
+    // ===== Transaction History =====
     const statusLabels = {
       pending: 'Pending',
       pending_verification: 'Menunggu Verifikasi',
@@ -1092,109 +804,11 @@
           ${order.notes ? `<div style="font-size:13px; color:#666; margin-bottom:10px;"><strong>Catatan:</strong> ${order.notes}</div>` : ''}
           ${order.paymentProof ? `<img src="${order.paymentProof}" class="proof-thumb" onclick="window.open('${order.paymentProof}', '_blank')" alt="Bukti pembayaran">` : ''}
           <div class="txn-total">Rp ${(order.totalPrice || 0).toLocaleString('id-ID')}</div>
-          <div class="txn-actions">
-            <button class="btn-secondary" onclick="openTxnStatusModal('${order.id}')">Ubah Status</button>
-            ${order.status === 'pending_verification' && order.paymentProof ? `<button class="btn-success" onclick="approveTransaction('${order.id}')">Verifikasi</button>` : ''}
-            ${order.status !== 'completed' && order.status !== 'rejected' ? `<button class="btn-danger" onclick="rejectTransaction('${order.id}')">Tolak</button>` : ''}
-          </div>
         </div>
       `).join('');
     }
 
-    function openTxnStatusModal(orderId) {
-      document.querySelector('#txnUpdateId').value = orderId;
-      document.querySelector('#txnStatusModal').classList.add('show');
-    }
-
-    function closeTxnStatusModal() {
-      document.querySelector('#txnStatusModal').classList.remove('show');
-    }
-
-    async function updateTransactionStatus(event) {
-      event.preventDefault();
-      const orderId = document.querySelector('#txnUpdateId').value;
-      const newStatus = document.querySelector('#txnNewStatus').value;
-
-      try {
-        const response = await fetch(`/api/update-order-status`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          },
-          body: JSON.stringify({ orderId, status: newStatus })
-        });
-
-        const result = await response.json();
-
-        if (!response.ok) {
-          throw new Error(result.error || 'Failed to update status');
-        }
-
-        closeTxnStatusModal();
-        loadTransactions();
-        showSuccess('✓ Status transaksi berhasil diubah!');
-      } catch (error) {
-        console.error('Error:', error);
-        showError(error.message || 'Gagal mengubah status');
-      }
-    }
-
-    async function approveTransaction(orderId) {
-      if (!confirm('Verifikasi transaksi ini?')) return;
-
-      try {
-        const response = await fetch(`/api/update-order-status`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          },
-          body: JSON.stringify({ orderId, status: 'completed' })
-        });
-
-        const result = await response.json();
-
-        if (!response.ok) {
-          throw new Error(result.error || 'Failed to approve');
-        }
-
-        loadTransactions();
-        showSuccess('✓ Transaksi berhasil diverifikasi!');
-      } catch (error) {
-        console.error('Error:', error);
-        showError(error.message || 'Gagal memverifikasi transaksi');
-      }
-    }
-
-    async function rejectTransaction(orderId) {
-      if (!confirm('Tolak transaksi ini?')) return;
-
-      try {
-        const response = await fetch(`/api/update-order-status`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          },
-          body: JSON.stringify({ orderId, status: 'rejected' })
-        });
-
-        const result = await response.json();
-
-        if (!response.ok) {
-          throw new Error(result.error || 'Failed to reject');
-        }
-
-        loadTransactions();
-        showSuccess('✓ Transaksi berhasil ditolak!');
-      } catch (error) {
-        console.error('Error:', error);
-        showError(error.message || 'Gagal menolak transaksi');
-      }
-    }
-
-    // ===== STAFF MANAGEMENT =====
+    // ===== Staff Management =====
     async function loadStaff() {
       const container = document.querySelector('#staffList');
       container.innerHTML = '<p style="text-align:center; color:#999; padding:40px;">Memuat...</p>';
@@ -1229,9 +843,6 @@
             <span>@${u.username} • Bergabung ${new Date(u.createdAt).toLocaleDateString('id-ID')}</span>
           </div>
           <span class="staff-role-badge ${u.role}">${u.role}</span>
-          <div class="staff-actions">
-            <button class="btn-danger" onclick="deleteStaff('${u.id}', '${u.name}')">Hapus</button>
-          </div>
         </div>
       `).join('');
     }
@@ -1269,32 +880,6 @@
       }
     }
 
-    async function deleteStaff(staffId, staffName) {
-      if (!confirm(`Hapus staff ${staffName}?`)) return;
-
-      try {
-        const response = await fetch(`/api/delete-staff`, {
-          method: 'DELETE',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          },
-          body: JSON.stringify({ staffId })
-        });
-
-        const result = await response.json();
-
-        if (!response.ok) {
-          throw new Error(result.error || 'Failed to delete staff');
-        }
-
-        showSuccessStaff('✓ Staff berhasil dihapus!');
-        loadStaff();
-      } catch (error) {
-        showErrorStaff(error.message || 'Gagal menghapus staff');
-      }
-    }
-
     function showSuccessStaff(msg) {
       const el = document.querySelector('#successMessageStaff');
       el.textContent = msg;
@@ -1314,204 +899,6 @@
       document.querySelector('#errorMessageStaff').classList.remove('show');
     }
 
-    // ===== EXPENSE MANAGEMENT =====
-    async function loadExpenses() {
-      const container = document.querySelector('#expenseList');
-      container.innerHTML = '<p style="text-align:center; color:#999; padding:40px;">Memuat...</p>';
-
-      try {
-        const response = await fetch('/api/expenses', {
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
-
-        if (!response.ok) throw new Error('Failed to load expenses');
-
-        const result = await response.json();
-        displayExpenses(result.data || []);
-      } catch (error) {
-        console.error('Error:', error);
-        container.innerHTML = '<p style="text-align:center; color:#e74c3c; padding:40px;">Gagal memuat daftar pengeluaran</p>';
-      }
-    }
-
-    function displayExpenses(expenses) {
-      const container = document.querySelector('#expenseList');
-
-      if (expenses.length === 0) {
-        container.innerHTML = '<div class="empty-state"><div class="empty-state-icon">💸</div><p>Belum ada pengeluaran</p></div>';
-        return;
-      }
-
-      container.innerHTML = expenses.map(e => `
-        <div class="expense-card">
-          <div class="expense-info">
-            <strong>${e.description}</strong>
-            <span>${e.category} • ${new Date(e.date).toLocaleDateString('id-ID')}</span>
-            ${e.notes ? `<div style="font-size: 12px; color: #666; margin-top: 5px;">${e.notes}</div>` : ''}
-          </div>
-          <div class="expense-amount">Rp ${e.amount.toLocaleString('id-ID')}</div>
-          <div class="expense-actions">
-            <button class="btn-secondary" onclick="editExpense('${e.id}')">Edit</button>
-            <button class="btn-danger" onclick="deleteExpense('${e.id}')">Hapus</button>
-          </div>
-        </div>
-      `).join('');
-    }
-
-    function submitExpenseForm(event) {
-      if (editingExpenseId) {
-        updateExpense(event);
-      } else {
-        addExpense(event);
-      }
-    }
-
-    async function addExpense(event) {
-      event.preventDefault();
-      clearExpenseMessages();
-
-      const description = document.querySelector('#expenseDesc').value;
-      const amount = parseInt(document.querySelector('#expenseAmount').value);
-      const category = document.querySelector('#expenseCategory').value;
-      const date = document.querySelector('#expenseDate').value;
-      const notes = document.querySelector('#expenseNotes').value;
-
-      try {
-        const response = await fetch('/api/add-expense', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          },
-          body: JSON.stringify({ description, amount, category, date, notes })
-        });
-
-        const result = await response.json();
-
-        if (!response.ok) {
-          throw new Error(result.error || 'Failed to add expense');
-        }
-
-        showSuccessExpense('✓ Pengeluaran berhasil ditambahkan!');
-        event.target.reset();
-        const today = new Date().toISOString().split('T')[0];
-        document.querySelector('#expenseDate').value = today;
-        loadExpenses();
-      } catch (error) {
-        showErrorExpense(error.message || 'Gagal menambahkan pengeluaran');
-      }
-    }
-
-    function editExpense(expenseId) {
-      // Load expense data and populate form
-      fetch(`/api/expense/${expenseId}`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      })
-      .then(r => r.json())
-      .then(data => {
-        if (data.data) {
-          const e = data.data;
-          editingExpenseId = e.id;
-          document.querySelector('#expenseDesc').value = e.description;
-          document.querySelector('#expenseAmount').value = e.amount;
-          document.querySelector('#expenseCategory').value = e.category;
-          document.querySelector('#expenseDate').value = e.date.split('T')[0];
-          document.querySelector('#expenseNotes').value = e.notes || '';
-          document.querySelector('#expenseFormSubmitBtn').textContent = 'Update Pengeluaran';
-          document.querySelector('#expenseFormCancelBtn').style.display = 'block';
-          document.querySelector('#expenseForm').scrollIntoView({ behavior: 'smooth' });
-        }
-      })
-      .catch(err => console.error('Error:', err));
-    }
-
-    function cancelEditExpense() {
-      editingExpenseId = null;
-      document.querySelector('#expenseForm').reset();
-      const today = new Date().toISOString().split('T')[0];
-      document.querySelector('#expenseDate').value = today;
-      document.querySelector('#expenseFormSubmitBtn').textContent = 'Tambah Pengeluaran';
-      document.querySelector('#expenseFormCancelBtn').style.display = 'none';
-    }
-
-    async function updateExpense(event) {
-      event.preventDefault();
-      clearExpenseMessages();
-
-      const description = document.querySelector('#expenseDesc').value;
-      const amount = parseInt(document.querySelector('#expenseAmount').value);
-      const category = document.querySelector('#expenseCategory').value;
-      const date = document.querySelector('#expenseDate').value;
-      const notes = document.querySelector('#expenseNotes').value;
-
-      try {
-        const response = await fetch(`/api/update-expense?id=${editingExpenseId}`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          },
-          body: JSON.stringify({ description, amount, category, date, notes })
-        });
-
-        const result = await response.json();
-
-        if (!response.ok) {
-          throw new Error(result.error || 'Failed to update expense');
-        }
-
-        showSuccessExpense('✓ Pengeluaran berhasil diupdate!');
-        cancelEditExpense();
-        loadExpenses();
-      } catch (error) {
-        showErrorExpense(error.message || 'Gagal mengupdate pengeluaran');
-      }
-    }
-
-    async function deleteExpense(expenseId) {
-      if (!confirm('Hapus pengeluaran ini?')) return;
-
-      try {
-        const response = await fetch(`/api/update-expense?id=${expenseId}`, {
-          method: 'DELETE',
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        });
-
-        const result = await response.json();
-
-        if (!response.ok) {
-          throw new Error(result.error || 'Failed to delete expense');
-        }
-
-        showSuccessExpense('✓ Pengeluaran berhasil dihapus!');
-        loadExpenses();
-      } catch (error) {
-        showErrorExpense(error.message || 'Gagal menghapus pengeluaran');
-      }
-    }
-
-    function showSuccessExpense(msg) {
-      const el = document.querySelector('#successMessageExpense');
-      el.textContent = msg;
-      el.classList.add('show');
-      setTimeout(() => el.classList.remove('show'), 3000);
-    }
-
-    function showErrorExpense(msg) {
-      const el = document.querySelector('#errorMessageExpense');
-      el.textContent = msg;
-      el.classList.add('show');
-      setTimeout(() => el.classList.remove('show'), 3000);
-    }
-
-    function clearExpenseMessages() {
-      document.querySelector('#successMessageExpense').classList.remove('show');
-      document.querySelector('#errorMessageExpense').classList.remove('show');
-    }
-
-    // ===== ANALYTICS =====
     async function loadAnalytics() {
       try {
         const response = await fetch('/api/summary?period=today', {
@@ -1551,7 +938,6 @@
       `;
     }
 
-    // ===== FINANCE =====
     async function loadFinance() {
       try {
         const response = await fetch('/api/summary?period=thisMonth', {
@@ -1602,83 +988,6 @@
       `;
     }
 
-    // ===== SETTINGS =====
-    async function loadSettings() {
-      try {
-        const response = await fetch('/api/settings', {
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
-
-        if (response.ok) {
-          const result = await response.json();
-          const settings = result.data;
-          if (settings) {
-            document.querySelector('#shopName').value = settings.shopName || '';
-            document.querySelector('#shopAddress').value = settings.shopAddress || '';
-            document.querySelector('#shopPhone').value = settings.shopPhone || '';
-            document.querySelector('#shopEmail').value = settings.shopEmail || '';
-            document.querySelector('#shopHours').value = settings.shopHours || '';
-            document.querySelector('#paymentMethods').value = settings.paymentMethods || '';
-          }
-        }
-      } catch (error) {
-        console.error('Error loading settings:', error);
-      }
-    }
-
-    async function saveSettings(event) {
-      event.preventDefault();
-      clearSettingsMessages();
-
-      const shopName = document.querySelector('#shopName').value;
-      const shopAddress = document.querySelector('#shopAddress').value;
-      const shopPhone = document.querySelector('#shopPhone').value;
-      const shopEmail = document.querySelector('#shopEmail').value;
-      const shopHours = document.querySelector('#shopHours').value;
-      const paymentMethods = document.querySelector('#paymentMethods').value;
-
-      try {
-        const response = await fetch('/api/save-settings', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          },
-          body: JSON.stringify({ shopName, shopAddress, shopPhone, shopEmail, shopHours, paymentMethods })
-        });
-
-        const result = await response.json();
-
-        if (!response.ok) {
-          throw new Error(result.error || 'Failed to save settings');
-        }
-
-        showSuccessSettings('✓ Pengaturan berhasil disimpan!');
-      } catch (error) {
-        showErrorSettings(error.message || 'Gagal menyimpan pengaturan');
-      }
-    }
-
-    function showSuccessSettings(msg) {
-      const el = document.querySelector('#successMessageSettings');
-      el.textContent = msg;
-      el.classList.add('show');
-      setTimeout(() => el.classList.remove('show'), 3000);
-    }
-
-    function showErrorSettings(msg) {
-      const el = document.querySelector('#errorMessageSettings');
-      el.textContent = msg;
-      el.classList.add('show');
-      setTimeout(() => el.classList.remove('show'), 3000);
-    }
-
-    function clearSettingsMessages() {
-      document.querySelector('#successMessageSettings').classList.remove('show');
-      document.querySelector('#errorMessageSettings').classList.remove('show');
-    }
-
-    // ===== GENERAL MESSAGE HANDLERS =====
     function showSuccess(msg) {
       const el = document.querySelector('#successMessage');
       el.textContent = msg;
