@@ -130,5 +130,28 @@
     "createdAt": "2026-08-06T07:31:01.681Z",
     "updatedAt": "2026-08-06T07:31:20.802Z",
     "updatedBy": "staff"
+  },
+  {
+    "id": "ORD-MSHADIUV-NCFK7",
+    "timestamp": "2026-08-06T09:01:07.639Z",
+    "customer": {
+      "name": "Jeri",
+      "tableNo": "A1"
+    },
+    "items": [
+      {
+        "menuId": "21",
+        "name": "Sawit reko",
+        "price": 45000,
+        "variant": "Small",
+        "quantity": 4
+      }
+    ],
+    "totalPrice": 180000,
+    "paymentMethod": "cash",
+    "paymentProof": null,
+    "notes": "Tambahin sambel pedes bang",
+    "status": "pending",
+    "createdAt": "2026-08-06T09:01:07.639Z"
   }
 ]
