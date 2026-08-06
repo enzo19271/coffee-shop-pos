@@ -67,14 +67,6 @@
     "image": "🥪"
   },
   {
-    "id": 19,
-    "name": "Iced Tea",
-    "category": "Cold Drinks",
-    "price": 22000,
-    "description": "Refreshing cold tea",
-    "image": "🧊"
-  },
-  {
     "id": 20,
     "name": "Smoothie Strawberry",
     "category": "Cold Drinks",
