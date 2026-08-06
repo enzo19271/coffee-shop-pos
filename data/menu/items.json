@@ -1,18 +1,5 @@
 [
   {
-    "id": 1,
-    "name": "Espresso",
-    "category": "Coffee",
-    "price": 25000,
-    "description": "Strong and concentrated black coffee",
-    "image": "☕",
-    "variants": [
-      "Kecil",
-      "Sedang",
-      "Besar"
-    ]
-  },
-  {
     "id": 2,
     "name": "Americano",
     "category": "Coffee",
