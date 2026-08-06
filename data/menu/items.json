@@ -19,14 +19,6 @@
     "image": "☕"
   },
   {
-    "id": 6,
-    "name": "Mocha",
-    "category": "Coffee",
-    "price": 38000,
-    "description": "Espresso with chocolate and steamed milk",
-    "image": "☕"
-  },
-  {
     "id": 7,
     "name": "Iced Coffee",
     "category": "Cold Drinks",
