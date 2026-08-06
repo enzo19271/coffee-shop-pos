@@ -35,14 +35,6 @@
     "image": "🍫"
   },
   {
-    "id": 11,
-    "name": "Tea",
-    "category": "Non-Coffee",
-    "price": 20000,
-    "description": "Hot brewed tea",
-    "image": "🫖"
-  },
-  {
     "id": 12,
     "name": "Matcha Latte",
     "category": "Non-Coffee",
