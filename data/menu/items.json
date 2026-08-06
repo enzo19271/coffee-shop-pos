@@ -19,14 +19,6 @@
     "image": "☕"
   },
   {
-    "id": 8,
-    "name": "Iced Latte",
-    "category": "Cold Drinks",
-    "price": 35000,
-    "description": "Cold espresso with milk and ice",
-    "image": "🧊"
-  },
-  {
     "id": 9,
     "name": "Iced Cappuccino",
     "category": "Cold Drinks",
