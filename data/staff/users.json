@@ -34,5 +34,14 @@
     "role": "staff",
     "status": "active",
     "createdAt": "2026-08-06T08:41:20.586Z"
+  },
+  {
+    "id": null,
+    "name": "Deva",
+    "username": "deva",
+    "passwordHash": "staff",
+    "role": "staff",
+    "status": "active",
+    "createdAt": "2026-08-06T09:07:20.419Z"
   }
 ]
