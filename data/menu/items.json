@@ -1,13 +1,5 @@
 [
   {
-    "id": 2,
-    "name": "Americano",
-    "category": "Coffee",
-    "price": 28000,
-    "description": "Espresso diluted with hot water",
-    "image": "☕"
-  },
-  {
     "id": 3,
     "name": "Cappuccino",
     "category": "Coffee",
