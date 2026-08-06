@@ -22,7 +22,7 @@
     }
 
     :root {
-      /* Theme Color Palette - Matching Admin Dashboard */
+      /* Theme Color Palette */
       --brand-primary: #3d2410;
       --brand-primary-light: #523318;
       --brand-accent: #c88a4b;
@@ -65,7 +65,7 @@
       padding-bottom: 60px;
     }
 
-    /* ── Scrollbar ── */
+    /* ── Custom Scrollbar ── */
     ::-webkit-scrollbar {
       width: 6px;
       height: 6px;
@@ -226,26 +226,57 @@
       margin-bottom: 14px;
     }
 
-    /* Form Controls Inside Cards */
-    .variant-select {
-      width: 100%;
-      padding: 10px 14px;
-      margin-bottom: 12px;
+    /* ── MODERN VARIANT CHIPS SELECTOR ── */
+    .variant-wrapper {
+      margin-bottom: 14px;
+    }
+
+    .variant-label {
+      display: block;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .variant-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .variant-chip {
+      padding: 8px 14px;
+      background: var(--bg-main);
       border: 1.5px solid var(--border-color);
-      border-radius: var(--radius-md);
-      font-size: 13px;
-      font-family: inherit;
-      color: var(--text-main);
-      background: var(--bg-card);
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-muted);
+      cursor: pointer;
       transition: var(--transition);
-    }
-
-    .variant-select:focus {
+      font-family: inherit;
       outline: none;
-      border-color: var(--border-focus);
-      box-shadow: 0 0 0 3px var(--brand-accent-subtle);
+      user-select: none;
     }
 
+    .variant-chip:hover {
+      border-color: var(--brand-accent);
+      color: var(--brand-primary);
+      background: var(--brand-accent-subtle);
+      transform: translateY(-1px);
+    }
+
+    .variant-chip.active {
+      background: linear-gradient(135deg, var(--brand-accent), #a06325);
+      color: #ffffff;
+      border-color: var(--brand-accent);
+      box-shadow: 0 4px 10px rgba(200, 138, 75, 0.35);
+    }
+
+    /* ── Quantity Control ── */
     .quantity-control {
       display: flex;
       align-items: center;
@@ -806,10 +837,19 @@
           <div class="menu-name">${item.name}</div>
           <div class="menu-price">Rp ${item.price.toLocaleString('id-ID')}</div>
           
-          <select class="variant-select" data-menu-id="${item.id}">
-            <option value="">Pilih varian...</option>
-            ${(item.variants || []).map(v => `<option value="${v}">${v}</option>`).join('')}
-          </select>
+          <div class="variant-wrapper">
+            <label class="variant-label">Pilih Varian:</label>
+            <div class="variant-chips">
+              ${(item.variants || []).map(v => `
+                <button type="button" class="variant-chip" onclick="selectVariantChip(this, '${v}')">${v}</button>
+              `).join('')}
+            </div>
+            <!-- Hidden Select untuk menjaga 100% kompatibilitas JS -->
+            <select class="variant-select" data-menu-id="${item.id}" style="display:none;">
+              <option value="">Pilih varian...</option>
+              ${(item.variants || []).map(v => `<option value="${v}">${v}</option>`).join('')}
+            </select>
+          </div>
 
           <div class="quantity-control">
             <button type="button" onclick="decreaseQty(this)">−</button>
@@ -822,6 +862,21 @@
           </button>
         </div>
       `).join('');
+    }
+
+    // Helper untuk memilih Varian Chip
+    function selectVariantChip(chipBtn, value) {
+      const container = chipBtn.closest('.menu-item');
+      const select = container.querySelector('.variant-select');
+      
+      // Reset status aktif chip lain dalam card yang sama
+      container.querySelectorAll('.variant-chip').forEach(c => c.classList.remove('active'));
+      
+      // Berikan class active ke chip yang ditekan
+      chipBtn.classList.add('active');
+      
+      // Set nilai ke hidden select element
+      select.value = value;
     }
 
     function increaseQty(btn) {
@@ -863,6 +918,9 @@
       // Reset
       variantSelect.value = '';
       qtyInput.value = 1;
+
+      // Hapus status active dari chip varian secara visual
+      container.querySelectorAll('.variant-chip').forEach(c => c.classList.remove('active'));
 
       // Show feedback
       button.textContent = '✓ Ditambahkan';
