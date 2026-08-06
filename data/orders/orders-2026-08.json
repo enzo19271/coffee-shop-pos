@@ -126,7 +126,9 @@
     "paymentMethod": "cash",
     "paymentProof": null,
     "notes": "Anjay",
-    "status": "pending",
-    "createdAt": "2026-08-06T07:31:01.681Z"
+    "status": "confirmed",
+    "createdAt": "2026-08-06T07:31:01.681Z",
+    "updatedAt": "2026-08-06T07:31:12.818Z",
+    "updatedBy": "staff"
   }
 ]
