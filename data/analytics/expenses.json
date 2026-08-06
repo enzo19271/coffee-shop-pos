@@ -25,5 +25,14 @@
     "date": "2026-08-04",
     "recordedBy": "staff",
     "createdAt": "2026-08-04T09:08:40.752Z"
+  },
+  {
+    "id": "EXP-1786007192193",
+    "category": "operasional",
+    "amount": 12000,
+    "description": "Bensin beli alat",
+    "date": "2026-08-06",
+    "recordedBy": "staff",
+    "createdAt": "2026-08-06T09:06:32.193Z"
   }
 ]
