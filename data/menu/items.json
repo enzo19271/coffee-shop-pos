@@ -51,14 +51,6 @@
     "image": "🧁"
   },
   {
-    "id": 15,
-    "name": "Donut",
-    "category": "Pastry",
-    "price": 18000,
-    "description": "Sweet glazed donut",
-    "image": "🍩"
-  },
-  {
     "id": 16,
     "name": "Sandwich",
     "category": "Food",
