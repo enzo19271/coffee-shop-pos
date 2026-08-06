@@ -67,14 +67,6 @@
     "image": "🥪"
   },
   {
-    "id": 17,
-    "name": "Caesar Salad",
-    "category": "Food",
-    "price": 35000,
-    "description": "Fresh caesar salad with croutons",
-    "image": "🥗"
-  },
-  {
     "id": 18,
     "name": "Pasta Carbonara",
     "category": "Food",
