@@ -43,14 +43,6 @@
     "image": "🫖"
   },
   {
-    "id": 13,
-    "name": "Croissant",
-    "category": "Pastry",
-    "price": 25000,
-    "description": "Buttery and flaky croissant",
-    "image": "🥐"
-  },
-  {
     "id": 14,
     "name": "Muffin",
     "category": "Pastry",
