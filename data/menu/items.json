@@ -19,14 +19,6 @@
     "image": "☕"
   },
   {
-    "id": 7,
-    "name": "Iced Coffee",
-    "category": "Cold Drinks",
-    "price": 30000,
-    "description": "Chilled espresso with ice",
-    "image": "🧊"
-  },
-  {
     "id": 8,
     "name": "Iced Latte",
     "category": "Cold Drinks",
