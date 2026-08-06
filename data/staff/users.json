@@ -25,5 +25,14 @@
     "name": "Ani Wijaya",
     "status": "active",
     "createdAt": "2026-08-01T00:00:00Z"
+  },
+  {
+    "id": null,
+    "name": "Enzo Fahrezi",
+    "username": "fahreji",
+    "passwordHash": "staff",
+    "role": "staff",
+    "status": "active",
+    "createdAt": "2026-08-06T08:41:20.586Z"
   }
 ]
