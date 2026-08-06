@@ -16,7 +16,10 @@
     "category": "Coffee",
     "price": 32000,
     "description": "Espresso marked with a little milk",
-    "image": "☕"
+    "image": "☕",
+    "variants": [
+      "Medium"
+    ]
   },
   {
     "id": 9,
