@@ -226,9 +226,9 @@
     "paymentMethod": "cash",
     "paymentProof": null,
     "notes": "ntah",
-    "status": "confirmed",
+    "status": "completed",
     "createdAt": "2026-08-07T00:56:26.909Z",
-    "updatedAt": "2026-08-07T00:57:02.686Z",
+    "updatedAt": "2026-08-07T00:57:07.374Z",
     "updatedBy": "staff"
   }
 ]
