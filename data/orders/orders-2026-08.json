@@ -226,7 +226,9 @@
     "paymentMethod": "cash",
     "paymentProof": null,
     "notes": "ntah",
-    "status": "pending",
-    "createdAt": "2026-08-07T00:56:26.909Z"
+    "status": "confirmed",
+    "createdAt": "2026-08-07T00:56:26.909Z",
+    "updatedAt": "2026-08-07T00:57:02.686Z",
+    "updatedBy": "staff"
   }
 ]
