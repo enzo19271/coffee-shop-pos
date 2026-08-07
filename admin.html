@@ -1437,8 +1437,13 @@
                                 <input type="number" id="menuPrice" min="1000" step="1000" placeholder="25000" required />
                             </div>
                             <div class="form-group">
-                                <label>Icon <span class="required">*</span></label>
-                                <input type="text" id="menuEmoji" placeholder="☕ atau 🥐" required />
+                                <label>Gambar Menu <span class="required">*</span></label>
+                                <div id="imageUploadWrapper">
+                                    <input type="file" id="menuImage" accept="image/*" required />
+                                    <div id="imagePreview" style="margin-top: 10px; display: none;">
+                                        <img id="previewImg" src="" alt="Preview" style="max-width: 120px; max-height: 120px; border-radius: 8px; border: 2px solid #c88a4b;" />
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="form-group">
@@ -1801,7 +1806,9 @@
             count.textContent = `${items.length} item`;
             container.innerHTML = items.map(item => `
                 <div class="menu-card">
-                    <span class="menu-icon">${item.image || '☕'}</span>
+                    <div class="menu-icon" style="display: flex; align-items: center; justify-content: center; width: 80px; height: 80px; background: #f0f0f0; border-radius: 8px; overflow: hidden;">
+                        ${item.image && (item.image.startsWith('data:') || item.image.startsWith('http')) ? `<img src="${item.image}" alt="${item.name}" style="width: 100%; height: 100%; object-fit: cover;" />` : `<span style="font-size: 36px;">${item.image || '☕'}</span>`}
+                    </div>
                     <div class="menu-name">${item.name}</div>
                     <div class="menu-category">${item.category}</div>
                     <div class="menu-price">Rp ${item.price.toLocaleString('id-ID')}</div>
@@ -1813,6 +1820,45 @@
             `).join('');
         }
 
+        // ─── Image Upload Handler ───
+        let currentImageBase64 = null;
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            const fileInput = document.getElementById('menuImage');
+            if (fileInput) {
+                fileInput.addEventListener('change', handleImageSelect);
+            }
+        });
+
+        function handleImageSelect(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            // Validate file is image
+            if (!file.type.startsWith('image/')) {
+                showError('File harus berupa gambar');
+                event.target.value = '';
+                return;
+            }
+
+            // Validate file size (max 1MB)
+            if (file.size > 1024 * 1024) {
+                showError('Ukuran gambar maksimal 1MB');
+                event.target.value = '';
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                currentImageBase64 = e.target.result;
+                const previewDiv = document.getElementById('imagePreview');
+                const previewImg = document.getElementById('previewImg');
+                previewImg.src = currentImageBase64;
+                previewDiv.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        }
+
         function submitMenuForm(event) {
             event.preventDefault();
             if (editingMenuId) updateMenu(event);
@@ -1822,10 +1868,15 @@
         async function addMenu(event) {
             event.preventDefault();
             clearMessages();
+            
+            if (!currentImageBase64) {
+                showError('Pilih gambar menu terlebih dahulu');
+                return;
+            }
+
             const name = document.getElementById('menuName').value;
             const category = document.getElementById('menuCategory').value;
             const price = parseInt(document.getElementById('menuPrice').value);
-            const emoji = document.getElementById('menuEmoji').value;
             const description = document.getElementById('menuDesc').value;
             const variantsStr = document.getElementById('menuVariants').value;
             const variants = variantsStr ? variantsStr.split(',').map(v => v.trim()) : [];
@@ -1834,12 +1885,14 @@
                 const res = await fetch('/api/add-menu', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-                    body: JSON.stringify({ name, category, price, image: emoji, description, variants })
+                    body: JSON.stringify({ name, category, price, image: currentImageBase64, description, variants })
                 });
                 const result = await res.json();
                 if (!res.ok) throw new Error(result.error || 'Gagal menambah menu');
                 showSuccess('Menu berhasil ditambahkan!');
                 document.getElementById('menuForm').reset();
+                document.getElementById('imagePreview').style.display = 'none';
+                currentImageBase64 = null;
                 loadMenu();
             } catch (err) {
                 showError(err.message || 'Gagal menambahkan menu');
@@ -1853,9 +1906,20 @@
             document.getElementById('menuName').value = item.name;
             document.getElementById('menuCategory').value = item.category;
             document.getElementById('menuPrice').value = item.price;
-            document.getElementById('menuEmoji').value = item.image;
             document.getElementById('menuDesc').value = item.description || '';
             document.getElementById('menuVariants').value = (item.variants || []).join(', ');
+            
+            // Show preview untuk existing image
+            if (item.image && (item.image.startsWith('data:') || item.image.startsWith('http'))) {
+                currentImageBase64 = item.image;
+                const previewDiv = document.getElementById('imagePreview');
+                const previewImg = document.getElementById('previewImg');
+                previewImg.src = item.image;
+                previewDiv.style.display = 'block';
+                // Clear file input karena kita gunakan existing image
+                document.getElementById('menuImage').value = '';
+            }
+            
             document.getElementById('menuFormTitle').textContent = `Edit Menu: ${item.name}`;
             document.getElementById('menuFormSubmitBtn').innerHTML = `<i class="fas fa-save"></i> Update Menu`;
             document.getElementById('menuFormCancelBtn').style.display = 'inline-flex';
@@ -1865,6 +1929,8 @@
         function cancelEditMenu() {
             editingMenuId = null;
             document.getElementById('menuForm').reset();
+            document.getElementById('imagePreview').style.display = 'none';
+            currentImageBase64 = null;
             document.getElementById('menuFormTitle').textContent = 'Tambah Menu Baru';
             document.getElementById('menuFormSubmitBtn').innerHTML = `<i class="fas fa-plus"></i> Tambah Menu`;
             document.getElementById('menuFormCancelBtn').style.display = 'none';
@@ -1873,10 +1939,15 @@
         async function updateMenu(event) {
             event.preventDefault();
             clearMessages();
+            
+            if (!currentImageBase64) {
+                showError('Pilih gambar atau gambar sudah ada');
+                return;
+            }
+
             const name = document.getElementById('menuName').value;
             const category = document.getElementById('menuCategory').value;
             const price = parseInt(document.getElementById('menuPrice').value);
-            const emoji = document.getElementById('menuEmoji').value;
             const description = document.getElementById('menuDesc').value;
             const variantsStr = document.getElementById('menuVariants').value;
             const variants = variantsStr ? variantsStr.split(',').map(v => v.trim()) : [];
@@ -1885,7 +1956,7 @@
                 const res = await fetch(`/api/update-menu?id=${editingMenuId}`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-                    body: JSON.stringify({ name, category, price, image: emoji, description, variants })
+                    body: JSON.stringify({ name, category, price, image: currentImageBase64, description, variants })
                 });
                 const result = await res.json();
                 if (!res.ok) throw new Error(result.error || 'Gagal update menu');
