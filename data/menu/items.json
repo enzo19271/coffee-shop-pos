@@ -1,16 +1,5 @@
 [
   {
-    "id": 5,
-    "name": "Macchiato",
-    "category": "Coffee",
-    "price": 32000,
-    "description": "Espresso marked with a little milk",
-    "image": "☕",
-    "variants": [
-      "Medium"
-    ]
-  },
-  {
     "id": 9,
     "name": "Iced Cappuccino",
     "category": "Cold Drinks",
