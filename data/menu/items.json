@@ -8,14 +8,6 @@
     "image": "🍫"
   },
   {
-    "id": 16,
-    "name": "Sandwich",
-    "category": "Food",
-    "price": 45000,
-    "description": "Ham and cheese sandwich",
-    "image": "🥪"
-  },
-  {
     "id": 21,
     "name": "Sawit reko",
     "category": "Food",
