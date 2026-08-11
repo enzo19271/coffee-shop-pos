@@ -8,14 +8,6 @@
     "image": "🍫"
   },
   {
-    "id": 12,
-    "name": "Matcha Latte",
-    "category": "Non-Coffee",
-    "price": 38000,
-    "description": "Creamy matcha tea with milk",
-    "image": "🫖"
-  },
-  {
     "id": 16,
     "name": "Sandwich",
     "category": "Food",
