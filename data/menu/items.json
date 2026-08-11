@@ -1,13 +1,5 @@
 [
   {
-    "id": 9,
-    "name": "Iced Cappuccino",
-    "category": "Cold Drinks",
-    "price": 36000,
-    "description": "Cold cappuccino with ice",
-    "image": "🧊"
-  },
-  {
     "id": 10,
     "name": "Hot Chocolate",
     "category": "Non-Coffee",
