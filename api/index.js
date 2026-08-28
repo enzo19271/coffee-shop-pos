@@ -43,9 +43,18 @@ function simplePasswordVerify(inputPassword, storedHash) {
 // ─── GITHUB ──────────────────────────────────────────────────────────────────
 const GITHUB_API = 'https://api.github.com';
 
+// Dual-branch: code stays on main (deploy), data writes go to data branch
+// Set GITHUB_DATA_BRANCH=data in env to isolate data commits from deploys
+function getDataBranch() {
+  return process.env.GITHUB_DATA_BRANCH || process.env.GITHUB_BRANCH || 'main';
+}
+function getCodeBranch() {
+  return process.env.GITHUB_BRANCH || 'main';
+}
+
 async function getGitHubFile(path) {
   const cacheBuster = Date.now();
-  const branch = process.env.GITHUB_BRANCH || 'main';
+  const branch = getDataBranch();
   const response = await fetch(
     `${GITHUB_API}/repos/${process.env.GITHUB_OWNER}/${process.env.GITHUB_REPO}/contents/${path}?ref=${branch}&_=${cacheBuster}`,
     {
@@ -62,8 +71,10 @@ async function getGitHubFile(path) {
 }
 
 async function updateGitHubFile(path, content, message) {
+  const branch = getDataBranch();
+  // Get SHA from the data branch specifically
   const shaResponse = await fetch(
-    `${GITHUB_API}/repos/${process.env.GITHUB_OWNER}/${process.env.GITHUB_REPO}/contents/${path}`,
+    `${GITHUB_API}/repos/${process.env.GITHUB_OWNER}/${process.env.GITHUB_REPO}/contents/${path}?ref=${branch}`,
     {
       headers: {
         Authorization: `Bearer ${process.env.GITHUB_TOKEN}`,
@@ -89,12 +100,48 @@ async function updateGitHubFile(path, content, message) {
         message: message || `Update ${path}`,
         content: Buffer.from(content).toString('base64'),
         sha: sha || undefined,
-        branch: process.env.GITHUB_BRANCH || 'main'
+        branch: branch
       })
     }
   );
-  if (!updateResponse.ok) throw new Error(`Failed to update file: ${updateResponse.status}`);
+  if (!updateResponse.ok) {
+    const errText = await updateResponse.text().catch(() => '');
+    throw new Error(`Failed to update file: ${updateResponse.status} ${errText}`);
+  }
   return await updateResponse.json();
+}
+
+async function deleteGitHubFile(path, message) {
+  const branch = getDataBranch();
+  const shaResponse = await fetch(
+    `${GITHUB_API}/repos/${process.env.GITHUB_OWNER}/${process.env.GITHUB_REPO}/contents/${path}?ref=${branch}`,
+    {
+      headers: {
+        Authorization: `Bearer ${process.env.GITHUB_TOKEN}`,
+        Accept: 'application/vnd.github.v3+json'
+      }
+    }
+  );
+  if (!shaResponse.ok) throw new Error(`File not found: ${path}`);
+  const data = await shaResponse.json();
+  const delResponse = await fetch(
+    `${GITHUB_API}/repos/${process.env.GITHUB_OWNER}/${process.env.GITHUB_REPO}/contents/${path}`,
+    {
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${process.env.GITHUB_TOKEN}`,
+        Accept: 'application/vnd.github.v3+json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        message: message || `Delete ${path}`,
+        sha: data.sha,
+        branch: branch
+      })
+    }
+  );
+  if (!delResponse.ok) throw new Error(`Failed to delete file: ${delResponse.status}`);
+  return true;
 }
 
 // ─── HELPERS ─────────────────────────────────────────────────────────────────
@@ -159,27 +206,54 @@ async function handleList(req, res) {
 async function handleCreate(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
   try {
-    const { customerName, tableNo, items, paymentMethod, paymentProof, notes } = req.body;
+    const { customerName, tableNo, items, paymentMethod, paymentProof, notes, source } = req.body;
     if (!customerName || !tableNo || !items || items.length === 0 || !paymentMethod)
       return res.status(400).json({ error: 'Missing required fields' });
-    if (paymentMethod !== 'cash' && !paymentProof)
-      return res.status(400).json({ error: 'Payment proof required for this payment method' });
+
+    // Staff/admin creating order (kasir) → auto-verified, no proof required for cash
+    const payload = getAuthPayload(req);
+    const isStaffOrder = source === 'staff' || source === 'kasir';
+    if (isStaffOrder) {
+      if (!payload || (payload.role !== 'staff' && payload.role !== 'admin')) {
+        return res.status(401).json({ error: 'Unauthorized: staff login required for kasir orders' });
+      }
+    } else {
+      // Customer order: proof required for non-cash
+      if (paymentMethod !== 'cash' && !paymentProof)
+        return res.status(400).json({ error: 'Payment proof required for this payment method' });
+    }
+
     let totalPrice = 0;
     items.forEach(item => { totalPrice += item.price * item.quantity; });
     const orderId = generateOrderId();
     const orderFile = getCurrentOrderFile();
+
+    // Staff orders skip verification → status confirmed immediately
+    let status;
+    if (isStaffOrder) {
+      status = 'confirmed';
+    } else {
+      status = paymentMethod === 'cash' ? 'pending' : 'pending_verification';
+    }
+
     const newOrder = {
-      id: orderId, timestamp: new Date().toISOString(),
+      id: orderId,
+      timestamp: new Date().toISOString(),
       customer: { name: customerName, tableNo },
-      items, totalPrice, paymentMethod,
-      paymentProof: paymentProof || null, notes: notes || '',
-      status: paymentMethod === 'cash' ? 'pending' : 'pending_verification',
+      items,
+      totalPrice,
+      paymentMethod,
+      paymentProof: paymentProof || null,
+      notes: notes || '',
+      status,
+      source: isStaffOrder ? 'staff' : 'customer',
+      createdBy: isStaffOrder ? payload.username : null,
       createdAt: new Date().toISOString()
     };
     let orders = [];
     try { orders = JSON.parse(await getGitHubFile(orderFile)); } catch { orders = []; }
     orders.push(newOrder);
-    await updateGitHubFile(orderFile, JSON.stringify(orders, null, 2), `Add order ${orderId}`);
+    await updateGitHubFile(orderFile, JSON.stringify(orders, null, 2), `Add order ${orderId}${isStaffOrder ? ' (staff/kasir)' : ''}`);
     return res.status(201).json({ success: true, orderId, message: 'Order created successfully', order: newOrder });
   } catch (error) {
     console.error('Order creation error:', error);
@@ -484,6 +558,202 @@ async function handleAddStaff(req, res) {
   }
 }
 
+
+// ─── DELETE ORDERS (admin) ───────────────────────────────────────────────────
+async function handleDeleteOrders(req, res) {
+  if (req.method !== 'POST' && req.method !== 'DELETE') return res.status(405).json({ error: 'Method not allowed' });
+  try {
+    const payload = getAuthPayload(req);
+    if (!payload) return res.status(401).json({ error: 'Unauthorized' });
+    if (payload.role !== 'admin') return res.status(403).json({ error: 'Forbidden: admin only' });
+
+    const { mode, orderId, startDate, endDate, month } = req.body || {};
+    // mode: 'one' | 'range' | 'month' | 'all'
+
+    if (!mode || !['one', 'range', 'month', 'all'].includes(mode)) {
+      return res.status(400).json({ error: 'mode required: one | range | month | all' });
+    }
+
+    let deletedCount = 0;
+    const results = [];
+
+    if (mode === 'one') {
+      if (!orderId) return res.status(400).json({ error: 'orderId required' });
+      // Search current month first, then try provided month
+      const filesToTry = [getCurrentOrderFile()];
+      if (month) filesToTry.unshift(getOrderFileByMonth(month));
+      let found = false;
+      for (const orderFile of filesToTry) {
+        try {
+          let orders = JSON.parse(await getGitHubFile(orderFile));
+          const before = orders.length;
+          orders = orders.filter(o => o.id !== orderId);
+          if (orders.length < before) {
+            await updateGitHubFile(orderFile, JSON.stringify(orders, null, 2), `Delete order ${orderId} by ${payload.username}`);
+            deletedCount = before - orders.length;
+            found = true;
+            results.push({ file: orderFile, deleted: deletedCount });
+            break;
+          }
+        } catch (e) { /* file may not exist */ }
+      }
+      if (!found) return res.status(404).json({ error: 'Order not found' });
+    } else if (mode === 'month') {
+      if (!month || !/^\d{4}-\d{2}$/.test(month)) return res.status(400).json({ error: 'month required as YYYY-MM' });
+      const orderFile = getOrderFileByMonth(month);
+      try {
+        const orders = JSON.parse(await getGitHubFile(orderFile));
+        deletedCount = orders.length;
+        await updateGitHubFile(orderFile, '[]', `Clear all orders ${month} by ${payload.username}`);
+        results.push({ file: orderFile, deleted: deletedCount });
+      } catch {
+        return res.status(404).json({ error: 'No order file for that month' });
+      }
+    } else if (mode === 'range') {
+      if (!startDate || !endDate) return res.status(400).json({ error: 'startDate and endDate required (ISO or YYYY-MM-DD)' });
+      const start = new Date(startDate);
+      const end = new Date(endDate);
+      end.setHours(23, 59, 59, 999);
+      if (isNaN(start) || isNaN(end)) return res.status(400).json({ error: 'Invalid dates' });
+
+      // Collect unique year-months in range
+      const months = new Set();
+      const cursor = new Date(start);
+      while (cursor <= end) {
+        months.add(`${cursor.getFullYear()}-${String(cursor.getMonth() + 1).padStart(2, '0')}`);
+        cursor.setMonth(cursor.getMonth() + 1);
+      }
+      // also add end month
+      months.add(`${end.getFullYear()}-${String(end.getMonth() + 1).padStart(2, '0')}`);
+
+      for (const m of months) {
+        const orderFile = getOrderFileByMonth(m);
+        try {
+          let orders = JSON.parse(await getGitHubFile(orderFile));
+          const before = orders.length;
+          orders = orders.filter(o => {
+            const t = new Date(o.timestamp || o.createdAt);
+            return t < start || t > end;
+          });
+          const removed = before - orders.length;
+          if (removed > 0) {
+            await updateGitHubFile(orderFile, JSON.stringify(orders, null, 2), `Delete orders ${startDate}..${endDate} by ${payload.username}`);
+            deletedCount += removed;
+            results.push({ file: orderFile, deleted: removed });
+          }
+        } catch (e) { /* skip missing months */ }
+      }
+    } else if (mode === 'all') {
+      // Clear current month + try last 12 months
+      const now = new Date();
+      for (let i = 0; i < 12; i++) {
+        const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+        const m = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+        const orderFile = getOrderFileByMonth(m);
+        try {
+          const orders = JSON.parse(await getGitHubFile(orderFile));
+          if (orders.length > 0) {
+            deletedCount += orders.length;
+            await updateGitHubFile(orderFile, '[]', `Clear ALL orders ${m} by ${payload.username}`);
+            results.push({ file: orderFile, deleted: orders.length });
+          }
+        } catch (e) { /* skip */ }
+      }
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: `Deleted ${deletedCount} order(s)`,
+      deletedCount,
+      results
+    });
+  } catch (error) {
+    console.error('Delete orders error:', error);
+    return res.status(500).json({ error: 'Failed to delete orders: ' + error.message });
+  }
+}
+
+// ─── REPORT DATA (admin) – raw data for client-side Excel/Word/PDF ───────────
+async function handleReport(req, res) {
+  if (req.method !== 'GET') return res.status(405).json({ error: 'Method not allowed' });
+  try {
+    const payload = getAuthPayload(req);
+    if (!payload) return res.status(401).json({ error: 'Unauthorized' });
+    if (payload.role !== 'admin') return res.status(403).json({ error: 'Forbidden: admin only' });
+
+    const month = req.query.month; // YYYY-MM optional
+    const status = req.query.status;
+    const startDate = req.query.startDate;
+    const endDate = req.query.endDate;
+
+    let orders = [];
+    try {
+      const orderFile = month ? getOrderFileByMonth(month) : getCurrentOrderFile();
+      orders = JSON.parse(await getGitHubFile(orderFile));
+    } catch { orders = []; }
+
+    if (status) orders = orders.filter(o => o.status === status);
+    if (startDate) {
+      const s = new Date(startDate);
+      orders = orders.filter(o => new Date(o.timestamp || o.createdAt) >= s);
+    }
+    if (endDate) {
+      const e = new Date(endDate);
+      e.setHours(23, 59, 59, 999);
+      orders = orders.filter(o => new Date(o.timestamp || o.createdAt) <= e);
+    }
+
+    orders.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+
+    const completed = orders.filter(o => o.status === 'completed' || o.status === 'confirmed');
+    const totalRevenue = completed.reduce((sum, o) => sum + (o.totalPrice || 0), 0);
+    const byPayment = {};
+    const byItem = {};
+    completed.forEach(o => {
+      byPayment[o.paymentMethod] = (byPayment[o.paymentMethod] || 0) + (o.totalPrice || 0);
+      (o.items || []).forEach(it => {
+        const key = `${it.name}${it.variant ? ' (' + it.variant + ')' : ''}`;
+        if (!byItem[key]) byItem[key] = { qty: 0, revenue: 0 };
+        byItem[key].qty += it.quantity || 1;
+        byItem[key].revenue += (it.price || 0) * (it.quantity || 1);
+      });
+    });
+
+    let expenses = [];
+    try { expenses = JSON.parse(await getGitHubFile('data/analytics/expenses.json')); } catch { expenses = []; }
+    if (month) {
+      expenses = expenses.filter(e => (e.createdAt || '').startsWith(month));
+    }
+    const totalExpenses = expenses.reduce((s, e) => s + (Number(e.amount) || 0), 0);
+
+    return res.status(200).json({
+      success: true,
+      meta: {
+        generatedAt: new Date().toISOString(),
+        generatedBy: payload.username,
+        shopName: 'TAN COFFEE',
+        month: month || getCurrentOrderFile().match(/orders-(\d{4}-\d{2})/)?.[1],
+        period: { startDate: startDate || null, endDate: endDate || null }
+      },
+      summary: {
+        totalOrders: orders.length,
+        completedOrders: completed.length,
+        totalRevenue,
+        totalExpenses,
+        netProfit: totalRevenue - totalExpenses,
+        byPayment,
+        byItem
+      },
+      orders,
+      expenses
+    });
+  } catch (error) {
+    console.error('Report error:', error);
+    return res.status(500).json({ error: 'Failed to generate report' });
+  }
+}
+
+
 // ─── MAIN ROUTER ─────────────────────────────────────────────────────────────
 export default async function handler(req, res) {
   const url = new URL(req.url, `http://${req.headers.host}`);
@@ -506,6 +776,8 @@ export default async function handler(req, res) {
     case '/update-menu':   return handleUpdateMenu(req, res);
     case '/staff':         return handleStaffList(req, res);
     case '/add-staff':     return handleAddStaff(req, res);
+    case '/delete-orders': return handleDeleteOrders(req, res);
+    case '/report':        return handleReport(req, res);
     default:               return res.status(404).json({ error: 'Not found' });
   }
 }
