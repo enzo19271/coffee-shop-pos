@@ -276,9 +276,11 @@
     "paymentMethod": "cash",
     "paymentProof": null,
     "notes": "anjay rio",
-    "status": "confirmed",
+    "status": "completed",
     "source": "staff",
     "createdBy": "admin",
-    "createdAt": "2026-08-28T10:22:38.183Z"
+    "createdAt": "2026-08-28T10:22:38.183Z",
+    "updatedAt": "2026-08-28T10:23:28.386Z",
+    "updatedBy": "admin"
   }
 ]
