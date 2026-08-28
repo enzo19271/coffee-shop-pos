@@ -4,261 +4,420 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Staff Login - Coffee Shop</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --brand-primary: #3d2410;
+      --brand-primary-light: #523318;
+      --brand-accent: #c88a4b;
+      --brand-accent-hover: #b07538;
+      --brand-accent-subtle: rgba(200, 138, 75, 0.12);
+      --bg-main: #f8f6f3;
+      --bg-card: #ffffff;
+      --text-main: #1e1915;
+      --text-muted: #786f66;
+      --text-light: #a3998e;
+      --border-color: #eae5df;
+      --danger: #c62828;
+      --danger-bg: #ffebee;
+      --shadow-md: 0 12px 40px rgba(30, 25, 21, 0.12);
+      --shadow-lg: 0 24px 60px rgba(30, 25, 21, 0.18);
+      --radius-lg: 20px;
+      --radius-md: 12px;
+      --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(160deg, #2a1a0e 0%, #3d2410 45%, #1a1613 100%);
       min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #333;
+      color: var(--text-main);
+      -webkit-font-smoothing: antialiased;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Soft ambient glow */
+    body::before {
+      content: '';
+      position: absolute;
+      width: 480px;
+      height: 480px;
+      background: radial-gradient(circle, rgba(200, 138, 75, 0.22) 0%, transparent 70%);
+      top: -120px;
+      right: -80px;
+      pointer-events: none;
+    }
+    body::after {
+      content: '';
+      position: absolute;
+      width: 360px;
+      height: 360px;
+      background: radial-gradient(circle, rgba(200, 138, 75, 0.12) 0%, transparent 70%);
+      bottom: -80px;
+      left: -60px;
+      pointer-events: none;
     }
 
     .container {
       width: 100%;
-      max-width: 400px;
-      padding: 20px;
+      max-width: 420px;
+      padding: 24px;
+      position: relative;
+      z-index: 1;
     }
 
     .login-box {
-      background: white;
-      border-radius: 8px;
-      padding: 40px;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+      background: var(--bg-card);
+      border-radius: var(--radius-lg);
+      padding: 40px 36px;
+      box-shadow: var(--shadow-lg);
+      border: 1px solid rgba(255,255,255,0.08);
+      animation: slideUp 0.45s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    .logo {
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .logo-wrap {
       text-align: center;
-      font-size: 64px;
-      margin-bottom: 20px;
+      margin-bottom: 28px;
+    }
+
+    .logo-icon {
+      width: 72px;
+      height: 72px;
+      margin: 0 auto 16px;
+      background: linear-gradient(135deg, var(--brand-primary), var(--brand-primary-light));
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      color: var(--brand-accent);
+      box-shadow: 0 8px 24px rgba(61, 36, 16, 0.35);
     }
 
     h1 {
       text-align: center;
-      font-size: 28px;
-      margin-bottom: 10px;
-      color: #2c3e50;
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--brand-primary);
+      letter-spacing: -0.3px;
+      margin-bottom: 6px;
     }
 
     .subtitle {
       text-align: center;
-      color: #999;
-      margin-bottom: 30px;
+      color: var(--text-muted);
       font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 28px;
     }
 
     .form-group {
-      margin-bottom: 20px;
+      margin-bottom: 18px;
     }
 
-    label {
+    .form-group label {
       display: block;
       margin-bottom: 8px;
-      font-weight: bold;
+      font-weight: 700;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+    }
+
+    .input-wrap {
+      position: relative;
+    }
+
+    .input-wrap i {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-light);
       font-size: 14px;
-      color: #333;
+      pointer-events: none;
     }
 
     input[type="text"],
     input[type="password"] {
       width: 100%;
-      padding: 12px;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      font-size: 14px;
-      transition: border-color 0.2s;
+      padding: 14px 16px 14px 42px;
+      border: 1.5px solid var(--border-color);
+      border-radius: var(--radius-md);
+      font-size: 15px;
+      font-family: inherit;
+      color: var(--text-main);
+      background: #fff;
+      transition: var(--transition);
+      min-height: 48px;
     }
 
-    input[type="text"]:focus,
-    input[type="password"]:focus {
+    input:focus {
       outline: none;
-      border-color: #667eea;
-      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+      border-color: var(--brand-accent);
+      box-shadow: 0 0 0 4px var(--brand-accent-subtle);
+    }
+
+    input:focus + i,
+    .input-wrap:focus-within i {
+      color: var(--brand-accent);
     }
 
     .login-btn {
       width: 100%;
-      padding: 12px;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
+      padding: 14px;
+      min-height: 52px;
+      background: linear-gradient(135deg, var(--brand-primary), var(--brand-primary-light));
+      color: #fff;
       border: none;
-      border-radius: 4px;
-      font-size: 16px;
-      font-weight: bold;
+      border-radius: var(--radius-md);
+      font-size: 15px;
+      font-weight: 800;
+      font-family: inherit;
       cursor: pointer;
-      transition: transform 0.2s;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      letter-spacing: 0.3px;
+      box-shadow: 0 4px 16px rgba(61, 36, 16, 0.25);
+      margin-top: 8px;
     }
 
     .login-btn:hover {
+      background: linear-gradient(135deg, var(--brand-accent), var(--brand-accent-hover));
       transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(200, 138, 75, 0.35);
     }
 
     .login-btn:active {
       transform: translateY(0);
     }
 
+    .login-btn:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+      transform: none;
+    }
+
     .error-message {
       display: none;
-      background: #f8d7da;
-      color: #721c24;
-      padding: 12px;
-      border-radius: 4px;
-      margin-bottom: 20px;
-      border: 1px solid #f5c6cb;
-      font-size: 14px;
+      background: var(--danger-bg);
+      color: var(--danger);
+      padding: 12px 14px;
+      border-radius: var(--radius-md);
+      margin-bottom: 18px;
+      border: 1px solid rgba(198, 40, 40, 0.2);
+      font-size: 13.5px;
+      font-weight: 600;
+      align-items: center;
+      gap: 8px;
     }
 
     .error-message.show {
-      display: block;
+      display: flex;
+      animation: shake 0.4s ease;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-6px); }
+      40%, 80% { transform: translateX(6px); }
     }
 
     .demo-credentials {
-      background: #f0f7ff;
-      padding: 15px;
-      border-radius: 4px;
-      margin-top: 20px;
-      font-size: 12px;
-      border-left: 4px solid #667eea;
+      background: var(--bg-main);
+      padding: 16px;
+      border-radius: var(--radius-md);
+      margin-top: 24px;
+      font-size: 12.5px;
+      border: 1px solid var(--border-color);
     }
 
     .demo-credentials strong {
-      display: block;
-      margin-bottom: 8px;
-      color: #333;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 10px;
+      color: var(--brand-primary);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
     }
 
     .demo-credentials p {
-      margin-bottom: 5px;
-      color: #666;
+      margin-bottom: 6px;
+      color: var(--text-muted);
+      font-weight: 500;
     }
 
-    .demo-credentials p:last-child {
-      margin-bottom: 0;
+    .demo-credentials p:last-child { margin-bottom: 0; }
+    .demo-credentials code {
+      background: #fff;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 12px;
+      color: var(--brand-primary);
+      border: 1px solid var(--border-color);
     }
 
     .loading {
       display: none;
       text-align: center;
-      color: #999;
-      font-size: 14px;
-      margin-top: 15px;
+      color: var(--text-muted);
+      font-size: 13.5px;
+      font-weight: 600;
+      margin-top: 16px;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
     }
 
+    .loading.show { display: flex; }
+
     .spinner {
-      display: inline-block;
-      width: 16px;
-      height: 16px;
-      border: 2px solid #f3f3f3;
-      border-top: 2px solid #667eea;
+      width: 18px;
+      height: 18px;
+      border: 2.5px solid var(--border-color);
+      border-top-color: var(--brand-accent);
       border-radius: 50%;
-      animation: spin 0.6s linear infinite;
-      margin-right: 8px;
+      animation: spin 0.65s linear infinite;
     }
 
     @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
+      to { transform: rotate(360deg); }
     }
 
     .back-to-menu {
       text-align: center;
-      margin-top: 20px;
+      margin-top: 24px;
     }
 
     .back-to-menu a {
-      color: #667eea;
+      color: var(--brand-accent);
       text-decoration: none;
-      font-size: 14px;
-      font-weight: bold;
+      font-size: 13.5px;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: var(--transition);
     }
 
     .back-to-menu a:hover {
-      text-decoration: underline;
+      color: var(--brand-primary);
+      gap: 10px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
     }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="login-box">
-      <div class="logo">☕</div>
-      <h1>Coffee Shop</h1>
-      <p class="subtitle">Staff & Admin Login</p>
+      <div class="logo-wrap">
+        <div class="logo-icon" aria-hidden="true">
+          <i class="fas fa-mug-saucer"></i>
+        </div>
+        <h1>Coffee Shop</h1>
+        <p class="subtitle">Staff & Admin Login</p>
+      </div>
 
-      <div id="errorMessage" class="error-message"></div>
+      <div id="errorMessage" class="error-message" role="alert" aria-live="assertive"></div>
 
-      <form onsubmit="handleLogin(event)">
+      <form onsubmit="handleLogin(event)" novalidate>
         <div class="form-group">
           <label for="username">Username</label>
-          <input type="text" id="username" required autofocus>
+          <div class="input-wrap">
+            <input type="text" id="username" name="username" required autofocus autocomplete="username" placeholder="Masukkan username" aria-required="true">
+            <i class="fas fa-user" aria-hidden="true"></i>
+          </div>
         </div>
 
         <div class="form-group">
           <label for="password">Password</label>
-          <input type="password" id="password" required>
+          <div class="input-wrap">
+            <input type="password" id="password" name="password" required autocomplete="current-password" placeholder="Masukkan password" aria-required="true">
+            <i class="fas fa-lock" aria-hidden="true"></i>
+          </div>
         </div>
 
-        <button type="submit" class="login-btn">Login</button>
+        <button type="submit" class="login-btn" id="loginBtn">
+          <i class="fas fa-right-to-bracket" aria-hidden="true"></i>
+          <span>Login</span>
+        </button>
 
-        <div class="loading" id="loading">
-          <div class="spinner"></div>
+        <div class="loading" id="loading" aria-live="polite">
+          <div class="spinner" aria-hidden="true"></div>
           Sedang login...
         </div>
       </form>
 
       <div class="demo-credentials">
-        <strong>📝 Demo Credentials:</strong>
-        <p><strong>Staff:</strong> username: staff, password: password</p>
-        <p><strong>Admin:</strong> username: admin, password: admin</p>
+        <strong><i class="fas fa-key" aria-hidden="true"></i> Demo Credentials</strong>
+        <p><strong>Staff:</strong> <code>staff</code> / <code>password</code></p>
+        <p><strong>Admin:</strong> <code>admin</code> / <code>admin</code></p>
       </div>
 
       <div class="back-to-menu">
-        <a href="/">← Kembali ke Menu Pelanggan</a>
+        <a href="/"><i class="fas fa-arrow-left" aria-hidden="true"></i> Kembali ke Menu Pelanggan</a>
       </div>
     </div>
   </div>
 
   <script>
-    // Check if already logged in
     if (localStorage.getItem('staffToken')) {
-      const role = JSON.parse(localStorage.getItem('currentStaff')).role;
-      if (role === 'admin') {
-        window.location.href = '/admin.html';
-      } else {
-        window.location.href = '/staff.html';
+      try {
+        const role = JSON.parse(localStorage.getItem('currentStaff')).role;
+        window.location.href = role === 'admin' ? '/admin.html' : '/staff.html';
+      } catch (e) {
+        localStorage.removeItem('staffToken');
+        localStorage.removeItem('currentStaff');
       }
     }
 
     async function handleLogin(event) {
       event.preventDefault();
       
-      const username = document.querySelector('#username').value;
+      const username = document.querySelector('#username').value.trim();
       const password = document.querySelector('#password').value;
       const errorMsg = document.querySelector('#errorMessage');
       const loading = document.querySelector('#loading');
+      const loginBtn = document.querySelector('#loginBtn');
 
-      // Clear previous error
       errorMsg.classList.remove('show');
-
-      // Show loading
-      loading.style.display = 'block';
+      errorMsg.textContent = '';
+      loading.classList.add('show');
+      loginBtn.disabled = true;
 
       try {
         const response = await fetch('/api/login', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            username: username,
-            password: password
-          })
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password })
         });
 
         const data = await response.json();
@@ -267,21 +426,16 @@
           throw new Error(data.error || 'Login failed');
         }
 
-        // Store token and user info
         localStorage.setItem('staffToken', data.token);
         localStorage.setItem('currentStaff', JSON.stringify(data.user));
 
-        // Redirect based on role
-        if (data.user.role === 'admin') {
-          window.location.href = '/admin.html';
-        } else {
-          window.location.href = '/staff.html';
-        }
+        window.location.href = data.user.role === 'admin' ? '/admin.html' : '/staff.html';
       } catch (error) {
         console.error('Login error:', error);
-        errorMsg.textContent = '❌ ' + error.message;
+        errorMsg.innerHTML = '<i class="fas fa-circle-exclamation" aria-hidden="true"></i> ' + (error.message || 'Terjadi kesalahan');
         errorMsg.classList.add('show');
-        loading.style.display = 'none';
+        loading.classList.remove('show');
+        loginBtn.disabled = false;
       }
     }
   </script>

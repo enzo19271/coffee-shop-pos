@@ -59,6 +59,13 @@
       --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
     body {
       font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
       background-color: var(--bg-main);
@@ -704,6 +711,11 @@
       .action-buttons .btn {
         width: 100%;
       }
+    }
+
+    button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+      outline: 3px solid var(--brand-accent);
+      outline-offset: 2px;
     }
   </style>
 </head>
