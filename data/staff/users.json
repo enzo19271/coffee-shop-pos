@@ -1,14 +1,5 @@
 [
   {
-    "id": "staff_001",
-    "username": "staff",
-    "passwordHash": "staff-demo-hash",
-    "role": "staff",
-    "name": "Budi Santoso",
-    "status": "active",
-    "createdAt": "2026-08-01T00:00:00Z"
-  },
-  {
     "id": "admin_001",
     "username": "admin",
     "passwordHash": "admin-demo-hash",
@@ -16,32 +7,5 @@
     "name": "Admin Coffee Shop",
     "status": "active",
     "createdAt": "2026-08-01T00:00:00Z"
-  },
-  {
-    "id": "staff_002",
-    "username": "ani",
-    "passwordHash": "staff-demo-hash",
-    "role": "staff",
-    "name": "Ani Wijaya",
-    "status": "active",
-    "createdAt": "2026-08-01T00:00:00Z"
-  },
-  {
-    "id": null,
-    "name": "Enzo Fahrezi",
-    "username": "fahreji",
-    "passwordHash": "staff",
-    "role": "staff",
-    "status": "active",
-    "createdAt": "2026-08-06T08:41:20.586Z"
-  },
-  {
-    "id": null,
-    "name": "Deva",
-    "username": "deva",
-    "passwordHash": "staff",
-    "role": "staff",
-    "status": "active",
-    "createdAt": "2026-08-06T09:07:20.419Z"
   }
 ]
