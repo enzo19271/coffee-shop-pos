@@ -251,7 +251,9 @@
     "paymentMethod": "cash",
     "paymentProof": null,
     "notes": "anjayyy",
-    "status": "pending",
-    "createdAt": "2026-08-28T10:08:28.352Z"
+    "status": "confirmed",
+    "createdAt": "2026-08-28T10:08:28.352Z",
+    "updatedAt": "2026-08-28T10:09:02.302Z",
+    "updatedBy": "admin"
   }
 ]
