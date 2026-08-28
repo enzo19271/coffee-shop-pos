@@ -1426,6 +1426,24 @@
 
             <!-- ─── TAB: ANALYTICS ─── -->
             <div id="tab-analytics" class="tab-content active">
+                <div class="admin-shortcuts" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px;margin-bottom:20px;">
+                  <button type="button" class="kasir-shortcut" style="padding:16px;border-radius:14px;border:1.5px solid var(--border-color);background:var(--bg-card);cursor:pointer;font-weight:700;font-family:inherit;text-align:center;" onclick="document.querySelector('[data-tab=reports]')?.click()">
+                    <i class="fas fa-file-export" style="display:block;font-size:22px;color:var(--brand-accent);margin-bottom:8px;"></i> Ekspor Laporan
+                  </button>
+                  <button type="button" style="padding:16px;border-radius:14px;border:1.5px solid var(--border-color);background:var(--bg-card);cursor:pointer;font-weight:700;font-family:inherit;text-align:center;" onclick="document.querySelector('[data-tab=transactions]')?.click()">
+                    <i class="fas fa-receipt" style="display:block;font-size:22px;color:var(--brand-accent);margin-bottom:8px;"></i> Transaksi
+                  </button>
+                  <button type="button" style="padding:16px;border-radius:14px;border:1.5px solid var(--border-color);background:var(--bg-card);cursor:pointer;font-weight:700;font-family:inherit;text-align:center;" onclick="document.querySelector('[data-tab=menu]')?.click()">
+                    <i class="fas fa-utensils" style="display:block;font-size:22px;color:var(--brand-accent);margin-bottom:8px;"></i> Menu
+                  </button>
+                  <button type="button" style="padding:16px;border-radius:14px;border:1.5px solid var(--border-color);background:var(--bg-card);cursor:pointer;font-weight:700;font-family:inherit;text-align:center;" onclick="document.querySelector('[data-tab=staff]')?.click()">
+                    <i class="fas fa-users" style="display:block;font-size:22px;color:var(--brand-accent);margin-bottom:8px;"></i> Staff
+                  </button>
+                  <button type="button" style="padding:16px;border-radius:14px;border:1.5px solid rgba(198,40,40,0.3);background:var(--bg-card);cursor:pointer;font-weight:700;font-family:inherit;text-align:center;" onclick="document.querySelector('[data-tab=data-mgmt]')?.click()">
+                    <i class="fas fa-trash-can" style="display:block;font-size:22px;color:var(--danger);margin-bottom:8px;"></i> Hapus Data
+                  </button>
+                </div>
+
                 <div class="stats-grid" id="analyticsStats"></div>
             </div>
 
@@ -1639,51 +1657,75 @@
 
             <!-- ─── TAB: DATA MANAGEMENT ─── -->
             <div id="tab-data-mgmt" class="tab-content">
-                <div class="form-card" style="border-color:rgba(198,40,40,0.25);">
+                <div class="form-card" style="border-color:rgba(198,40,40,0.25);margin-bottom:20px;">
                     <div class="form-header" style="color:var(--danger);">
                         <i class="fas fa-trash-can"></i>
-                        <h3>Hapus Data Pesanan</h3>
+                        <h3>Hapus Data</h3>
                     </div>
                     <p style="color:var(--text-muted);font-size:13.5px;margin-bottom:18px;">
-                        Tindakan ini <strong>tidak dapat dibatalkan</strong>. Pastikan sudah mengekspor laporan sebelum menghapus.
+                        Tindakan ini <strong>tidak dapat dibatalkan</strong>. Ekspor laporan dulu jika perlu.
                     </p>
-                    <div class="form-group" style="margin-bottom:16px;">
-                        <label>Mode Penghapusan</label>
+                    <div class="form-group" style="margin-bottom:14px;">
+                        <label>Jenis Data</label>
+                        <select id="deleteType" onchange="toggleDeleteTypeFields()">
+                            <option value="orders">Pesanan (Orders)</option>
+                            <option value="expenses">Pengeluaran (Expenses)</option>
+                            <option value="staff">Akun Staff</option>
+                        </select>
+                    </div>
+                    <div id="deleteType-orders">
+                      <div class="form-group" style="margin-bottom:14px;">
+                        <label>Mode Penghapusan Pesanan</label>
                         <select id="deleteMode" onchange="toggleDeleteFields()">
-                            <option value="one">Satu pesanan (by Order ID)</option>
+                            <option value="one">Satu pesanan (Order ID)</option>
                             <option value="range">Rentang tanggal</option>
                             <option value="month">Satu bulan penuh</option>
                             <option value="all">Semua data (12 bulan terakhir)</option>
                         </select>
-                    </div>
-                    <div id="deleteFields-one" class="delete-fields">
-                        <div class="form-group">
-                            <label>Order ID</label>
-                            <input type="text" id="deleteOrderId" placeholder="ORD-XXXX-XXXXX" />
-                        </div>
-                    </div>
-                    <div id="deleteFields-range" class="delete-fields" style="display:none;">
+                      </div>
+                      <div id="deleteFields-one" class="delete-fields">
+                        <div class="form-group"><label>Order ID</label><input type="text" id="deleteOrderId" placeholder="ORD-XXXX-XXXXX" /></div>
+                      </div>
+                      <div id="deleteFields-range" class="delete-fields" style="display:none;">
                         <div class="form-grid">
-                            <div class="form-group">
-                                <label>Dari</label>
-                                <input type="date" id="deleteStart" />
-                            </div>
-                            <div class="form-group">
-                                <label>Sampai</label>
-                                <input type="date" id="deleteEnd" />
-                            </div>
+                          <div class="form-group"><label>Dari</label><input type="date" id="deleteStart" /></div>
+                          <div class="form-group"><label>Sampai</label><input type="date" id="deleteEnd" /></div>
                         </div>
+                      </div>
+                      <div id="deleteFields-month" class="delete-fields" style="display:none;">
+                        <div class="form-group"><label>Bulan</label><input type="month" id="deleteMonth" /></div>
+                      </div>
+                      <div id="deleteFields-all" class="delete-fields" style="display:none;">
+                        <p style="color:var(--danger);font-weight:700;font-size:13.5px;">Semua pesanan 12 bulan terakhir akan dihapus permanen.</p>
+                      </div>
                     </div>
-                    <div id="deleteFields-month" class="delete-fields" style="display:none;">
-                        <div class="form-group">
-                            <label>Bulan</label>
-                            <input type="month" id="deleteMonth" />
-                        </div>
+                    <div id="deleteType-expenses" style="display:none;">
+                      <div class="form-group" style="margin-bottom:14px;">
+                        <label>Mode Penghapusan Pengeluaran</label>
+                        <select id="deleteExpenseMode">
+                            <option value="all">Semua pengeluaran</option>
+                            <option value="month">Satu bulan</option>
+                            <option value="range">Rentang tanggal</option>
+                        </select>
+                      </div>
+                      <div class="form-grid">
+                        <div class="form-group"><label>Bulan (jika mode bulan)</label><input type="month" id="deleteExpMonth" /></div>
+                        <div class="form-group"><label>Dari</label><input type="date" id="deleteExpStart" /></div>
+                        <div class="form-group"><label>Sampai</label><input type="date" id="deleteExpEnd" /></div>
+                      </div>
                     </div>
-                    <div id="deleteFields-all" class="delete-fields" style="display:none;">
-                        <p style="color:var(--danger);font-weight:700;font-size:13.5px;">⚠️ Semua pesanan 12 bulan terakhir akan dihapus permanen.</p>
+                    <div id="deleteType-staff" style="display:none;">
+                      <div class="form-group" style="margin-bottom:14px;">
+                        <label>Mode Penghapusan Staff</label>
+                        <select id="deleteStaffMode">
+                            <option value="one">Satu akun (username)</option>
+                            <option value="all_staff">Semua staff (admin tetap disimpan)</option>
+                        </select>
+                      </div>
+                      <div class="form-group"><label>Username</label><input type="text" id="deleteStaffUsername" placeholder="username staff" /></div>
+                      <p style="color:var(--text-muted);font-size:12.5px;margin-top:8px;">Akun admin terakhir tidak bisa dihapus.</p>
                     </div>
-                    <button type="button" class="btn" onclick="executeDeleteOrders()" style="min-height:48px;background:var(--danger);color:#fff;border:none;margin-top:12px;">
+                    <button type="button" class="btn" onclick="executeDeleteData()" style="min-height:48px;background:var(--danger);color:#fff;border:none;margin-top:16px;width:100%;max-width:280px;">
                         <i class="fas fa-trash"></i> Hapus Data
                     </button>
                     <div id="deleteResult" style="margin-top:14px;font-size:13.5px;"></div>
@@ -2352,6 +2394,14 @@
 
   
 <script>
+
+function toggleDeleteTypeFields() {
+  const type = document.getElementById('deleteType').value;
+  ['orders','expenses','staff'].forEach(t => {
+    const el = document.getElementById('deleteType-' + t);
+    if (el) el.style.display = t === type ? 'block' : 'none';
+  });
+}
 function toggleDeleteFields() {
   const mode = document.getElementById('deleteMode').value;
   ['one','range','month','all'].forEach(m => {
@@ -2359,113 +2409,41 @@ function toggleDeleteFields() {
     if (el) el.style.display = m === mode ? 'block' : 'none';
   });
 }
-function formatRp(n) { return 'Rp ' + Number(n || 0).toLocaleString('id-ID'); }
-async function fetchReportData() {
-  const month = document.getElementById('reportMonth').value;
-  const status = document.getElementById('reportStatus').value;
-  const startDate = document.getElementById('reportStart').value;
-  const endDate = document.getElementById('reportEnd').value;
-  const params = new URLSearchParams();
-  if (month) params.set('month', month);
-  if (status) params.set('status', status);
-  if (startDate) params.set('startDate', startDate);
-  if (endDate) params.set('endDate', endDate);
-  const res = await fetch('/api/report?' + params.toString(), {
-    headers: { 'Authorization': 'Bearer ' + token }
-  });
-  const data = await res.json();
-  if (!res.ok) throw new Error(data.error || 'Gagal mengambil data laporan');
-  return data;
-}
-async function exportReport(format) {
-  const msg = document.getElementById('reportStatusMsg');
-  msg.textContent = 'Menyiapkan laporan...';
-  try {
-    const data = await fetchReportData();
-    const meta = data.meta || {};
-    const summary = data.summary || {};
-    const orders = data.orders || [];
-    const shop = meta.shopName || 'TAN COFFEE';
-    const period = meta.month || 'Semua periode';
-    const generated = new Date(meta.generatedAt || Date.now()).toLocaleString('id-ID');
-
-    if (format === 'excel') {
-      if (typeof XLSX === 'undefined') throw new Error('Library Excel belum termuat, coba refresh');
-      const wb = XLSX.utils.book_new();
-      const sumRows = [
-        ['LAPORAN PENJUALAN - ' + shop],
-        ['Periode', period], ['Dibuat', generated], ['Oleh', meta.generatedBy || ''],
-        [], ['RINGKASAN'],
-        ['Total Pesanan', summary.totalOrders],
-        ['Pesanan Selesai/Terkonfirmasi', summary.completedOrders],
-        ['Total Pendapatan', summary.totalRevenue],
-        ['Total Pengeluaran', summary.totalExpenses],
-        ['Laba Bersih', summary.netProfit],
-        [], ['PER METODE BAYAR'],
-        ...Object.entries(summary.byPayment || {}).map(([k,v]) => [k, v]),
-        [], ['PER ITEM'], ['Item', 'Qty', 'Revenue'],
-        ...Object.entries(summary.byItem || {}).map(([k,v]) => [k, v.qty, v.revenue])
-      ];
-      XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(sumRows), 'Ringkasan');
-      const orderRows = [['ID','Tanggal','Pelanggan','Meja','Items','Total','Metode','Status','Sumber','Dibuat Oleh']];
-      orders.forEach(o => {
-        const items = (o.items || []).map(i => i.name + (i.variant ? ' ('+i.variant+')' : '') + ' x'+i.quantity).join('; ');
-        orderRows.push([o.id, o.timestamp || o.createdAt, (o.customer||{}).name||'', (o.customer||{}).tableNo||'', items, o.totalPrice, o.paymentMethod, o.status, o.source||'customer', o.createdBy||'']);
-      });
-      XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(orderRows), 'Pesanan');
-      XLSX.writeFile(wb, 'Laporan_TAN_COFFEE_' + (meta.month || 'all') + '.xlsx');
-      msg.textContent = 'Excel berhasil diunduh';
-    } else if (format === 'word') {
-      let rows = orders.map(o => {
-        const items = (o.items || []).map(i => i.name + ' x' + i.quantity).join(', ');
-        return '<tr><td>'+o.id+'</td><td>'+(o.timestamp||'').slice(0,16).replace('T',' ')+'</td><td>'+((o.customer||{}).name||'')+'</td><td>'+items+'</td><td>'+formatRp(o.totalPrice)+'</td><td>'+o.status+'</td></tr>';
-      }).join('');
-      const htmlDoc = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word"><head><meta charset="utf-8"><title>Laporan '+shop+'</title><style>body{font-family:Calibri,Arial,sans-serif;font-size:11pt}h1{color:#0B4D3A}table{border-collapse:collapse;width:100%}th,td{border:1px solid #ccc;padding:6px 8px}th{background:#0B4D3A;color:#fff}</style></head><body><h1>LAPORAN PENJUALAN - '+shop+'</h1><p>Periode: '+period+' | Dibuat: '+generated+' | Oleh: '+(meta.generatedBy||'')+'</p><p><b>Total:</b> '+summary.totalOrders+' pesanan | Pendapatan: '+formatRp(summary.totalRevenue)+' | Laba: '+formatRp(summary.netProfit)+'</p><table><thead><tr><th>ID</th><th>Tanggal</th><th>Pelanggan</th><th>Items</th><th>Total</th><th>Status</th></tr></thead><tbody>'+rows+'</tbody></table></body></html>';
-      const blob = new Blob(['\ufeff' + htmlDoc], { type: 'application/msword' });
-      const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
-      a.download = 'Laporan_TAN_COFFEE_' + (meta.month || 'all') + '.doc'; a.click();
-      msg.textContent = 'Word berhasil diunduh';
-    } else if (format === 'pdf') {
-      const { jsPDF } = window.jspdf;
-      const doc = new jsPDF('l', 'mm', 'a4');
-      doc.setFontSize(16); doc.setTextColor(11, 77, 58);
-      doc.text('LAPORAN PENJUALAN - ' + shop, 14, 16);
-      doc.setFontSize(10); doc.setTextColor(80);
-      doc.text('Periode: ' + period + '  |  Dibuat: ' + generated, 14, 24);
-      doc.setFontSize(11); doc.setTextColor(30);
-      doc.text('Pesanan: ' + summary.totalOrders + ' | Pendapatan: ' + formatRp(summary.totalRevenue) + ' | Laba: ' + formatRp(summary.netProfit), 14, 32);
-      const tableBody = orders.map(o => {
-        const items = (o.items || []).map(i => i.name + ' x' + i.quantity).join(', ');
-        return [o.id, (o.timestamp||'').slice(0,16).replace('T',' '), (o.customer||{}).name||'', items.substring(0,40), formatRp(o.totalPrice), o.status];
-      });
-      doc.autoTable({ startY: 38, head: [['ID','Tanggal','Pelanggan','Items','Total','Status']], body: tableBody, styles: { fontSize: 8, cellPadding: 2 }, headStyles: { fillColor: [11, 77, 58] }, alternateRowStyles: { fillColor: [248, 246, 243] } });
-      doc.save('Laporan_TAN_COFFEE_' + (meta.month || 'all') + '.pdf');
-      msg.textContent = 'PDF berhasil diunduh';
-    }
-  } catch (e) {
-    console.error(e);
-    msg.textContent = 'Error: ' + (e.message || 'Gagal ekspor');
-  }
-}
-async function executeDeleteOrders() {
-  const mode = document.getElementById('deleteMode').value;
+async function executeDeleteData() {
+  const type = document.getElementById('deleteType').value;
   const resultEl = document.getElementById('deleteResult');
-  const body = { mode };
-  if (mode === 'one') {
-    body.orderId = document.getElementById('deleteOrderId').value.trim();
-    if (!body.orderId) { resultEl.innerHTML = '<span style="color:var(--danger)">Order ID wajib</span>'; return; }
-  } else if (mode === 'range') {
-    body.startDate = document.getElementById('deleteStart').value;
-    body.endDate = document.getElementById('deleteEnd').value;
-    if (!body.startDate || !body.endDate) { resultEl.innerHTML = '<span style="color:var(--danger)">Tanggal wajib</span>'; return; }
-  } else if (mode === 'month') {
-    body.month = document.getElementById('deleteMonth').value;
-    if (!body.month) { resultEl.innerHTML = '<span style="color:var(--danger)">Bulan wajib</span>'; return; }
+  const body = { type };
+  if (type === 'orders') {
+    body.mode = document.getElementById('deleteMode').value;
+    if (body.mode === 'one') {
+      body.orderId = document.getElementById('deleteOrderId').value.trim();
+      if (!body.orderId) { resultEl.innerHTML = '<span style="color:var(--danger)">Order ID wajib</span>'; return; }
+    } else if (body.mode === 'range') {
+      body.startDate = document.getElementById('deleteStart').value;
+      body.endDate = document.getElementById('deleteEnd').value;
+      if (!body.startDate || !body.endDate) { resultEl.innerHTML = '<span style="color:var(--danger)">Tanggal wajib</span>'; return; }
+    } else if (body.mode === 'month') {
+      body.month = document.getElementById('deleteMonth').value;
+      if (!body.month) { resultEl.innerHTML = '<span style="color:var(--danger)">Bulan wajib</span>'; return; }
+    }
+  } else if (type === 'expenses') {
+    body.mode = document.getElementById('deleteExpenseMode').value;
+    if (body.mode === 'month') body.month = document.getElementById('deleteExpMonth').value;
+    if (body.mode === 'range') {
+      body.startDate = document.getElementById('deleteExpStart').value;
+      body.endDate = document.getElementById('deleteExpEnd').value;
+    }
+  } else if (type === 'staff') {
+    body.mode = document.getElementById('deleteStaffMode').value;
+    if (body.mode === 'one') {
+      body.username = document.getElementById('deleteStaffUsername').value.trim();
+      if (!body.username) { resultEl.innerHTML = '<span style="color:var(--danger)">Username wajib</span>'; return; }
+    }
   }
-  if (!confirm(mode === 'all' ? 'HAPUS SEMUA data 12 bulan terakhir?' : 'Yakin hapus mode "' + mode + '"?')) return;
+  if (!confirm('Yakin hapus data ' + type + '? Tindakan tidak bisa dibatalkan.')) return;
   resultEl.textContent = 'Menghapus...';
   try {
-    const res = await fetch('/api/delete-orders', {
+    const res = await fetch('/api/delete-data', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
       body: JSON.stringify(body)
@@ -2477,6 +2455,8 @@ async function executeDeleteOrders() {
     resultEl.innerHTML = '<span style="color:var(--danger)">Error: ' + e.message + '</span>';
   }
 }
+async function executeDeleteOrders() { return executeDeleteData(); }
+
 </script>
 
   <!-- Export libraries -->

@@ -718,28 +718,446 @@
       outline-offset: 2px;
     }
 
-    .kasir-layout { display: grid; grid-template-columns: 1.4fr 1fr; gap: 20px; align-items: start; }
-    .kasir-section-title { margin-bottom: 14px; font-weight: 800; color: var(--brand-primary); font-size: 16px; display: flex; align-items: center; gap: 8px; }
+    /* ─── KASIR PROFESSIONAL UI ─── */
+    .kasir-layout {
+      display: grid;
+      grid-template-columns: 1.35fr 1fr;
+      gap: 18px;
+      align-items: start;
+    }
+    .kasir-section-title {
+      margin-bottom: 12px;
+      font-weight: 800;
+      color: var(--brand-primary);
+      font-size: 15px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
     .kasir-section-title i { color: var(--brand-accent); }
-    .kasir-menu-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; max-height: 60vh; overflow-y: auto; }
-    .kasir-menu-card { background: var(--bg-card); border: 1.5px solid var(--border-color); border-radius: var(--radius-md); padding: 12px; cursor: pointer; transition: var(--transition); text-align: center; }
-    .kasir-menu-card:hover { border-color: var(--brand-accent); box-shadow: var(--shadow-sm); transform: translateY(-2px); }
-    .kasir-menu-card .name { font-weight: 800; font-size: 13px; color: var(--brand-primary); margin: 6px 0 2px; }
-    .kasir-menu-card .price { font-weight: 700; font-size: 13px; color: var(--brand-accent); }
-    .kasir-menu-card .cat { font-size: 10px; text-transform: uppercase; color: var(--text-muted); font-weight: 700; }
-    .kasir-cart-panel { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 18px; position: sticky; top: 16px; }
-    .kasir-cart-items { min-height: 80px; margin-bottom: 12px; }
-    .kasir-cart-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border-color); gap: 8px; font-size: 13px; }
-    .kasir-cart-item .rm { background: var(--danger-bg); color: var(--danger); border: none; width: 28px; height: 28px; border-radius: 6px; cursor: pointer; font-weight: 800; }
-    .kasir-total-row { display: flex; justify-content: space-between; font-size: 18px; font-weight: 800; color: var(--brand-primary); padding: 12px 0; margin-bottom: 12px; border-top: 2px dashed var(--border-color); }
+    .kasir-toolbar {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .kasir-search {
+      flex: 1;
+      min-width: 160px;
+      position: relative;
+    }
+    .kasir-search i {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-light);
+      font-size: 13px;
+      pointer-events: none;
+    }
+    .kasir-search input {
+      width: 100%;
+      padding: 11px 12px 11px 38px;
+      border: 1.5px solid var(--border-color);
+      border-radius: 12px;
+      font-family: inherit;
+      font-size: 13.5px;
+      background: var(--bg-card);
+      min-height: 44px;
+    }
+    .kasir-search input:focus {
+      outline: none;
+      border-color: var(--brand-accent);
+      box-shadow: 0 0 0 3px var(--brand-accent-subtle);
+    }
+    .kasir-shortcuts {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .kasir-shortcut {
+      padding: 8px 12px;
+      border: 1.5px solid var(--border-color);
+      background: var(--bg-card);
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+      font-family: inherit;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: var(--transition);
+      white-space: nowrap;
+    }
+    .kasir-shortcut:hover, .kasir-shortcut.active {
+      border-color: var(--brand-accent);
+      background: var(--brand-accent-subtle);
+      color: var(--brand-primary);
+    }
+    .kasir-menu-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-height: 58vh;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+    .kasir-menu-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--bg-card);
+      border: 1.5px solid var(--border-color);
+      border-radius: 14px;
+      padding: 10px 12px;
+      cursor: pointer;
+      transition: var(--transition);
+      text-align: left;
+      width: 100%;
+      font-family: inherit;
+    }
+    .kasir-menu-row:hover {
+      border-color: var(--brand-accent);
+      box-shadow: var(--shadow-sm);
+      background: #fafefb;
+    }
+    .kasir-menu-row img, .kasir-menu-row .kasir-thumb-placeholder {
+      width: 52px;
+      height: 52px;
+      border-radius: 10px;
+      object-fit: cover;
+      flex-shrink: 0;
+      background: linear-gradient(135deg, #eef5f1, #e0ebe5);
+    }
+    .kasir-thumb-placeholder {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      color: var(--brand-accent);
+    }
+    .kasir-menu-row .info { flex: 1; min-width: 0; }
+    .kasir-menu-row .name {
+      font-weight: 800;
+      font-size: 14px;
+      color: var(--brand-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .kasir-menu-row .meta {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-weight: 600;
+      margin-top: 2px;
+    }
+    .kasir-menu-row .price {
+      font-weight: 800;
+      font-size: 14px;
+      color: var(--brand-accent);
+      flex-shrink: 0;
+    }
+    .kasir-menu-row .add-hint {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--brand-accent-subtle);
+      color: var(--brand-accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 14px;
+    }
+    .kasir-cart-panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 18px;
+      position: sticky;
+      top: 12px;
+      max-height: calc(100vh - 120px);
+      overflow-y: auto;
+    }
+    .kasir-cart-items { min-height: 60px; margin-bottom: 10px; }
+    .kasir-cart-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border-color);
+      font-size: 13px;
+    }
+    .kasir-cart-item .ci-info { flex: 1; min-width: 0; }
+    .kasir-cart-item .ci-name { font-weight: 800; color: var(--brand-primary); }
+    .kasir-cart-item .ci-var { font-size: 11px; color: var(--brand-accent); font-weight: 600; }
+    .kasir-qty {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      background: var(--bg-main);
+      border: 1.5px solid var(--border-color);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .kasir-qty button {
+      width: 36px;
+      height: 36px;
+      border: none;
+      background: transparent;
+      font-weight: 800;
+      font-size: 16px;
+      cursor: pointer;
+      color: var(--brand-primary);
+      font-family: inherit;
+    }
+    .kasir-qty button:hover { background: var(--brand-accent-subtle); color: var(--brand-accent); }
+    .kasir-qty span {
+      min-width: 28px;
+      text-align: center;
+      font-weight: 800;
+      font-size: 14px;
+    }
+    .kasir-cart-item .ci-price {
+      font-weight: 800;
+      color: var(--brand-primary);
+      min-width: 72px;
+      text-align: right;
+    }
+    .kasir-cart-item .rm {
+      background: var(--danger-bg);
+      color: var(--danger);
+      border: none;
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+    .kasir-total-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--brand-primary);
+      padding: 12px 0;
+      margin-bottom: 12px;
+      border-top: 2px dashed var(--border-color);
+    }
     .kasir-cart-panel .form-group { margin-bottom: 12px; }
-    .kasir-cart-panel label { display: block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; color: var(--text-muted); margin-bottom: 6px; }
-    .kasir-cart-panel input, .kasir-cart-panel textarea { width: 100%; padding: 10px 12px; border: 1.5px solid var(--border-color); border-radius: var(--radius-sm); font-family: inherit; font-size: 13.5px; }
-    .kasir-cart-panel input:focus, .kasir-cart-panel textarea:focus { outline: none; border-color: var(--brand-accent); box-shadow: 0 0 0 3px var(--brand-accent-subtle); }
-    .payment-option { padding: 10px 6px; border: 1.5px solid var(--border-color); border-radius: 8px; text-align: center; cursor: pointer; font-size: 11px; font-weight: 700; color: var(--text-muted); display: flex; align-items: center; justify-content: center; gap: 4px; }
+    .kasir-cart-panel label {
+      display: block;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+    .kasir-cart-panel input, .kasir-cart-panel textarea {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1.5px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+      font-size: 13.5px;
+      min-height: 42px;
+    }
+    .kasir-cart-panel input:focus, .kasir-cart-panel textarea:focus {
+      outline: none;
+      border-color: var(--brand-accent);
+      box-shadow: 0 0 0 3px var(--brand-accent-subtle);
+    }
+    .payment-option {
+      padding: 10px 6px;
+      border: 1.5px solid var(--border-color);
+      border-radius: 8px;
+      text-align: center;
+      cursor: pointer;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+    }
     .payment-option input { display: none; }
-    .payment-option:has(input:checked) { border-color: var(--brand-accent); background: var(--brand-accent-subtle); color: var(--brand-primary); }
-    @media (max-width: 900px) { .kasir-layout { grid-template-columns: 1fr; } .kasir-cart-panel { position: static; } }
+    .payment-option:has(input:checked) {
+      border-color: var(--brand-accent);
+      background: var(--brand-accent-subtle);
+      color: var(--brand-primary);
+    }
+
+    /* Professional variant overlay */
+    .kasir-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(4, 31, 24, 0.55);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      z-index: 2000;
+      align-items: flex-end;
+      justify-content: center;
+      padding: 16px;
+    }
+    .kasir-overlay.show { display: flex; animation: kasirFade 0.2s ease; }
+    @keyframes kasirFade { from { opacity: 0; } to { opacity: 1; } }
+    .kasir-sheet {
+      background: var(--bg-card);
+      border-radius: 20px 20px 16px 16px;
+      width: 100%;
+      max-width: 420px;
+      padding: 22px;
+      box-shadow: var(--shadow-lg);
+      animation: kasirSlide 0.28s cubic-bezier(0.4,0,0.2,1);
+      max-height: 85vh;
+      overflow-y: auto;
+    }
+    @keyframes kasirSlide { from { transform: translateY(24px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    @media (min-width: 600px) {
+      .kasir-overlay { align-items: center; }
+      .kasir-sheet { border-radius: 20px; }
+    }
+    .kasir-sheet-head {
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+    .kasir-sheet-head img, .kasir-sheet-head .ph {
+      width: 64px;
+      height: 64px;
+      border-radius: 12px;
+      object-fit: cover;
+      background: #eef5f1;
+    }
+    .kasir-sheet-head .ph {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      color: var(--brand-accent);
+    }
+    .kasir-sheet-head h3 {
+      font-size: 17px;
+      font-weight: 800;
+      color: var(--brand-primary);
+      margin-bottom: 4px;
+    }
+    .kasir-sheet-head .price {
+      font-weight: 800;
+      color: var(--brand-accent);
+      font-size: 15px;
+    }
+    .kasir-sheet .label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+    .variant-btns {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 18px;
+    }
+    .variant-btn {
+      padding: 10px 16px;
+      min-height: 42px;
+      border: 1.5px solid var(--border-color);
+      background: var(--bg-main);
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 13px;
+      font-family: inherit;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .variant-btn:hover {
+      border-color: var(--brand-accent);
+      color: var(--brand-primary);
+    }
+    .variant-btn.active {
+      background: linear-gradient(135deg, var(--brand-primary), var(--brand-primary-light));
+      color: #fff;
+      border-color: transparent;
+      box-shadow: 0 4px 12px rgba(11, 77, 58, 0.25);
+    }
+    .sheet-qty-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+    }
+    .sheet-qty {
+      display: flex;
+      align-items: center;
+      background: var(--bg-main);
+      border: 1.5px solid var(--border-color);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .sheet-qty button {
+      width: 44px;
+      height: 44px;
+      border: none;
+      background: transparent;
+      font-size: 18px;
+      font-weight: 800;
+      cursor: pointer;
+      color: var(--brand-primary);
+      font-family: inherit;
+    }
+    .sheet-qty button:hover { background: var(--brand-accent-subtle); }
+    .sheet-qty span {
+      min-width: 36px;
+      text-align: center;
+      font-weight: 800;
+      font-size: 16px;
+    }
+    .sheet-actions {
+      display: flex;
+      gap: 10px;
+    }
+    .sheet-actions button {
+      flex: 1;
+      min-height: 48px;
+      border-radius: 12px;
+      font-weight: 800;
+      font-size: 14px;
+      font-family: inherit;
+      cursor: pointer;
+      border: none;
+    }
+    .sheet-cancel {
+      background: var(--bg-main);
+      color: var(--text-muted);
+      border: 1.5px solid var(--border-color) !important;
+    }
+    .sheet-add {
+      background: linear-gradient(135deg, var(--brand-primary), var(--brand-primary-light));
+      color: #fff;
+    }
+    .sheet-add:hover {
+      background: linear-gradient(135deg, var(--brand-accent), var(--brand-accent-hover));
+    }
+    .kasir-empty {
+      text-align: center;
+      padding: 32px 16px;
+      color: var(--text-muted);
+      font-size: 13px;
+    }
+    @media (max-width: 900px) {
+      .kasir-layout { grid-template-columns: 1fr; }
+      .kasir-cart-panel { position: static; max-height: none; }
+      .kasir-menu-list { max-height: 40vh; }
+    }
 
 
     @media (max-width: 768px) {
@@ -810,7 +1228,16 @@
       <div class="kasir-layout">
         <div class="kasir-menu-panel">
           <h3 class="kasir-section-title"><i class="fas fa-mug-saucer"></i> Pilih Menu</h3>
-          <div id="kasirMenuGrid" class="kasir-menu-grid"></div>
+          <div class="kasir-toolbar">
+            <div class="kasir-search">
+              <i class="fas fa-magnifying-glass"></i>
+              <input type="search" id="kasirSearch" placeholder="Cari menu..." autocomplete="off" aria-label="Cari menu">
+            </div>
+            <div class="kasir-shortcuts" id="kasirCatShortcuts">
+              <button type="button" class="kasir-shortcut active" data-cat="all">Semua</button>
+            </div>
+          </div>
+          <div id="kasirMenuList" class="kasir-menu-list"></div>
         </div>
         <div class="kasir-cart-panel">
           <h3 class="kasir-section-title"><i class="fas fa-receipt"></i> Pesanan Kasir</h3>
@@ -844,6 +1271,33 @@
               <i class="fas fa-check-double"></i> Buat Pesanan (Auto Verifikasi)
             </button>
           </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Professional variant picker overlay -->
+    <div class="kasir-overlay" id="kasirOverlay" role="dialog" aria-modal="true" aria-labelledby="kasirSheetTitle">
+      <div class="kasir-sheet" id="kasirSheet">
+        <div class="kasir-sheet-head">
+          <div id="kasirSheetThumb"></div>
+          <div>
+            <h3 id="kasirSheetTitle">Menu</h3>
+            <div class="price" id="kasirSheetPrice">Rp 0</div>
+          </div>
+        </div>
+        <div class="label">Pilih Varian</div>
+        <div class="variant-btns" id="kasirVariantBtns"></div>
+        <div class="sheet-qty-row">
+          <div class="label" style="margin:0;">Jumlah</div>
+          <div class="sheet-qty">
+            <button type="button" id="kasirSheetMinus" aria-label="Kurangi">−</button>
+            <span id="kasirSheetQty">1</span>
+            <button type="button" id="kasirSheetPlus" aria-label="Tambah">+</button>
+          </div>
+        </div>
+        <div class="sheet-actions">
+          <button type="button" class="sheet-cancel" id="kasirSheetCancel">Batal</button>
+          <button type="button" class="sheet-add" id="kasirSheetAdd"><i class="fas fa-cart-plus"></i> Tambah</button>
         </div>
       </div>
     </div>
@@ -1226,48 +1680,159 @@
     // Load initial data
     loadPendingOrders();
 
-    // ─── KASIR (staff create order, auto-verify) ───
+        // ─── KASIR (professional list + overlay, no native prompt) ───
     let kasirCart = [];
     let kasirMenuCache = [];
+    let kasirCatFilter = 'all';
+    let kasirSearchQ = '';
+    let kasirPendingItem = null;
+    let kasirSheetQty = 1;
+    let kasirSheetVariant = '';
 
     async function loadKasirMenu() {
-      const grid = document.getElementById('kasirMenuGrid');
-      if (!grid) return;
-      grid.innerHTML = '<p style="color:var(--text-muted)">Memuat menu...</p>';
+      const list = document.getElementById('kasirMenuList');
+      if (!list) return;
+      list.innerHTML = '<div class="kasir-empty">Memuat menu...</div>';
       try {
         const res = await fetch('/api/list', { cache: 'no-store' });
         const data = await res.json();
-        kasirMenuCache = data.data || [];
-        grid.innerHTML = kasirMenuCache.map(item => {
-          const payload = JSON.stringify({id:item.id,name:item.name,price:item.price,variants:item.variants||[]}).replace(/'/g, "&#39;");
-          return `<div class="kasir-menu-card" data-item='${payload.replace(/'/g, "&apos;")}' onclick="addToKasirCartFromEl(this)">
-            <div class="cat">${item.category || ''}</div>
-            <div class="name">${item.name}</div>
-            <div class="price">Rp ${Number(item.price).toLocaleString('id-ID')}</div>
-          </div>`;
-        }).join('') || '<p>Menu kosong</p>';
+        kasirMenuCache = (data.data || []).slice().sort((a, b) =>
+          String(a.name || '').localeCompare(String(b.name || ''), 'id', { sensitivity: 'base' })
+        );
+        buildKasirCategories();
+        renderKasirMenuList();
       } catch (e) {
-        grid.innerHTML = '<p style="color:var(--danger)">Gagal muat menu</p>';
+        list.innerHTML = '<div class="kasir-empty" style="color:var(--danger)">Gagal memuat menu</div>';
       }
     }
 
-    function addToKasirCartFromEl(el) {
-      try {
-        const item = JSON.parse(el.getAttribute('data-item'));
-        addToKasirCart(item);
-      } catch (e) { console.error(e); }
+    function buildKasirCategories() {
+      const cats = [...new Set(kasirMenuCache.map(i => i.category).filter(Boolean))].sort();
+      const wrap = document.getElementById('kasirCatShortcuts');
+      if (!wrap) return;
+      wrap.innerHTML = '<button type="button" class="kasir-shortcut active" data-cat="all">Semua</button>' +
+        cats.map(c => '<button type="button" class="kasir-shortcut" data-cat="' + c + '">' + c + '</button>').join('');
+      wrap.querySelectorAll('.kasir-shortcut').forEach(btn => {
+        btn.addEventListener('click', () => {
+          wrap.querySelectorAll('.kasir-shortcut').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          kasirCatFilter = btn.dataset.cat;
+          renderKasirMenuList();
+        });
+      });
     }
 
-    function addToKasirCart(item) {
-      let variant = (item.variants && item.variants[0]) || 'Regular';
-      if (item.variants && item.variants.length > 1) {
-        const pick = prompt('Pilih varian:\\n' + item.variants.map((v,i)=> (i+1) + '. ' + v).join('\\n'), '1');
-        const idx = parseInt(pick, 10) - 1;
-        if (!isNaN(idx) && item.variants[idx]) variant = item.variants[idx];
+    function getFilteredKasirMenu() {
+      let items = kasirMenuCache;
+      if (kasirCatFilter !== 'all') {
+        items = items.filter(i => i.category === kasirCatFilter);
       }
+      if (kasirSearchQ.trim()) {
+        const q = kasirSearchQ.toLowerCase();
+        items = items.filter(i =>
+          (i.name || '').toLowerCase().includes(q) ||
+          (i.category || '').toLowerCase().includes(q) ||
+          (i.description || '').toLowerCase().includes(q)
+        );
+      }
+      return items;
+    }
+
+    function renderKasirMenuList() {
+      const list = document.getElementById('kasirMenuList');
+      if (!list) return;
+      const items = getFilteredKasirMenu();
+      if (!items.length) {
+        list.innerHTML = '<div class="kasir-empty"><i class="fas fa-search" style="font-size:24px;opacity:.5;display:block;margin-bottom:8px;"></i>Menu tidak ditemukan</div>';
+        return;
+      }
+      list.innerHTML = items.map((item, idx) => {
+        const hasImg = item.image && (String(item.image).startsWith('data:') || String(item.image).startsWith('http'));
+        const thumb = hasImg
+          ? '<img src="' + item.image + '" alt="" loading="lazy">'
+          : '<div class="kasir-thumb-placeholder"><i class="fas fa-mug-saucer"></i></div>';
+        return '<button type="button" class="kasir-menu-row" data-idx="' + kasirMenuCache.indexOf(item) + '">' +
+          thumb +
+          '<div class="info"><div class="name">' + escapeHtml(item.name) + '</div>' +
+          '<div class="meta">' + escapeHtml(item.category || '') +
+          ((item.variants && item.variants.length) ? ' · ' + item.variants.length + ' varian' : '') +
+          '</div></div>' +
+          '<div class="price">Rp ' + Number(item.price).toLocaleString('id-ID') + '</div>' +
+          '<div class="add-hint"><i class="fas fa-plus"></i></div>' +
+          '</button>';
+      }).join('');
+      list.querySelectorAll('.kasir-menu-row').forEach(row => {
+        row.addEventListener('click', () => {
+          const item = kasirMenuCache[parseInt(row.dataset.idx, 10)];
+          if (item) openKasirSheet(item);
+        });
+      });
+    }
+
+    function escapeHtml(s) {
+      return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    function openKasirSheet(item) {
+      kasirPendingItem = item;
+      kasirSheetQty = 1;
+      const variants = (item.variants && item.variants.length) ? item.variants : ['Regular'];
+      kasirSheetVariant = variants[0];
+
+      const thumb = document.getElementById('kasirSheetThumb');
+      const hasImg = item.image && (String(item.image).startsWith('data:') || String(item.image).startsWith('http'));
+      thumb.innerHTML = hasImg
+        ? '<img src="' + item.image + '" alt="">'
+        : '<div class="ph"><i class="fas fa-mug-saucer"></i></div>';
+
+      document.getElementById('kasirSheetTitle').textContent = item.name;
+      document.getElementById('kasirSheetPrice').textContent = 'Rp ' + Number(item.price).toLocaleString('id-ID');
+      document.getElementById('kasirSheetQty').textContent = '1';
+
+      const vWrap = document.getElementById('kasirVariantBtns');
+      vWrap.innerHTML = variants.map((v, i) =>
+        '<button type="button" class="variant-btn' + (i === 0 ? ' active' : '') + '" data-v="' + escapeHtml(v) + '">' + escapeHtml(v) + '</button>'
+      ).join('');
+      vWrap.querySelectorAll('.variant-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          vWrap.querySelectorAll('.variant-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          kasirSheetVariant = btn.dataset.v;
+        });
+      });
+
+      document.getElementById('kasirOverlay').classList.add('show');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeKasirSheet() {
+      document.getElementById('kasirOverlay').classList.remove('show');
+      document.body.style.overflow = '';
+      kasirPendingItem = null;
+    }
+
+    function confirmKasirSheet() {
+      if (!kasirPendingItem) return;
+      const item = kasirPendingItem;
+      const variant = kasirSheetVariant || 'Regular';
+      const qty = kasirSheetQty;
       const existing = kasirCart.find(c => String(c.menuId) === String(item.id) && c.variant === variant);
-      if (existing) existing.quantity += 1;
-      else kasirCart.push({ menuId: String(item.id), name: item.name, price: item.price, variant: variant, quantity: 1 });
+      if (existing) existing.quantity += qty;
+      else kasirCart.push({
+        menuId: String(item.id),
+        name: item.name,
+        price: item.price,
+        variant: variant,
+        quantity: qty
+      });
+      renderKasirCart();
+      closeKasirSheet();
+    }
+
+    function changeKasirQty(idx, delta) {
+      if (!kasirCart[idx]) return;
+      kasirCart[idx].quantity += delta;
+      if (kasirCart[idx].quantity < 1) kasirCart.splice(idx, 1);
       renderKasirCart();
     }
 
@@ -1280,13 +1845,20 @@
       const el = document.getElementById('kasirCartItems');
       if (!el) return;
       if (!kasirCart.length) {
-        el.innerHTML = '<p style="color:var(--text-muted);font-size:13px;text-align:center;padding:20px 0;">Belum ada item</p>';
+        el.innerHTML = '<div class="kasir-empty">Belum ada item</div>';
       } else {
         el.innerHTML = kasirCart.map((c, i) =>
-          '<div class="kasir-cart-item"><div style="flex:1"><strong>' + c.name + '</strong>' +
-          '<div style="font-size:11px;color:var(--brand-accent)">' + c.variant + ' × ' + c.quantity + '</div></div>' +
-          '<div style="font-weight:800">Rp ' + (c.price * c.quantity).toLocaleString('id-ID') + '</div>' +
-          '<button type="button" class="rm" onclick="removeKasirItem(' + i + ')" aria-label="Hapus">×</button></div>'
+          '<div class="kasir-cart-item">' +
+          '<div class="ci-info"><div class="ci-name">' + escapeHtml(c.name) + '</div>' +
+          '<div class="ci-var">' + escapeHtml(c.variant) + '</div></div>' +
+          '<div class="kasir-qty">' +
+          '<button type="button" onclick="changeKasirQty(' + i + ',-1)" aria-label="Kurangi">−</button>' +
+          '<span>' + c.quantity + '</span>' +
+          '<button type="button" onclick="changeKasirQty(' + i + ',1)" aria-label="Tambah">+</button>' +
+          '</div>' +
+          '<div class="ci-price">Rp ' + (c.price * c.quantity).toLocaleString('id-ID') + '</div>' +
+          '<button type="button" class="rm" onclick="removeKasirItem(' + i + ')" aria-label="Hapus">×</button>' +
+          '</div>'
         ).join('');
       }
       const total = kasirCart.reduce((s, c) => s + c.price * c.quantity, 0);
@@ -1344,6 +1916,45 @@
         if (errorEl) { errorEl.textContent = err.message || 'Terjadi kesalahan'; errorEl.classList.add('show'); }
       }
     }
+
+    // Wire overlay controls once DOM ready
+    (function initKasirUI() {
+      const search = document.getElementById('kasirSearch');
+      if (search) {
+        search.addEventListener('input', (e) => {
+          kasirSearchQ = e.target.value;
+          renderKasirMenuList();
+        });
+      }
+      const overlay = document.getElementById('kasirOverlay');
+      if (overlay) {
+        overlay.addEventListener('click', (e) => {
+          if (e.target === overlay) closeKasirSheet();
+        });
+      }
+      const minus = document.getElementById('kasirSheetMinus');
+      const plus = document.getElementById('kasirSheetPlus');
+      const cancel = document.getElementById('kasirSheetCancel');
+      const add = document.getElementById('kasirSheetAdd');
+      if (minus) minus.addEventListener('click', () => {
+        if (kasirSheetQty > 1) {
+          kasirSheetQty--;
+          document.getElementById('kasirSheetQty').textContent = String(kasirSheetQty);
+        }
+      });
+      if (plus) plus.addEventListener('click', () => {
+        kasirSheetQty++;
+        document.getElementById('kasirSheetQty').textContent = String(kasirSheetQty);
+      });
+      if (cancel) cancel.addEventListener('click', closeKasirSheet);
+      if (add) add.addEventListener('click', confirmKasirSheet);
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && document.getElementById('kasirOverlay')?.classList.contains('show')) {
+          closeKasirSheet();
+        }
+      });
+    })();
+
 
   </script>
 </body>
