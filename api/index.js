@@ -754,6 +754,166 @@ async function handleReport(req, res) {
 }
 
 
+
+async function handleDeleteData(req, res) {
+  if (req.method !== 'POST' && req.method !== 'DELETE') return res.status(405).json({ error: 'Method not allowed' });
+  try {
+    const payload = getAuthPayload(req);
+    if (!payload) return res.status(401).json({ error: 'Unauthorized' });
+    if (payload.role !== 'admin') return res.status(403).json({ error: 'Forbidden: admin only' });
+
+    const { type, mode, orderId, startDate, endDate, month, staffId, username } = req.body || {};
+    // type: 'orders' | 'expenses' | 'staff'
+    if (!type || !['orders', 'expenses', 'staff'].includes(type)) {
+      return res.status(400).json({ error: 'type required: orders | expenses | staff' });
+    }
+
+    if (type === 'orders') {
+      // reuse existing logic via internal call pattern - inline
+      if (!mode || !['one', 'range', 'month', 'all'].includes(mode)) {
+        return res.status(400).json({ error: 'mode required for orders: one | range | month | all' });
+      }
+      let deletedCount = 0;
+      const results = [];
+      if (mode === 'one') {
+        if (!orderId) return res.status(400).json({ error: 'orderId required' });
+        const filesToTry = [getCurrentOrderFile()];
+        if (month) filesToTry.unshift(getOrderFileByMonth(month));
+        let found = false;
+        for (const orderFile of filesToTry) {
+          try {
+            let orders = JSON.parse(await getGitHubFile(orderFile));
+            const before = orders.length;
+            orders = orders.filter(o => o.id !== orderId);
+            if (orders.length < before) {
+              await updateGitHubFile(orderFile, JSON.stringify(orders, null, 2), `Delete order ${orderId} by ${payload.username}`);
+              deletedCount = before - orders.length;
+              found = true;
+              results.push({ file: orderFile, deleted: deletedCount });
+              break;
+            }
+          } catch (e) {}
+        }
+        if (!found) return res.status(404).json({ error: 'Order not found' });
+      } else if (mode === 'month') {
+        if (!month || !/^\d{4}-\d{2}$/.test(month)) return res.status(400).json({ error: 'month required as YYYY-MM' });
+        const orderFile = getOrderFileByMonth(month);
+        try {
+          const orders = JSON.parse(await getGitHubFile(orderFile));
+          deletedCount = orders.length;
+          await updateGitHubFile(orderFile, '[]', `Clear all orders ${month} by ${payload.username}`);
+          results.push({ file: orderFile, deleted: deletedCount });
+        } catch {
+          return res.status(404).json({ error: 'No order file for that month' });
+        }
+      } else if (mode === 'range') {
+        if (!startDate || !endDate) return res.status(400).json({ error: 'startDate and endDate required' });
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+        end.setHours(23, 59, 59, 999);
+        if (isNaN(start) || isNaN(end)) return res.status(400).json({ error: 'Invalid dates' });
+        const months = new Set();
+        const cursor = new Date(start);
+        while (cursor <= end) {
+          months.add(`${cursor.getFullYear()}-${String(cursor.getMonth() + 1).padStart(2, '0')}`);
+          cursor.setMonth(cursor.getMonth() + 1);
+        }
+        months.add(`${end.getFullYear()}-${String(end.getMonth() + 1).padStart(2, '0')}`);
+        for (const m of months) {
+          const orderFile = getOrderFileByMonth(m);
+          try {
+            let orders = JSON.parse(await getGitHubFile(orderFile));
+            const before = orders.length;
+            orders = orders.filter(o => {
+              const t = new Date(o.timestamp || o.createdAt);
+              return t < start || t > end;
+            });
+            const removed = before - orders.length;
+            if (removed > 0) {
+              await updateGitHubFile(orderFile, JSON.stringify(orders, null, 2), `Delete orders range by ${payload.username}`);
+              deletedCount += removed;
+              results.push({ file: orderFile, deleted: removed });
+            }
+          } catch (e) {}
+        }
+      } else if (mode === 'all') {
+        const now = new Date();
+        for (let i = 0; i < 12; i++) {
+          const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+          const m = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+          const orderFile = getOrderFileByMonth(m);
+          try {
+            const orders = JSON.parse(await getGitHubFile(orderFile));
+            if (orders.length > 0) {
+              deletedCount += orders.length;
+              await updateGitHubFile(orderFile, '[]', `Clear ALL orders ${m} by ${payload.username}`);
+              results.push({ file: orderFile, deleted: orders.length });
+            }
+          } catch (e) {}
+        }
+      }
+      return res.status(200).json({ success: true, type: 'orders', message: `Deleted ${deletedCount} order(s)`, deletedCount, results });
+    }
+
+    if (type === 'expenses') {
+      let expenses = [];
+      try { expenses = JSON.parse(await getGitHubFile('data/analytics/expenses.json')); } catch { expenses = []; }
+      const before = expenses.length;
+      if (mode === 'all' || !mode) {
+        expenses = [];
+      } else if (mode === 'range' && startDate && endDate) {
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+        end.setHours(23, 59, 59, 999);
+        expenses = expenses.filter(e => {
+          const t = new Date(e.createdAt || e.date);
+          return t < start || t > end;
+        });
+      } else if (mode === 'month' && month) {
+        expenses = expenses.filter(e => !(String(e.createdAt || e.date || '').startsWith(month)));
+      } else {
+        return res.status(400).json({ error: 'For expenses use mode: all | range | month' });
+      }
+      const deletedCount = before - expenses.length;
+      await updateGitHubFile('data/analytics/expenses.json', JSON.stringify(expenses, null, 2), `Delete expenses by ${payload.username}`);
+      return res.status(200).json({ success: true, type: 'expenses', message: `Deleted ${deletedCount} expense(s)`, deletedCount });
+    }
+
+    if (type === 'staff') {
+      let users = [];
+      try { users = JSON.parse(await getGitHubFile('data/staff/users.json')); } catch { users = []; }
+      const before = users.length;
+      if (mode === 'one') {
+        if (!staffId && !username) return res.status(400).json({ error: 'staffId or username required' });
+        users = users.filter(u => {
+          if (staffId && String(u.id) === String(staffId)) return false;
+          if (username && u.username === username) return false;
+          return true;
+        });
+        // never delete the last admin
+        const adminsLeft = users.filter(u => u.role === 'admin' && u.status !== 'inactive');
+        if (adminsLeft.length === 0) {
+          return res.status(400).json({ error: 'Cannot delete the last admin account' });
+        }
+      } else if (mode === 'all_staff') {
+        // keep only admins
+        users = users.filter(u => u.role === 'admin');
+      } else {
+        return res.status(400).json({ error: 'For staff use mode: one | all_staff' });
+      }
+      const deletedCount = before - users.length;
+      await updateGitHubFile('data/staff/users.json', JSON.stringify(users, null, 2), `Delete staff by ${payload.username}`);
+      return res.status(200).json({ success: true, type: 'staff', message: `Deleted ${deletedCount} staff account(s)`, deletedCount });
+    }
+
+    return res.status(400).json({ error: 'Unknown type' });
+  } catch (error) {
+    console.error('Delete data error:', error);
+    return res.status(500).json({ error: 'Failed to delete data: ' + error.message });
+  }
+}
+
+
 // ─── MAIN ROUTER ─────────────────────────────────────────────────────────────
 export default async function handler(req, res) {
   const url = new URL(req.url, `http://${req.headers.host}`);
@@ -777,6 +937,7 @@ export default async function handler(req, res) {
     case '/staff':         return handleStaffList(req, res);
     case '/add-staff':     return handleAddStaff(req, res);
     case '/delete-orders': return handleDeleteOrders(req, res);
+    case '/delete-data':   return handleDeleteData(req, res);
     case '/report':        return handleReport(req, res);
     default:               return res.status(404).json({ error: 'Not found' });
   }
