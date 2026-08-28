@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Staff Dashboard - Coffee Shop</title>
+  <title>Staff Dashboard - TAN COFFEE</title>
   
   <!-- Google Fonts: Plus Jakarta Sans -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -23,11 +23,11 @@
 
     :root {
       /* Palette Cokelat Luxe & Kontras Tinggi */
-      --brand-primary: #3d2410;
-      --brand-primary-light: #523318;
-      --brand-accent: #c88a4b;
-      --brand-accent-hover: #b07538;
-      --brand-accent-subtle: rgba(200, 138, 75, 0.12);
+      --brand-primary: #0B4D3A;
+      --brand-primary-light: #0F5C45;
+      --brand-accent: #1B7A54;
+      --brand-accent-hover: #156344;
+      --brand-accent-subtle: rgba(27, 122, 84, 0.12);
       
       --bg-main: #f8f6f3;
       --bg-card: #ffffff;
@@ -37,7 +37,7 @@
       --text-light: #a3998e;
       
       --border-color: #eae5df;
-      --border-focus: #c88a4b;
+      --border-focus: #1B7A54;
       
       /* Indicator & Status Colors */
       --success: #2e7d32;
@@ -94,7 +94,7 @@
 
     /* ── Top Header Bar ── */
     header {
-      background: linear-gradient(135deg, var(--brand-primary) 0%, #1a1613 100%);
+      background: linear-gradient(135deg, var(--brand-primary) 0%, #041F18 100%);
       color: #ffffff;
       padding: 22px 36px;
       display: flex;
@@ -467,15 +467,15 @@
     }
 
     .btn-complete {
-      background: linear-gradient(135deg, var(--brand-accent), #a06325);
+      background: linear-gradient(135deg, var(--brand-accent), #156344);
       color: #ffffff;
-      box-shadow: 0 4px 12px rgba(200, 138, 75, 0.3);
+      box-shadow: 0 4px 12px rgba(27, 122, 84, 0.3);
     }
 
     .btn-complete:hover {
       background: linear-gradient(135deg, #b87b3d, #8d531a);
       transform: translateY(-2px);
-      box-shadow: 0 6px 16px rgba(200, 138, 75, 0.4);
+      box-shadow: 0 6px 16px rgba(27, 122, 84, 0.4);
     }
 
     /* ── Stats Grid ── */
@@ -717,6 +717,51 @@
       outline: 3px solid var(--brand-accent);
       outline-offset: 2px;
     }
+
+    .kasir-layout { display: grid; grid-template-columns: 1.4fr 1fr; gap: 20px; align-items: start; }
+    .kasir-section-title { margin-bottom: 14px; font-weight: 800; color: var(--brand-primary); font-size: 16px; display: flex; align-items: center; gap: 8px; }
+    .kasir-section-title i { color: var(--brand-accent); }
+    .kasir-menu-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; max-height: 60vh; overflow-y: auto; }
+    .kasir-menu-card { background: var(--bg-card); border: 1.5px solid var(--border-color); border-radius: var(--radius-md); padding: 12px; cursor: pointer; transition: var(--transition); text-align: center; }
+    .kasir-menu-card:hover { border-color: var(--brand-accent); box-shadow: var(--shadow-sm); transform: translateY(-2px); }
+    .kasir-menu-card .name { font-weight: 800; font-size: 13px; color: var(--brand-primary); margin: 6px 0 2px; }
+    .kasir-menu-card .price { font-weight: 700; font-size: 13px; color: var(--brand-accent); }
+    .kasir-menu-card .cat { font-size: 10px; text-transform: uppercase; color: var(--text-muted); font-weight: 700; }
+    .kasir-cart-panel { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 18px; position: sticky; top: 16px; }
+    .kasir-cart-items { min-height: 80px; margin-bottom: 12px; }
+    .kasir-cart-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border-color); gap: 8px; font-size: 13px; }
+    .kasir-cart-item .rm { background: var(--danger-bg); color: var(--danger); border: none; width: 28px; height: 28px; border-radius: 6px; cursor: pointer; font-weight: 800; }
+    .kasir-total-row { display: flex; justify-content: space-between; font-size: 18px; font-weight: 800; color: var(--brand-primary); padding: 12px 0; margin-bottom: 12px; border-top: 2px dashed var(--border-color); }
+    .kasir-cart-panel .form-group { margin-bottom: 12px; }
+    .kasir-cart-panel label { display: block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; color: var(--text-muted); margin-bottom: 6px; }
+    .kasir-cart-panel input, .kasir-cart-panel textarea { width: 100%; padding: 10px 12px; border: 1.5px solid var(--border-color); border-radius: var(--radius-sm); font-family: inherit; font-size: 13.5px; }
+    .kasir-cart-panel input:focus, .kasir-cart-panel textarea:focus { outline: none; border-color: var(--brand-accent); box-shadow: 0 0 0 3px var(--brand-accent-subtle); }
+    .payment-option { padding: 10px 6px; border: 1.5px solid var(--border-color); border-radius: 8px; text-align: center; cursor: pointer; font-size: 11px; font-weight: 700; color: var(--text-muted); display: flex; align-items: center; justify-content: center; gap: 4px; }
+    .payment-option input { display: none; }
+    .payment-option:has(input:checked) { border-color: var(--brand-accent); background: var(--brand-accent-subtle); color: var(--brand-primary); }
+    @media (max-width: 900px) { .kasir-layout { grid-template-columns: 1fr; } .kasir-cart-panel { position: static; } }
+
+
+    @media (max-width: 768px) {
+      .tabs {
+        display: flex;
+        overflow-x: auto;
+        gap: 8px;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: 4px;
+        scrollbar-width: none;
+      }
+      .tabs::-webkit-scrollbar { display: none; }
+      .tab-btn {
+        flex-shrink: 0;
+        font-size: 12px;
+        padding: 10px 14px;
+        white-space: nowrap;
+      }
+      .container { padding: 16px 12px 80px; }
+      header h1 { font-size: 20px; }
+    }
+
   </style>
 </head>
 <body>
@@ -740,11 +785,14 @@
       <button class="tab-btn active" onclick="switchTab('orders')">
         <i class="fas fa-clipboard-list"></i> Pesanan Masuk
       </button>
+      <button class="tab-btn" onclick="switchTab('kasir')">
+        <i class="fas fa-cash-register"></i> Buat Pesanan
+      </button>
       <button class="tab-btn" onclick="switchTab('sales')">
-        <i class="fas fa-chart-line"></i> Penjualan Hari Ini
+        <i class="fas fa-chart-line"></i> Penjualan
       </button>
       <button class="tab-btn" onclick="switchTab('expenses')">
-        <i class="fas fa-file-invoice-dollar"></i> Pencatatan Pengeluaran
+        <i class="fas fa-file-invoice-dollar"></i> Pengeluaran
       </button>
     </div>
 
@@ -753,6 +801,51 @@
       <div id="successMessage" class="success-message"></div>
       <div id="errorMessage" class="error-message"></div>
       <div id="ordersList"></div>
+    </div>
+
+    <!-- Tab: Kasir / Buat Pesanan -->
+    <div id="tab-kasir" class="tab-content">
+      <div id="kasirSuccess" class="success-message"></div>
+      <div id="kasirError" class="error-message"></div>
+      <div class="kasir-layout">
+        <div class="kasir-menu-panel">
+          <h3 class="kasir-section-title"><i class="fas fa-mug-saucer"></i> Pilih Menu</h3>
+          <div id="kasirMenuGrid" class="kasir-menu-grid"></div>
+        </div>
+        <div class="kasir-cart-panel">
+          <h3 class="kasir-section-title"><i class="fas fa-receipt"></i> Pesanan Kasir</h3>
+          <div id="kasirCartItems" class="kasir-cart-items"></div>
+          <div class="kasir-total-row">
+            <span>Total</span>
+            <strong id="kasirTotal">Rp 0</strong>
+          </div>
+          <form id="kasirForm" onsubmit="submitKasirOrder(event)">
+            <div class="form-group">
+              <label>Nama Pelanggan</label>
+              <input type="text" id="kasirCustomerName" placeholder="Nama / Walk-in" required>
+            </div>
+            <div class="form-group">
+              <label>No. Meja / Ambil</label>
+              <input type="text" id="kasirTableNo" value="Kasir" placeholder="Kasir / Takeaway / No meja" required>
+            </div>
+            <div class="form-group">
+              <label>Metode Bayar</label>
+              <div class="payment-methods" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;">
+                <label class="payment-option"><input type="radio" name="kasirPay" value="cash" checked> <span><i class="fas fa-money-bill-wave"></i> Cash</span></label>
+                <label class="payment-option"><input type="radio" name="kasirPay" value="transfer"> <span><i class="fas fa-building-columns"></i> Transfer</span></label>
+                <label class="payment-option"><input type="radio" name="kasirPay" value="barcode"> <span><i class="fas fa-qrcode"></i> QRIS</span></label>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Catatan</label>
+              <textarea id="kasirNotes" rows="2" placeholder="Opsional..."></textarea>
+            </div>
+            <button type="submit" class="btn btn-confirm" style="width:100%;min-height:48px;">
+              <i class="fas fa-check-double"></i> Buat Pesanan (Auto Verifikasi)
+            </button>
+          </form>
+        </div>
+      </div>
     </div>
 
     <!-- Tab: Sales -->
@@ -839,6 +932,7 @@
       // Show selected tab
       document.querySelector(`#tab-${tabName}`).classList.add('active');
       event.target.closest('.tab-btn').classList.add('active');
+      if (tabName === 'kasir') loadKasirMenu();
 
       // Load content
       if (tabName === 'orders') {
@@ -1131,6 +1225,126 @@
 
     // Load initial data
     loadPendingOrders();
+
+    // ─── KASIR (staff create order, auto-verify) ───
+    let kasirCart = [];
+    let kasirMenuCache = [];
+
+    async function loadKasirMenu() {
+      const grid = document.getElementById('kasirMenuGrid');
+      if (!grid) return;
+      grid.innerHTML = '<p style="color:var(--text-muted)">Memuat menu...</p>';
+      try {
+        const res = await fetch('/api/list', { cache: 'no-store' });
+        const data = await res.json();
+        kasirMenuCache = data.data || [];
+        grid.innerHTML = kasirMenuCache.map(item => {
+          const payload = JSON.stringify({id:item.id,name:item.name,price:item.price,variants:item.variants||[]}).replace(/'/g, "&#39;");
+          return `<div class="kasir-menu-card" data-item='${payload.replace(/'/g, "&apos;")}' onclick="addToKasirCartFromEl(this)">
+            <div class="cat">${item.category || ''}</div>
+            <div class="name">${item.name}</div>
+            <div class="price">Rp ${Number(item.price).toLocaleString('id-ID')}</div>
+          </div>`;
+        }).join('') || '<p>Menu kosong</p>';
+      } catch (e) {
+        grid.innerHTML = '<p style="color:var(--danger)">Gagal muat menu</p>';
+      }
+    }
+
+    function addToKasirCartFromEl(el) {
+      try {
+        const item = JSON.parse(el.getAttribute('data-item'));
+        addToKasirCart(item);
+      } catch (e) { console.error(e); }
+    }
+
+    function addToKasirCart(item) {
+      let variant = (item.variants && item.variants[0]) || 'Regular';
+      if (item.variants && item.variants.length > 1) {
+        const pick = prompt('Pilih varian:\\n' + item.variants.map((v,i)=> (i+1) + '. ' + v).join('\\n'), '1');
+        const idx = parseInt(pick, 10) - 1;
+        if (!isNaN(idx) && item.variants[idx]) variant = item.variants[idx];
+      }
+      const existing = kasirCart.find(c => String(c.menuId) === String(item.id) && c.variant === variant);
+      if (existing) existing.quantity += 1;
+      else kasirCart.push({ menuId: String(item.id), name: item.name, price: item.price, variant: variant, quantity: 1 });
+      renderKasirCart();
+    }
+
+    function removeKasirItem(idx) {
+      kasirCart.splice(idx, 1);
+      renderKasirCart();
+    }
+
+    function renderKasirCart() {
+      const el = document.getElementById('kasirCartItems');
+      if (!el) return;
+      if (!kasirCart.length) {
+        el.innerHTML = '<p style="color:var(--text-muted);font-size:13px;text-align:center;padding:20px 0;">Belum ada item</p>';
+      } else {
+        el.innerHTML = kasirCart.map((c, i) =>
+          '<div class="kasir-cart-item"><div style="flex:1"><strong>' + c.name + '</strong>' +
+          '<div style="font-size:11px;color:var(--brand-accent)">' + c.variant + ' × ' + c.quantity + '</div></div>' +
+          '<div style="font-weight:800">Rp ' + (c.price * c.quantity).toLocaleString('id-ID') + '</div>' +
+          '<button type="button" class="rm" onclick="removeKasirItem(' + i + ')" aria-label="Hapus">×</button></div>'
+        ).join('');
+      }
+      const total = kasirCart.reduce((s, c) => s + c.price * c.quantity, 0);
+      const totalEl = document.getElementById('kasirTotal');
+      if (totalEl) totalEl.textContent = 'Rp ' + total.toLocaleString('id-ID');
+    }
+
+    async function submitKasirOrder(e) {
+      e.preventDefault();
+      const successEl = document.getElementById('kasirSuccess');
+      const errorEl = document.getElementById('kasirError');
+      if (successEl) successEl.classList.remove('show');
+      if (errorEl) errorEl.classList.remove('show');
+
+      if (!kasirCart.length) {
+        if (errorEl) { errorEl.textContent = 'Tambahkan minimal 1 menu'; errorEl.classList.add('show'); }
+        return;
+      }
+
+      const customerName = document.getElementById('kasirCustomerName').value.trim();
+      const tableNo = document.getElementById('kasirTableNo').value.trim();
+      const paymentMethod = (document.querySelector('input[name="kasirPay"]:checked') || {}).value || 'cash';
+      const notes = document.getElementById('kasirNotes').value.trim();
+      const token = localStorage.getItem('staffToken');
+
+      try {
+        const res = await fetch('/api/create', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token
+          },
+          body: JSON.stringify({
+            customerName: customerName,
+            tableNo: tableNo,
+            items: kasirCart,
+            paymentMethod: paymentMethod,
+            notes: notes,
+            source: 'staff'
+          })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Gagal membuat pesanan');
+
+        if (successEl) {
+          successEl.innerHTML = '<i class="fas fa-circle-check"></i> Pesanan ' + data.orderId + ' berhasil dibuat & otomatis terverifikasi!';
+          successEl.classList.add('show');
+        }
+        kasirCart = [];
+        renderKasirCart();
+        document.getElementById('kasirForm').reset();
+        document.getElementById('kasirTableNo').value = 'Kasir';
+        if (typeof loadPendingOrders === 'function') loadPendingOrders();
+      } catch (err) {
+        if (errorEl) { errorEl.textContent = err.message || 'Terjadi kesalahan'; errorEl.classList.add('show'); }
+      }
+    }
+
   </script>
 </body>
 </html>
