@@ -255,5 +255,30 @@
     "createdAt": "2026-08-28T10:08:28.352Z",
     "updatedAt": "2026-08-28T10:09:17.195Z",
     "updatedBy": "admin"
+  },
+  {
+    "id": "ORD-MTCSZ33B-OGDI6",
+    "timestamp": "2026-08-28T10:22:38.183Z",
+    "customer": {
+      "name": "Rio",
+      "tableNo": "Kasir"
+    },
+    "items": [
+      {
+        "menuId": "3",
+        "name": "Butterschot",
+        "price": 13000,
+        "variant": "Medium",
+        "quantity": 1
+      }
+    ],
+    "totalPrice": 13000,
+    "paymentMethod": "cash",
+    "paymentProof": null,
+    "notes": "anjay rio",
+    "status": "confirmed",
+    "source": "staff",
+    "createdBy": "admin",
+    "createdAt": "2026-08-28T10:22:38.183Z"
   }
 ]
