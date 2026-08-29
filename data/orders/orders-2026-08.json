@@ -1,1 +1,27 @@
-[]
+[
+  {
+    "id": "ORD-MTDULIBW-NYBPP",
+    "timestamp": "2026-08-29T03:55:50.156Z",
+    "customer": {
+      "name": "Lia",
+      "tableNo": "A1"
+    },
+    "items": [
+      {
+        "menuId": "1",
+        "name": "Cappucino",
+        "price": 10000,
+        "variant": "Medium",
+        "quantity": 1
+      }
+    ],
+    "totalPrice": 10000,
+    "paymentMethod": "cash",
+    "paymentProof": null,
+    "notes": "anjay",
+    "status": "pending",
+    "source": "customer",
+    "createdBy": null,
+    "createdAt": "2026-08-29T03:55:50.156Z"
+  }
+]
