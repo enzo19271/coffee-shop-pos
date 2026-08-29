@@ -32,11 +32,22 @@ function verifyToken(token) {
   }
 }
 
+function hashPassword(password) {
+  const secret = process.env.JWT_SECRET || 'default-secret-key';
+  return crypto.createHash('sha256').update(String(password) + '|' + secret).digest('hex');
+}
+
 function simplePasswordVerify(inputPassword, storedHash) {
-  const staffPassword = 'password';
-  const adminPassword = 'admin';
-  if (storedHash.includes('staff') && inputPassword === staffPassword) return true;
-  if (storedHash.includes('admin') && inputPassword === adminPassword) return true;
+  if (!storedHash) return false;
+  // New format: sha256 hash
+  if (/^[a-f0-9]{64}$/i.test(storedHash)) {
+    return hashPassword(inputPassword) === storedHash;
+  }
+  // Legacy demo accounts
+  if (storedHash.includes('staff') && inputPassword === 'password') return true;
+  if (storedHash.includes('admin') && inputPassword === 'admin') return true;
+  // Plain password fallback (legacy mis-stored)
+  if (storedHash === inputPassword) return true;
   return false;
 }
 
@@ -173,19 +184,34 @@ function getAuthPayload(req) {
 async function handleLogin(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
   try {
-    const { username, password } = req.body;
-    if (!username || !password) return res.status(400).json({ error: 'Username and password required' });
+    const name = (req.body.name || req.body.username || '').trim();
+    const password = req.body.password;
+    if (!name || !password) return res.status(400).json({ error: 'Nama dan password wajib diisi' });
     const staffData = await getGitHubFile('data/staff/users.json');
     const users = JSON.parse(staffData);
-    const user = users.find(u => u.username === username);
+    const nameLower = name.toLowerCase();
+    const user = users.find(u =>
+      (u.name && String(u.name).toLowerCase() === nameLower) ||
+      (u.username && String(u.username).toLowerCase() === nameLower)
+    );
     if (!user || !simplePasswordVerify(password, user.passwordHash))
-      return res.status(401).json({ error: 'Invalid credentials' });
-    if (user.status !== 'active') return res.status(401).json({ error: 'User account is inactive' });
+      return res.status(401).json({ error: 'Nama atau password salah' });
+    if (user.status && user.status !== 'active') return res.status(401).json({ error: 'Akun tidak aktif' });
     const token = generateToken({
-      userId: user.id, username: user.username, role: user.role, name: user.name,
+      userId: user.id, username: user.username || user.name, role: user.role, name: user.name,
       exp: Math.floor(Date.now() / 1000) + 86400
     });
-    return res.status(200).json({ success: true, token, user: { id: user.id, username: user.username, name: user.name, role: user.role } });
+    return res.status(200).json({
+      success: true,
+      token,
+      user: {
+        id: user.id,
+        username: user.username || user.name,
+        name: user.name,
+        role: user.role,
+        avatar: user.avatar || null
+      }
+    });
   } catch (error) {
     console.error('Login error:', error);
     return res.status(500).json({ error: 'Internal server error' });
@@ -495,6 +521,7 @@ async function handleStaffList(req, res) {
       username: u.username,
       role: u.role,
       status: u.status,
+      avatar: u.avatar || null,
       createdAt: u.createdAt || new Date().toISOString()
     }));
     return res.status(200).json({ success: true, data: safeUsers });
@@ -511,9 +538,13 @@ async function handleAddStaff(req, res) {
     if (!payload) return res.status(401).json({ error: 'Unauthorized' });
     if (payload.role !== 'admin') return res.status(403).json({ error: 'Forbidden' });
     
-    const { name, username, password, role } = req.body;
-    if (!name || !username || !password || !role) {
-      return res.status(400).json({ error: 'Name, username, password, and role are required' });
+    const { name, password, role, avatar } = req.body;
+    let username = (req.body.username || '').trim();
+    if (!name || !password || !role) {
+      return res.status(400).json({ error: 'Nama, password, dan role wajib diisi' });
+    }
+    if (!username) {
+      username = String(name).toLowerCase().replace(/[^a-z0-9]+/g, '').slice(0, 20) || ('user' + Date.now());
     }
     
     if (!['staff', 'admin'].includes(role)) {
@@ -528,12 +559,14 @@ async function handleAddStaff(req, res) {
       return res.status(409).json({ error: 'Username already exists' });
     }
     
-    const nextId = users.length > 0 ? Math.max(...users.map(u => u.id)) + 1 : 1;
+    const numericIds = users.map(u => parseInt(u.id, 10)).filter(n => !isNaN(n));
+    const nextId = numericIds.length > 0 ? Math.max(...numericIds) + 1 : users.length + 1;
     const newUser = {
       id: nextId,
       name,
       username,
-      passwordHash: role === 'admin' ? 'admin' : 'staff', // Simple hash based on role
+      passwordHash: hashPassword(password),
+      avatar: avatar || null,
       role,
       status: 'active',
       createdAt: new Date().toISOString()
@@ -914,6 +947,57 @@ async function handleDeleteData(req, res) {
 }
 
 
+
+async function handleUpdateStaff(req, res) {
+  if (req.method !== 'PUT' && req.method !== 'PATCH' && req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method not allowed' });
+  }
+  try {
+    const payload = getAuthPayload(req);
+    if (!payload) return res.status(401).json({ error: 'Unauthorized' });
+    if (payload.role !== 'admin') return res.status(403).json({ error: 'Forbidden' });
+
+    const { id, username, name, password, role, status, avatar } = req.body;
+    if (!id && !username) return res.status(400).json({ error: 'id or username required' });
+
+    let users = [];
+    try { users = JSON.parse(await getGitHubFile('data/staff/users.json')); } catch { users = []; }
+
+    const index = users.findIndex(u =>
+      (id != null && String(u.id) === String(id)) ||
+      (username && u.username === username)
+    );
+    if (index === -1) return res.status(404).json({ error: 'Staff not found' });
+
+    if (name != null && String(name).trim()) users[index].name = String(name).trim();
+    if (role && ['staff', 'admin'].includes(role)) users[index].role = role;
+    if (status && ['active', 'inactive'].includes(status)) users[index].status = status;
+    if (password && String(password).length >= 3) users[index].passwordHash = hashPassword(password);
+    if (avatar !== undefined) users[index].avatar = avatar; // base64 data URL or null
+    users[index].updatedAt = new Date().toISOString();
+    users[index].updatedBy = payload.username;
+
+    await updateGitHubFile('data/staff/users.json', JSON.stringify(users, null, 2), `Update staff: ${users[index].username || users[index].name}`);
+
+    return res.status(200).json({
+      success: true,
+      message: 'Staff updated',
+      data: {
+        id: users[index].id,
+        name: users[index].name,
+        username: users[index].username,
+        role: users[index].role,
+        status: users[index].status,
+        avatar: users[index].avatar || null
+      }
+    });
+  } catch (error) {
+    console.error('Update staff error:', error);
+    return res.status(500).json({ error: 'Failed to update staff' });
+  }
+}
+
+
 // ─── MAIN ROUTER ─────────────────────────────────────────────────────────────
 export default async function handler(req, res) {
   const url = new URL(req.url, `http://${req.headers.host}`);
@@ -936,6 +1020,7 @@ export default async function handler(req, res) {
     case '/update-menu':   return handleUpdateMenu(req, res);
     case '/staff':         return handleStaffList(req, res);
     case '/add-staff':     return handleAddStaff(req, res);
+    case '/update-staff':  return handleUpdateStaff(req, res);
     case '/delete-orders': return handleDeleteOrders(req, res);
     case '/delete-data':   return handleDeleteData(req, res);
     case '/report':        return handleReport(req, res);
