@@ -7,14 +7,5 @@
     "name": "Admin Coffee Shop",
     "status": "active",
     "createdAt": "2026-08-01T00:00:00Z"
-  },
-  {
-    "id": null,
-    "name": "Deva",
-    "username": "devagustianda",
-    "passwordHash": "staff",
-    "role": "staff",
-    "status": "active",
-    "createdAt": "2026-08-28T10:48:59.509Z"
   }
 ]
