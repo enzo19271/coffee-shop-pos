@@ -25,5 +25,30 @@
     "createdAt": "2026-08-29T03:55:50.156Z",
     "updatedAt": "2026-08-29T04:11:06.524Z",
     "updatedBy": "reza"
+  },
+  {
+    "id": "ORD-MTDV6DU0-K1J4G",
+    "timestamp": "2026-08-29T04:12:04.104Z",
+    "customer": {
+      "name": "Rio",
+      "tableNo": "Kasir"
+    },
+    "items": [
+      {
+        "menuId": "2",
+        "name": "Matcha Latte",
+        "price": 12000,
+        "variant": "Medium",
+        "quantity": 1
+      }
+    ],
+    "totalPrice": 12000,
+    "paymentMethod": "cash",
+    "paymentProof": null,
+    "notes": "",
+    "status": "confirmed",
+    "source": "staff",
+    "createdBy": "reza",
+    "createdAt": "2026-08-29T04:12:04.104Z"
   }
 ]
