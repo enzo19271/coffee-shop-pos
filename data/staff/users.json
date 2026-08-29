@@ -16,5 +16,15 @@
     "role": "staff",
     "status": "active",
     "createdAt": "2026-08-29T03:57:23.443Z"
+  },
+  {
+    "id": 3,
+    "name": "Reza",
+    "username": "reza",
+    "passwordHash": "e73ec547c8fe9658bfa3d9102fde9f72d9982cc0c06c8e7941282096ba6bc5ad",
+    "avatar": null,
+    "role": "staff",
+    "status": "active",
+    "createdAt": "2026-08-29T04:10:22.802Z"
   }
 ]
