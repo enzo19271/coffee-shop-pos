@@ -1754,25 +1754,24 @@
         <div class="content">
 
             <!-- Welcome Banner Card -->
-            <div class="welcome-card">
+            <div class="welcome-card welcome-hero">
                 <div class="greeting">
                     <div class="wave-icon">
                         <i class="fas fa-mug-hot"></i>
                     </div>
-                    <div>
+                    <div class="greeting-text">
+                        <p class="welcome-kicker">Panel Administrasi</p>
                         <h2>Selamat datang, <strong id="welcomeName">Admin</strong></h2>
-                        <p><i class="far fa-clock"></i> <span id="welcomeTime"></span></p>
+                        <p class="welcome-meta"><i class="far fa-clock"></i> <span id="welcomeTime"></span></p>
                     </div>
                 </div>
-                <div class="badge-stats">
-                    <div class="stat-mini">
-                        <i class="fas fa-circle" style="color: #4caf50; font-size: 9px;"></i>
-                        <span>Status: <strong>Aktif</strong></span>
-                    </div>
-                    <div class="stat-mini">
-                        <i class="fas fa-shield-alt"></i>
-                        <span>Role: <strong>Admin</strong></span>
-                    </div>
+                <div class="welcome-actions">
+                    <button type="button" class="welcome-action-btn" onclick="document.querySelector('[data-tab=reports]')?.click()">
+                        <i class="fas fa-file-export"></i> Ekspor
+                    </button>
+                    <button type="button" class="welcome-action-btn" onclick="document.querySelector('[data-tab=transactions]')?.click()">
+                        <i class="fas fa-receipt"></i> Transaksi
+                    </button>
                 </div>
             </div>
 
@@ -2917,6 +2916,182 @@ async function executeDeleteData() {
     resultEl.innerHTML = '<span style="color:var(--danger)">Error: ' + e.message + '</span>';
   }
 }
+
+        // ─── EXPORT REPORTS ─────────────────────────────────
+        async function fetchOrdersForReport() {
+            const params = new URLSearchParams();
+            const month = document.getElementById('reportMonth')?.value;
+            const status = document.getElementById('reportStatus')?.value;
+            const start = document.getElementById('reportStart')?.value;
+            const end = document.getElementById('reportEnd')?.value;
+            if (month) params.set('month', month);
+            if (status) params.set('status', status);
+            if (start) params.set('start', start);
+            if (end) params.set('end', end);
+            // fallback: load all / by month for API compatibility
+            if (!month && !start && !end) {
+                const now = new Date();
+                params.set('month', now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0'));
+            }
+            const res = await fetch('/api/orders?' + params.toString(), {
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+            if (!res.ok) {
+                // try without filters
+                const res2 = await fetch('/api/orders', { headers: { 'Authorization': 'Bearer ' + token } });
+                if (!res2.ok) throw new Error('Gagal mengambil data pesanan');
+                let data = await res2.json();
+                let orders = data.data || data.orders || data || [];
+                if (!Array.isArray(orders)) orders = [];
+                return filterOrdersClient(orders, month, status, start, end);
+            }
+            const data = await res.json();
+            let orders = data.data || data.orders || data || [];
+            if (!Array.isArray(orders)) orders = [];
+            return filterOrdersClient(orders, month, status, start, end);
+        }
+
+        function filterOrdersClient(orders, month, status, start, end) {
+            return orders.filter(o => {
+                const d = (o.createdAt || o.date || '').slice(0, 10);
+                if (month && !d.startsWith(month)) return false;
+                if (status && (o.status || '') !== status) return false;
+                if (start && d < start) return false;
+                if (end && d > end) return false;
+                return true;
+            });
+        }
+
+        function formatRp(n) {
+            return 'Rp ' + Number(n || 0).toLocaleString('id-ID');
+        }
+
+        function buildReportRows(orders) {
+            return orders.map((o, i) => {
+                const items = Array.isArray(o.items) ? o.items : [];
+                const itemsText = items.map(it => {
+                    const q = it.quantity || it.qty || 1;
+                    const v = it.variant ? ' (' + it.variant + ')' : '';
+                    return (it.name || it.menuName || 'Item') + v + ' x' + q;
+                }).join('; ');
+                return {
+                    no: i + 1,
+                    id: o.id || o.orderId || '-',
+                    tanggal: (o.createdAt || o.date || '-').toString().replace('T', ' ').slice(0, 19),
+                    pelanggan: o.customerName || o.customer || '-',
+                    meja: o.tableNo || o.table || '-',
+                    items: itemsText || '-',
+                    metode: (o.paymentMethod || '-').toString().toUpperCase(),
+                    status: o.status || '-',
+                    total: Number(o.total || o.grandTotal || 0)
+                };
+            });
+        }
+
+        async function exportReport(format) {
+            const msg = document.getElementById('reportStatusMsg');
+            if (msg) msg.textContent = 'Memuat data laporan...';
+            try {
+                const orders = await fetchOrdersForReport();
+                if (!orders.length) {
+                    if (msg) msg.textContent = 'Tidak ada data pesanan untuk filter yang dipilih.';
+                    alert('Tidak ada data pesanan untuk diekspor dengan filter saat ini.');
+                    return;
+                }
+                const rows = buildReportRows(orders);
+                const totalSum = rows.reduce((s, r) => s + r.total, 0);
+                const stamp = new Date().toISOString().slice(0, 10);
+                const title = 'Laporan Penjualan TAN COFFEE';
+
+                if (format === 'excel') {
+                    if (typeof XLSX === 'undefined') throw new Error('Library Excel belum termuat. Refresh halaman.');
+                    const sheetData = [
+                        [title],
+                        ['Tanggal unduh', new Date().toLocaleString('id-ID')],
+                        ['Jumlah transaksi', rows.length],
+                        ['Total penjualan', totalSum],
+                        [],
+                        ['No', 'ID Pesanan', 'Tanggal', 'Pelanggan', 'Meja', 'Item', 'Pembayaran', 'Status', 'Total']
+                    ];
+                    rows.forEach(r => {
+                        sheetData.push([r.no, r.id, r.tanggal, r.pelanggan, r.meja, r.items, r.metode, r.status, r.total]);
+                    });
+                    sheetData.push([]);
+                    sheetData.push(['', '', '', '', '', '', '', 'GRAND TOTAL', totalSum]);
+                    const ws = XLSX.utils.aoa_to_sheet(sheetData);
+                    ws['!cols'] = [{wch:5},{wch:16},{wch:20},{wch:16},{wch:8},{wch:40},{wch:12},{wch:16},{wch:14}];
+                    const wb = XLSX.utils.book_new();
+                    XLSX.utils.book_append_sheet(wb, ws, 'Penjualan');
+                    XLSX.writeFile(wb, 'Laporan_TAN_COFFEE_' + stamp + '.xlsx');
+                    if (msg) msg.textContent = 'Excel berhasil diunduh (' + rows.length + ' baris).';
+                } else if (format === 'word') {
+                    let tableRows = rows.map(r =>
+                        '<tr>' +
+                        '<td>' + r.no + '</td><td>' + r.id + '</td><td>' + r.tanggal + '</td>' +
+                        '<td>' + r.pelanggan + '</td><td>' + r.meja + '</td><td>' + r.items + '</td>' +
+                        '<td>' + r.metode + '</td><td>' + r.status + '</td><td>' + formatRp(r.total) + '</td>' +
+                        '</tr>'
+                    ).join('');
+                    const html = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word"><head><meta charset="utf-8"><title>' + title + '</title></head><body>' +
+                        '<h1>' + title + '</h1>' +
+                        '<p>Tanggal unduh: ' + new Date().toLocaleString('id-ID') + '</p>' +
+                        '<p>Jumlah transaksi: <b>' + rows.length + '</b> · Total: <b>' + formatRp(totalSum) + '</b></p>' +
+                        '<table border="1" cellspacing="0" cellpadding="6" style="border-collapse:collapse;width:100%;font-size:12px;">' +
+                        '<thead><tr style="background:#0B4D3A;color:#fff;">' +
+                        '<th>No</th><th>ID</th><th>Tanggal</th><th>Pelanggan</th><th>Meja</th><th>Item</th><th>Bayar</th><th>Status</th><th>Total</th>' +
+                        '</tr></thead><tbody>' + tableRows +
+                        '<tr><td colspan="8" align="right"><b>GRAND TOTAL</b></td><td><b>' + formatRp(totalSum) + '</b></td></tr>' +
+                        '</tbody></table>' +
+                        '<p style="margin-top:24px;font-size:11px;color:#666;">© TAN COFFEE · Ilmu Ketak Community</p>' +
+                        '</body></html>';
+                    const blob = new Blob(['\ufeff', html], { type: 'application/msword' });
+                    const a = document.createElement('a');
+                    a.href = URL.createObjectURL(blob);
+                    a.download = 'Laporan_TAN_COFFEE_' + stamp + '.doc';
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove();
+                    if (msg) msg.textContent = 'Word berhasil diunduh (' + rows.length + ' baris).';
+                } else if (format === 'pdf') {
+                    if (!window.jspdf || !window.jspdf.jsPDF) throw new Error('Library PDF belum termuat. Refresh halaman.');
+                    const { jsPDF } = window.jspdf;
+                    const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+                    doc.setFontSize(16);
+                    doc.text(title, 14, 16);
+                    doc.setFontSize(10);
+                    doc.text('Tanggal unduh: ' + new Date().toLocaleString('id-ID') + '  |  Transaksi: ' + rows.length + '  |  Total: ' + formatRp(totalSum), 14, 24);
+                    const body = rows.map(r => [r.no, r.id, r.tanggal, r.pelanggan, r.meja, r.items, r.metode, r.status, formatRp(r.total)]);
+                    if (typeof doc.autoTable === 'function') {
+                        doc.autoTable({
+                            startY: 28,
+                            head: [['No', 'ID', 'Tanggal', 'Pelanggan', 'Meja', 'Item', 'Bayar', 'Status', 'Total']],
+                            body: body,
+                            styles: { fontSize: 8, cellPadding: 2 },
+                            headStyles: { fillColor: [11, 77, 58] },
+                            foot: [['', '', '', '', '', '', '', 'TOTAL', formatRp(totalSum)]],
+                            footStyles: { fillColor: [15, 92, 69], textColor: 255 }
+                        });
+                    } else {
+                        let y = 30;
+                        body.forEach(row => {
+                            doc.text(row.join(' | ').slice(0, 120), 14, y);
+                            y += 6;
+                            if (y > 190) { doc.addPage(); y = 20; }
+                        });
+                    }
+                    doc.save('Laporan_TAN_COFFEE_' + stamp + '.pdf');
+                    if (msg) msg.textContent = 'PDF berhasil diunduh (' + rows.length + ' baris).';
+                } else {
+                    throw new Error('Format tidak dikenal');
+                }
+            } catch (err) {
+                console.error(err);
+                if (msg) msg.textContent = err.message || 'Gagal mengekspor';
+                alert(err.message || 'Gagal mengekspor laporan');
+            }
+        }
+
+
 async function executeDeleteOrders() { return executeDeleteData(); }
 
 </script>

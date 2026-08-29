@@ -1506,6 +1506,62 @@
       font-family: var(--font-display) !important;
     }
 
+
+    /* Desktop layout fixes */
+    @media (min-width: 900px) {
+      .container {
+        max-width: 1120px !important;
+        margin: 0 auto !important;
+        padding: 16px 24px 32px !important;
+      }
+      .toolbar {
+        max-width: 1120px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+      .toolbar-inner {
+        display: flex !important;
+        flex-wrap: nowrap !important;
+        align-items: center !important;
+        gap: 14px !important;
+      }
+      .toolbar-inner .search-wrap {
+        flex: 1 1 auto !important;
+        min-width: 280px !important;
+      }
+      .toolbar-inner .custom-select {
+        flex: 0 0 260px !important;
+        max-width: 280px !important;
+      }
+      .menu-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+        gap: 18px !important;
+      }
+      .custom-select {
+        position: relative !important;
+        z-index: 30;
+      }
+      .custom-select.open {
+        z-index: 400 !important;
+      }
+      .custom-select-options {
+        position: absolute !important;
+        top: calc(100% + 6px) !important;
+        left: 0 !important;
+        right: 0 !important;
+        z-index: 500 !important;
+        box-shadow: 0 12px 32px rgba(11,77,58,0.18) !important;
+      }
+      .site-footer {
+        max-width: 1120px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+    }
+    .custom-select.open .custom-select-options {
+      display: block !important;
+    }
+
   </style>
 </head>
 <body>
