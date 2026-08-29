@@ -1180,23 +1180,151 @@
       header h1 { font-size: 20px; }
     }
 
+
+    /* ===== WEB APP SHELL (Staff) ===== */
+    body {
+      background: #f0f4f2 !important;
+      padding-bottom: 24px !important;
+    }
+    .app-bar {
+      position: sticky;
+      top: 0;
+      z-index: 600;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 16px;
+      min-height: 64px;
+      background: linear-gradient(135deg, #0B4D3A 0%, #062E24 100%);
+      color: #fff;
+      box-shadow: 0 4px 24px rgba(11, 77, 58, 0.28);
+      border-bottom: none !important;
+    }
+    .app-bar-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+    .app-logo {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #fff;
+      object-fit: contain;
+      padding: 3px;
+      flex-shrink: 0;
+    }
+    .app-title {
+      font-size: 16px;
+      font-weight: 800;
+      letter-spacing: -0.3px;
+      line-height: 1.2;
+    }
+    .app-sub {
+      font-size: 11px;
+      opacity: 0.85;
+      font-weight: 500;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 52vw;
+    }
+    .logout-btn {
+      background: rgba(255,255,255,0.12) !important;
+      color: #fff !important;
+      border: 1px solid rgba(255,255,255,0.2) !important;
+      border-radius: 12px !important;
+      padding: 10px 14px !important;
+      min-height: 42px;
+    }
+    .logout-btn:hover {
+      background: rgba(255,255,255,0.22) !important;
+      color: #fff !important;
+      transform: none !important;
+      box-shadow: none !important;
+    }
+    @media (max-width: 480px) {
+      .logout-text { display: none; }
+    }
+    .container {
+      max-width: 1100px !important;
+      padding: 16px 14px 32px !important;
+    }
+    .tabs {
+      display: flex !important;
+      gap: 8px !important;
+      overflow-x: auto !important;
+      border-bottom: none !important;
+      padding: 4px !important;
+      margin-bottom: 18px !important;
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 2px 12px rgba(11,77,58,0.06);
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    .tabs::-webkit-scrollbar { display: none; }
+    .tab-btn {
+      flex-shrink: 0 !important;
+      border-radius: 12px !important;
+      border: none !important;
+      background: transparent !important;
+      padding: 11px 16px !important;
+      font-size: 13px !important;
+      color: var(--text-muted) !important;
+    }
+    .tab-btn:hover {
+      background: rgba(27,122,84,0.08) !important;
+      color: var(--brand-primary) !important;
+    }
+    .tab-btn.active {
+      background: linear-gradient(135deg, #0B4D3A, #0F5C45) !important;
+      color: #fff !important;
+      box-shadow: 0 4px 14px rgba(11,77,58,0.3) !important;
+    }
+    .tab-btn.active i { color: #fff !important; }
+    .order-card, .expense-form, .kasir-cart-panel {
+      border-radius: 18px !important;
+      border: 1px solid rgba(11,77,58,0.08) !important;
+      box-shadow: 0 4px 20px rgba(11,77,58,0.06) !important;
+    }
+    .stats-grid {
+      display: grid !important;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)) !important;
+      gap: 12px !important;
+    }
+    .stat-card, .stats-grid > div {
+      border-radius: 16px !important;
+      background: #fff !important;
+      border: 1px solid rgba(11,77,58,0.08) !important;
+      box-shadow: 0 2px 12px rgba(11,77,58,0.05) !important;
+    }
+    .btn-confirm, .btn-primary {
+      border-radius: 12px !important;
+      box-shadow: 0 4px 14px rgba(11,77,58,0.25) !important;
+    }
+
   </style>
 </head>
 <body>
   <!-- Top Header -->
-  <header>
-    <h1><i class="fas fa-user-tie"></i> Staff Dashboard</h1>
-    <button class="logout-btn" onclick="logout()">
-      <i class="fas fa-right-from-bracket"></i> Logout
+  <header class="app-bar">
+    <div class="app-bar-left">
+      <img src="logo-tan-coffee.png" alt="" class="app-logo" onerror="this.style.display='none'">
+      <div>
+        <div class="app-title">TAN COFFEE</div>
+        <div class="app-sub">Staff · <span id="staffName">...</span></div>
+      </div>
+    </div>
+    <button class="logout-btn" onclick="logout()" aria-label="Logout">
+      <i class="fas fa-right-from-bracket"></i>
+      <span class="logout-text">Logout</span>
     </button>
   </header>
 
   <div class="container">
-    <!-- Welcome message -->
-    <div id="welcomeMsg">
-      <i class="fas fa-mug-hot"></i>
-      <div>Selamat datang, <strong id="staffName"></strong>!</div>
-    </div>
 
     <!-- Tabs Nav -->
     <div class="tabs">

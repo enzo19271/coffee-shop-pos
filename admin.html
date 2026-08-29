@@ -1305,6 +1305,98 @@
             outline: 3px solid var(--brand-accent);
             outline-offset: 2px;
         }
+
+        /* ===== WEB APP SHELL (Admin) ===== */
+        body {
+            background: #eef3f0 !important;
+        }
+        .sidebar {
+            background: linear-gradient(180deg, #062E24 0%, #0B4D3A 55%, #0a3d30 100%) !important;
+            border-right: none !important;
+            box-shadow: 8px 0 32px rgba(6, 46, 36, 0.2) !important;
+        }
+        .sidebar-brand {
+            padding: 18px 16px !important;
+            border-bottom: 1px solid rgba(255,255,255,0.08) !important;
+        }
+        .sidebar-brand .brand-icon-wrapper {
+            background: #fff !important;
+            box-shadow: none !important;
+            overflow: hidden;
+        }
+        .sidebar-brand .brand-icon-wrapper i {
+            color: #0B4D3A !important;
+        }
+        .sidebar-nav a {
+            border-radius: 12px !important;
+            margin-bottom: 2px;
+        }
+        .sidebar-nav a.active {
+            background: rgba(255,255,255,0.15) !important;
+            box-shadow: inset 3px 0 0 #7dcea0 !important;
+        }
+        .main {
+            background: #eef3f0 !important;
+        }
+        .topbar {
+            background: rgba(255,255,255,0.92) !important;
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(11,77,58,0.08) !important;
+            box-shadow: 0 2px 16px rgba(11,77,58,0.04) !important;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+        .topbar h1 {
+            font-size: 17px !important;
+            font-weight: 800 !important;
+            color: #0B4D3A !important;
+        }
+        .welcome-banner, .form-card, .stat-card, .staff-card, .finance-details {
+            border-radius: 18px !important;
+            border: 1px solid rgba(11,77,58,0.08) !important;
+            box-shadow: 0 4px 20px rgba(11,77,58,0.06) !important;
+        }
+        .welcome-banner {
+            background: linear-gradient(135deg, #0B4D3A 0%, #0F5C45 100%) !important;
+            color: #fff !important;
+        }
+        .admin-shortcuts button {
+            border-radius: 16px !important;
+            border: 1px solid rgba(11,77,58,0.1) !important;
+            box-shadow: 0 2px 12px rgba(11,77,58,0.05) !important;
+            transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+        }
+        .admin-shortcuts button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px rgba(11,77,58,0.12) !important;
+        }
+        .btn-primary {
+            border-radius: 12px !important;
+            background: linear-gradient(135deg, #0B4D3A, #0F5C45) !important;
+            box-shadow: 0 4px 14px rgba(11,77,58,0.28) !important;
+        }
+        .form-card .form-header {
+            border-bottom: 1px solid rgba(11,77,58,0.08);
+            padding-bottom: 12px;
+            margin-bottom: 16px;
+        }
+        .content {
+            padding: 18px 16px 40px !important;
+        }
+        .hamburger {
+            border-radius: 12px !important;
+            background: rgba(11,77,58,0.08) !important;
+            color: #0B4D3A !important;
+        }
+        @media (max-width: 768px) {
+            .content { padding: 14px 12px 32px !important; }
+            .stats-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+                gap: 10px !important;
+            }
+        }
+
     </style>
 </head>
 
@@ -1316,8 +1408,8 @@
     <!-- ─── SIDEBAR ─── -->
     <aside class="sidebar" id="sidebar">
         <div class="sidebar-brand">
-            <div class="brand-icon-wrapper">
-                <i class="fas fa-mug-saucer"></i>
+            <div class="brand-icon-wrapper" style="padding:2px;">
+                <img src="logo-tan-coffee.png" alt="" style="width:100%;height:100%;object-fit:contain;border-radius:8px;" onerror="this.style.display='none';this.parentElement.innerHTML='<i class=\'fas fa-mug-saucer\'></i>';">
             </div>
             <div>
                 <span>TAN COFFEE</span>
