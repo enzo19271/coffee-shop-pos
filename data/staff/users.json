@@ -7,5 +7,14 @@
     "name": "Admin Coffee Shop",
     "status": "active",
     "createdAt": "2026-08-01T00:00:00Z"
+  },
+  {
+    "id": null,
+    "name": "Kibo",
+    "username": "kiboo",
+    "passwordHash": "staff",
+    "role": "staff",
+    "status": "active",
+    "createdAt": "2026-08-29T03:57:23.443Z"
   }
 ]
