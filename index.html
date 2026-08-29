@@ -90,51 +90,121 @@
       background: var(--brand-accent);
     }
 
-    /* ── Header Hero Section ── */
-    header {
-      background: linear-gradient(135deg, var(--brand-primary) 0%, #041F18 100%);
-      color: #ffffff;
-      padding: 40px 20px 36px 20px;
-      text-align: center;
-      position: relative;
-      box-shadow: var(--shadow-md);
-      overflow: hidden;
-      border-bottom: 3px solid var(--brand-accent);
+    /* ── App Header (aligned hamburger + brand + cart) ── */
+    .app-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: grid;
+      grid-template-columns: 44px 1fr 44px;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      background: linear-gradient(135deg, var(--brand-primary) 0%, #062E24 100%);
+      color: #fff;
+      box-shadow: 0 4px 20px rgba(11, 77, 58, 0.25);
+      min-height: 64px;
     }
-
-    header::after {
-      content: '';
-      position: absolute;
-      top: -50%;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 600px;
-      height: 300px;
-      background: radial-gradient(circle, rgba(27, 122, 84, 0.2) 0%, rgba(0,0,0,0) 70%);
-      pointer-events: none;
-    }
-
-    header h1 {
-      font-size: 30px;
-      font-weight: 800;
-      letter-spacing: -0.5px;
-      margin-bottom: 8px;
+    .app-brand {
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 12px;
+      gap: 10px;
+      min-width: 0;
     }
-
-    header h1 i {
-      color: var(--brand-accent);
+    .app-brand .brand-logo {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #fff;
+      object-fit: contain;
+      padding: 3px;
+      flex-shrink: 0;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
     }
-
-    header p {
-      font-size: 14px;
-      color: var(--text-light);
+    .app-brand-text {
+      text-align: left;
+      min-width: 0;
+    }
+    .app-brand-text h1 {
+      margin: 0;
+      font-size: 17px;
+      font-weight: 800;
+      letter-spacing: -0.3px;
+      line-height: 1.2;
+      white-space: nowrap;
+    }
+    .app-brand-text p {
+      margin: 0;
+      font-size: 10px;
+      opacity: 0.85;
       font-weight: 500;
-      max-width: 480px;
-      margin: 0 auto;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .header-cart-btn {
+      position: relative;
+      width: 44px;
+      height: 44px;
+      border: none;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.12);
+      color: #fff;
+      font-size: 16px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition);
+    }
+    .header-cart-btn:hover { background: rgba(255,255,255,0.22); }
+    .header-cart-count {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      min-width: 16px;
+      height: 16px;
+      padding: 0 4px;
+      border-radius: 8px;
+      background: #fff;
+      color: var(--brand-primary);
+      font-size: 10px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .hamburger-btn {
+      width: 44px;
+      height: 44px;
+      border: none;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.12);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      cursor: pointer;
+      transition: var(--transition);
+      flex-shrink: 0;
+    }
+    .hamburger-btn:hover { background: rgba(255,255,255,0.22); }
+    .hamburger-btn span {
+      display: block;
+      width: 18px;
+      height: 2px;
+      background: #fff;
+      border-radius: 2px;
+      transition: var(--transition);
+    }
+    .hamburger-btn[aria-expanded="true"] span:nth-child(1) {
+      transform: translateY(7px) rotate(45deg);
+    }
+    .hamburger-btn[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+    .hamburger-btn[aria-expanded="true"] span:nth-child(3) {
+      transform: translateY(-7px) rotate(-45deg);
     }
 
     /* ── Main Container ── */
@@ -965,60 +1035,15 @@
 
     /* Responsive */
     @media (max-width: 768px) {
-      .container {
-        padding: 16px 14px 100px;
-      }
-
-      .toolbar-inner {
-        padding: 0 14px;
-      }
-
       .menu-grid, .skeleton-grid {
-        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-        gap: 12px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
       }
-
-      .menu-item {
-        padding: 14px;
-      }
-
-      .menu-emoji {
-        font-size: 32px;
-      }
-
-      .menu-name {
-        font-size: 14px;
-      }
-
-      .menu-price {
-        font-size: 15px;
-      }
-
-      .payment-methods {
-        grid-template-columns: 1fr;
-      }
-
-      .cart-badge {
-        bottom: 20px;
-        right: 16px;
-        height: 52px;
-        min-height: 52px;
-        padding: 0 18px;
-        font-size: 13.5px;
-      }
-
-      .modal-content {
-        padding: 22px;
-        max-height: 92vh;
-      }
-
-      header {
-        padding: 28px 16px 24px;
-      }
-
-      header h1 {
-        font-size: 24px;
-      }
+      .menu-name { font-size: 13.5px; }
+      .menu-price { font-size: 14px; }
+      .app-brand-text h1 { font-size: 15px; }
+      .app-brand-text p { font-size: 9px; }
+      .app-brand .brand-logo { width: 36px; height: 36px; }
     }
 
     /* Brand row without mug icon */
@@ -1264,8 +1289,9 @@
     .site-footer {
       background: #ffffff;
       border-top: 1px solid var(--border-color);
-      margin-top: 40px;
-      padding: 28px 20px 100px;
+      margin-top: 24px;
+      margin-bottom: 0;
+      padding: 16px 16px 88px;
     }
     .footer-inner {
       max-width: 640px;
@@ -1310,16 +1336,155 @@
       header h1 { font-size: 22px; }
     }
 
+
+    /* Compact app-like cart sheet */
+    .modal {
+      padding: 0 !important;
+      align-items: flex-end !important;
+      justify-content: center !important;
+    }
+    .modal.active {
+      animation: none !important;
+    }
+    .modal-content {
+      padding: 16px 16px 20px !important;
+      max-width: 480px !important;
+      max-height: min(92vh, 720px) !important;
+      border-radius: 20px 20px 0 0 !important;
+      display: flex !important;
+      flex-direction: column !important;
+      overflow: hidden !important;
+      width: 100% !important;
+      margin: 0 !important;
+      border: none !important;
+      box-shadow: 0 -8px 40px rgba(0,0,0,0.18) !important;
+    }
+    @media (min-width: 640px) {
+      .modal {
+        align-items: center !important;
+        padding: 16px !important;
+      }
+      .modal-content {
+        border-radius: 20px !important;
+        max-height: 85vh !important;
+      }
+    }
+    .modal-header {
+      margin-bottom: 10px !important;
+      padding-bottom: 10px !important;
+      flex-shrink: 0;
+    }
+    .modal-header h2 {
+      font-size: 16px !important;
+    }
+    .cart-items {
+      margin-bottom: 10px !important;
+      max-height: 22vh;
+      overflow-y: auto;
+      flex-shrink: 1;
+    }
+    .cart-item {
+      padding: 8px 0 !important;
+    }
+    .cart-summary {
+      padding: 10px 12px !important;
+      margin-bottom: 12px !important;
+      flex-shrink: 0;
+    }
+    .summary-row {
+      margin-bottom: 4px !important;
+      font-size: 12.5px !important;
+    }
+    .summary-total {
+      font-size: 15px !important;
+      padding-top: 8px !important;
+      margin-top: 4px !important;
+    }
+    .form-group {
+      margin-bottom: 10px !important;
+    }
+    .form-group label {
+      margin-bottom: 4px !important;
+      font-size: 10.5px !important;
+    }
+    .form-group input,
+    .form-group textarea {
+      padding: 10px 12px !important;
+      font-size: 13px !important;
+      min-height: 40px;
+    }
+    .form-group textarea {
+      min-height: 52px !important;
+    }
+    .payment-methods {
+      gap: 6px !important;
+      margin-bottom: 0 !important;
+      grid-template-columns: repeat(3, 1fr) !important;
+    }
+    .payment-option {
+      padding: 10px 4px !important;
+      font-size: 11px !important;
+    }
+    #orderForm {
+      flex-shrink: 0;
+      overflow-y: auto;
+      max-height: 42vh;
+    }
+    .btn-group {
+      gap: 8px !important;
+      margin-top: 4px;
+    }
+    .btn-group .btn {
+      padding: 12px !important;
+      font-size: 13px !important;
+      min-height: 44px;
+    }
+    .proof-upload { margin-bottom: 4px; }
+
+    /* App body feel */
+    body {
+      background: #f4f1ec !important;
+      padding-bottom: 0 !important;
+    }
+    .toolbar {
+      background: transparent !important;
+      border-bottom: none !important;
+      margin: 0 !important;
+      padding: 12px 0 8px !important;
+      position: sticky;
+      top: 64px;
+      z-index: 90;
+      background: rgba(244, 241, 236, 0.92) !important;
+      backdrop-filter: blur(10px);
+    }
+    .toolbar-inner {
+      padding: 0 14px !important;
+    }
+    .container {
+      padding: 8px 14px 16px !important;
+    }
+    .menu-grid {
+      gap: 12px !important;
+    }
+    .menu-item {
+      padding: 12px !important;
+      border-radius: 16px !important;
+    }
+    .menu-emoji {
+      border-radius: 12px !important;
+      margin-bottom: 10px !important;
+    }
+    .cart-badge {
+      display: none !important; /* cart is in header now */
+    }
+
+    /* Kill leftover absolute top-nav / old header padding */
+    .top-nav { display: none !important; }
+    header.app-header { position: sticky !important; padding-top: 10px !important; }
+
   </style>
 </head>
 <body>
-  <!-- Top nav with hamburger -->
-  <div class="top-nav">
-    <button type="button" class="hamburger-btn" id="hamburgerBtn" aria-label="Menu" aria-expanded="false" aria-controls="sideMenu">
-      <span></span><span></span><span></span>
-    </button>
-    <div class="top-nav-spacer"></div>
-  </div>
   <div class="side-menu-overlay" id="sideMenuOverlay"></div>
   <nav class="side-menu" id="sideMenu" aria-hidden="true">
     <div class="side-menu-header">
@@ -1337,12 +1502,22 @@
     </div>
   </nav>
 
-  <header>
-    <div class="brand-row">
+  <!-- App bar: hamburger | logo+title | cart -->
+  <header class="app-header">
+    <button type="button" class="hamburger-btn" id="hamburgerBtn" aria-label="Menu" aria-expanded="false" aria-controls="sideMenu">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="app-brand">
       <img src="logo-tan-coffee.png" alt="TAN COFFEE" class="brand-logo" onerror="this.style.display='none'">
-      <h1>TAN COFFEE</h1>
+      <div class="app-brand-text">
+        <h1>TAN COFFEE</h1>
+        <p>Satu cangkir seribu cerita</p>
+      </div>
     </div>
-    <p>Pesan menu favorit Anda langsung dari meja atau mana saja</p>
+    <button type="button" class="header-cart-btn" id="headerCartBtn" aria-label="Keranjang" onclick="openCart()">
+      <i class="fas fa-cart-shopping" aria-hidden="true"></i>
+      <span class="header-cart-count" id="headerCartCount">0</span>
+    </button>
   </header>
 
   <div class="toolbar" role="search">
@@ -1387,7 +1562,7 @@
   <div class="modal" id="cartModal">
     <div class="modal-content">
       <div class="modal-header">
-        <h2><i class="fas fa-receipt" style="color: var(--brand-accent); margin-right: 8px;"></i> Keranjang Belanja</h2>
+        <h2><i class="fas fa-bag-shopping" style="color: var(--brand-accent); margin-right: 6px;"></i> Keranjang</h2>
         <button class="close-btn" onclick="closeCart()"><i class="fas fa-xmark"></i></button>
       </div>
 
@@ -1701,11 +1876,16 @@
     }
 
     function updateCartBadge() {
-      const count = cart.reduce((sum, i) => sum + (i.quantity || 1), 0) || cart.length;
+      const count = cart.reduce((sum, i) => sum + (i.quantity || 1), 0);
       const countEl = document.getElementById('cartCount');
       if (countEl) countEl.textContent = count;
+      const headerCount = document.getElementById('headerCartCount');
+      if (headerCount) {
+        headerCount.textContent = count;
+        headerCount.style.display = count > 0 ? 'flex' : 'none';
+      }
       const badge = document.getElementById('cartBadge');
-      if (badge) badge.setAttribute('aria-label', `Buka keranjang, ${count} item`);
+      if (badge) badge.setAttribute('aria-label', 'Buka keranjang, ' + count + ' item');
     }
 
     function openCart() {
