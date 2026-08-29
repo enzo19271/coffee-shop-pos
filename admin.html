@@ -1551,21 +1551,28 @@
                 <div class="form-card">
                     <div class="form-header">
                         <i class="fas fa-user-plus"></i>
-                        <h3>Tambah Staff Baru</h3>
+                        <h3 id="staffFormTitle">Tambah Staff Baru</h3>
                     </div>
-                    <form onsubmit="addStaff(event)">
+                    <form id="staffForm" onsubmit="submitStaffForm(event)">
+                        <input type="hidden" id="staffEditId" value="" />
                         <div class="form-grid">
+                            <div class="form-group" style="grid-column:1/-1;">
+                                <label>Foto Profil</label>
+                                <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
+                                  <div id="staffAvatarPreview" style="width:64px;height:64px;border-radius:50%;background:var(--bg-main);border:2px solid var(--border-color);overflow:hidden;display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--brand-accent);font-size:22px;">?</div>
+                                  <input type="file" id="staffAvatarFile" accept="image/*" />
+                                  <input type="hidden" id="staffAvatarData" value="" />
+                                  <button type="button" class="btn btn-secondary" onclick="clearStaffAvatar()" style="min-height:36px;">Hapus foto</button>
+                                </div>
+                            </div>
                             <div class="form-group">
                                 <label>Nama Lengkap <span class="required">*</span></label>
                                 <input type="text" id="staffName" placeholder="Budi Santoso" required />
                             </div>
                             <div class="form-group">
-                                <label>Username <span class="required">*</span></label>
-                                <input type="text" id="staffUsername" placeholder="budi.santoso" required />
-                            </div>
-                            <div class="form-group">
-                                <label>Password <span class="required">*</span></label>
-                                <input type="password" id="staffPassword" minlength="4" placeholder="Min. 4 karakter" required />
+                                <label>Password <span id="staffPassRequired" class="required">*</span></label>
+                                <input type="password" id="staffPassword" minlength="3" placeholder="Min. 3 karakter" />
+                                <small id="staffPassHint" style="display:none;color:var(--text-muted);font-size:11px;">Kosongkan jika tidak ingin ubah password</small>
                             </div>
                             <div class="form-group">
                                 <label>Role <span class="required">*</span></label>
@@ -1574,11 +1581,19 @@
                                     <option value="admin">Admin</option>
                                 </select>
                             </div>
+                            <div class="form-group" id="staffStatusGroup" style="display:none;">
+                                <label>Status</label>
+                                <select id="staffStatus">
+                                    <option value="active">Aktif</option>
+                                    <option value="inactive">Nonaktif</option>
+                                </select>
+                            </div>
                         </div>
-                        <div class="form-actions">
-                            <button type="submit" class="btn btn-primary">
+                        <div class="form-actions" style="display:flex;gap:10px;flex-wrap:wrap;">
+                            <button type="submit" class="btn btn-primary" id="staffFormSubmitBtn">
                                 <i class="fas fa-plus"></i> Tambah Staff
                             </button>
+                            <button type="button" class="btn btn-secondary" id="staffFormCancelBtn" style="display:none;" onclick="cancelEditStaff()">Batal Edit</button>
                         </div>
                     </form>
                 </div>
@@ -2264,50 +2279,145 @@
             }
         }
 
+        let staffCache = [];
+
         function displayStaff(users) {
+            staffCache = users || [];
             const container = document.getElementById('staffList');
-            if (users.length === 0) {
+            if (!users.length) {
                 container.innerHTML =
                     `<div class="empty-state"><i class="fas fa-users"></i><p>Belum ada staff. Tambahkan staff baru!</p></div>`;
                 return;
             }
-            container.innerHTML = users.map(u => `
-                <div class="staff-card">
-                    <div class="staff-info">
-                        <div class="avatar-sm">${u.name.charAt(0).toUpperCase()}</div>
-                        <div class="detail">
-                            <div class="name">${u.name}</div>
-                            <div class="username"><i class="fas fa-at"></i> ${u.username} · Bergabung ${new Date(u.createdAt).toLocaleDateString('id-ID')}</div>
-                        </div>
-                    </div>
-                    <span class="staff-role ${u.role}">${u.role === 'admin' ? '<i class="fas fa-crown"></i> Admin' : '<i class="fas fa-user"></i> Staff'}</span>
-                </div>
-            `).join('');
+            container.innerHTML = users.map((u, idx) => {
+                const avatarHtml = u.avatar
+                  ? '<img src="' + u.avatar + '" alt="" style="width:100%;height:100%;object-fit:cover;">'
+                  : (u.name || '?').charAt(0).toUpperCase();
+                return (
+                '<div class="staff-card">' +
+                    '<div class="staff-info">' +
+                        '<div class="avatar-sm" style="overflow:hidden;padding:0;">' + avatarHtml + '</div>' +
+                        '<div class="detail">' +
+                            '<div class="name">' + (u.name || '-') + '</div>' +
+                            '<div class="username">' + (u.role||'') + ' · ' + (u.status || 'active') + '</div>' +
+                        '</div>' +
+                    '</div>' +
+                    '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">' +
+                      '<span class="staff-role ' + u.role + '">' + (u.role === 'admin' ? 'Admin' : 'Staff') + '</span>' +
+                      '<button type="button" class="btn btn-secondary" style="min-height:36px;padding:6px 12px;font-size:12px;" onclick="editStaffByIndex(' + idx + ')">' +
+                        '<i class="fas fa-pen"></i> Edit' +
+                      '</button>' +
+                    '</div>' +
+                '</div>');
+            }).join('');
         }
 
-        async function addStaff(event) {
+        function editStaffByIndex(idx) {
+            const u = staffCache[idx];
+            if (u) editStaff(u);
+        }
+        function editStaff(u) {
+            if (typeof u === 'string') { try { u = JSON.parse(u); } catch(e) { return; } }
+            document.getElementById('staffEditId').value = u.id != null ? u.id : '';
+            document.getElementById('staffName').value = u.name || '';
+            document.getElementById('staffPassword').value = '';
+            document.getElementById('staffPassword').required = false;
+            document.getElementById('staffPassRequired').style.display = 'none';
+            document.getElementById('staffPassHint').style.display = 'block';
+            document.getElementById('staffRole').value = u.role || 'staff';
+            document.getElementById('staffStatusGroup').style.display = 'block';
+            document.getElementById('staffStatus').value = u.status || 'active';
+            document.getElementById('staffAvatarData').value = u.avatar || '';
+            const prev = document.getElementById('staffAvatarPreview');
+            if (u.avatar) {
+              prev.innerHTML = '<img src="' + u.avatar + '" style="width:100%;height:100%;object-fit:cover;">';
+            } else {
+              prev.textContent = (u.name || '?').charAt(0).toUpperCase();
+            }
+            document.getElementById('staffFormTitle').textContent = 'Edit Staff: ' + (u.name || '');
+            document.getElementById('staffFormSubmitBtn').innerHTML = '<i class="fas fa-save"></i> Simpan Perubahan';
+            document.getElementById('staffFormCancelBtn').style.display = 'inline-flex';
+            document.getElementById('tab-staff').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function cancelEditStaff() {
+            document.getElementById('staffForm').reset();
+            document.getElementById('staffEditId').value = '';
+            document.getElementById('staffAvatarData').value = '';
+            document.getElementById('staffAvatarPreview').textContent = '?';
+            document.getElementById('staffPassword').required = true;
+            document.getElementById('staffPassRequired').style.display = 'inline';
+            document.getElementById('staffPassHint').style.display = 'none';
+            document.getElementById('staffStatusGroup').style.display = 'none';
+            document.getElementById('staffFormTitle').textContent = 'Tambah Staff Baru';
+            document.getElementById('staffFormSubmitBtn').innerHTML = '<i class="fas fa-plus"></i> Tambah Staff';
+            document.getElementById('staffFormCancelBtn').style.display = 'none';
+        }
+
+        function clearStaffAvatar() {
+            document.getElementById('staffAvatarData').value = '';
+            document.getElementById('staffAvatarFile').value = '';
+            document.getElementById('staffAvatarPreview').textContent = '?';
+        }
+
+        document.getElementById('staffAvatarFile')?.addEventListener('change', function(e) {
+            const file = e.target.files && e.target.files[0];
+            if (!file) return;
+            if (file.size > 800000) {
+              showErrorStaff('Foto maksimal ~800KB. Kompres dulu ya.');
+              return;
+            }
+            const reader = new FileReader();
+            reader.onload = () => {
+              document.getElementById('staffAvatarData').value = reader.result;
+              document.getElementById('staffAvatarPreview').innerHTML = '<img src="' + reader.result + '" style="width:100%;height:100%;object-fit:cover;">';
+            };
+            reader.readAsDataURL(file);
+        });
+
+        async function submitStaffForm(event) {
             event.preventDefault();
             clearStaffMessages();
-            const name = document.getElementById('staffName').value;
-            const username = document.getElementById('staffUsername').value;
+            const editId = document.getElementById('staffEditId').value;
+            const name = document.getElementById('staffName').value.trim();
             const password = document.getElementById('staffPassword').value;
             const role = document.getElementById('staffRole').value;
+            const avatar = document.getElementById('staffAvatarData').value || null;
+            const status = document.getElementById('staffStatus')?.value || 'active';
 
             try {
-                const res = await fetch('/api/add-staff', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-                    body: JSON.stringify({ name, username, password, role })
-                });
-                const result = await res.json();
-                if (!res.ok) throw new Error(result.error || 'Gagal tambah staff');
-                showSuccessStaff('Staff berhasil ditambahkan!');
-                document.querySelector('#tab-staff .form-card form').reset();
+                if (editId) {
+                    const body = { id: editId, name, role, status, avatar };
+                    if (password) body.password = password;
+                    const res = await fetch('/api/update-staff', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+                        body: JSON.stringify(body)
+                    });
+                    const result = await res.json();
+                    if (!res.ok) throw new Error(result.error || 'Gagal update staff');
+                    showSuccessStaff('Staff berhasil diperbarui!');
+                    cancelEditStaff();
+                } else {
+                    if (!password || password.length < 3) throw new Error('Password minimal 3 karakter');
+                    const res = await fetch('/api/add-staff', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+                        body: JSON.stringify({ name, password, role, avatar })
+                    });
+                    const result = await res.json();
+                    if (!res.ok) throw new Error(result.error || 'Gagal tambah staff');
+                    showSuccessStaff('Staff berhasil ditambahkan! Login pakai nama: ' + name);
+                    document.getElementById('staffForm').reset();
+                    clearStaffAvatar();
+                }
                 loadStaff();
             } catch (err) {
-                showErrorStaff(err.message || 'Gagal menambahkan staff');
+                showErrorStaff(err.message || 'Gagal menyimpan staff');
             }
         }
+
+        async function addStaff(event) { return submitStaffForm(event); }
 
         // ─────────────────────────────────────────────
         //  FINANCE

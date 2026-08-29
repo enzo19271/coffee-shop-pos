@@ -350,9 +350,9 @@
 
       <form onsubmit="handleLogin(event)" novalidate>
         <div class="form-group">
-          <label for="username">Username</label>
+          <label for="loginName">Nama</label>
           <div class="input-wrap">
-            <input type="text" id="username" name="username" required autofocus autocomplete="username" placeholder="Masukkan username" aria-required="true">
+            <input type="text" id="loginName" name="name" required autofocus autocomplete="name" placeholder="Masukkan nama akun" aria-required="true">
             <i class="fas fa-user" aria-hidden="true"></i>
           </div>
         </div>
@@ -378,8 +378,9 @@
 
       <div class="demo-credentials">
         <strong><i class="fas fa-key" aria-hidden="true"></i> Demo Credentials</strong>
-        <p><strong>Staff:</strong> <code>staff</code> / <code>password</code></p>
-        <p><strong>Admin:</strong> <code>admin</code> / <code>admin</code></p>
+        <p><strong>Staff:</strong> <code>Budi Santoso</code> / <code>password</code></p>
+        <p><strong>Admin:</strong> <code>Admin Coffee Shop</code> / <code>admin</code></p>
+        <p style="margin-top:8px;font-size:11px;opacity:.85;">Bisa juga pakai username lama: staff / admin</p>
       </div>
 
       <div class="back-to-menu">
@@ -402,7 +403,7 @@
     async function handleLogin(event) {
       event.preventDefault();
       
-      const username = document.querySelector('#username').value.trim();
+      const name = document.querySelector('#loginName').value.trim();
       const password = document.querySelector('#password').value;
       const errorMsg = document.querySelector('#errorMessage');
       const loading = document.querySelector('#loading');
@@ -417,7 +418,7 @@
         const response = await fetch('/api/login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ username, password })
+          body: JSON.stringify({ name, password })
         });
 
         const data = await response.json();
