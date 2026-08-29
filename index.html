@@ -5,10 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TAN COFFEE - Order Online</title>
   
-  <!-- Google Fonts: Plus Jakarta Sans -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Google Fonts: Fraunces (display) + DM Sans (UI) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;1,9..40,400&family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;0,9..144,800;1,9..144,500&display=swap" rel="stylesheet">
 
   <!-- Font Awesome 6 (Free) -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
@@ -19,6 +19,21 @@
       margin: 0;
       padding: 0;
       box-sizing: border-box;
+    }
+
+    
+    :root {
+      --font-ui: 'DM Sans', system-ui, -apple-system, sans-serif;
+      --font-display: 'Fraunces', Georgia, 'Times New Roman', serif;
+    }
+    body {
+      font-family: var(--font-ui) !important;
+      -webkit-font-smoothing: antialiased;
+    }
+    h1, h2, h3, .brand-title, .app-title, .display-font,
+    header h1, .app-brand-text h1, .sidebar-brand span {
+      font-family: var(--font-display) !important;
+      letter-spacing: -0.02em;
     }
 
     :root {
@@ -65,7 +80,7 @@
     }
 
     body {
-      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-family: var(--font-ui), -apple-system, BlinkMacSystemFont, sans-serif;
       background-color: var(--bg-main);
       color: var(--text-main);
       min-height: 100vh;
@@ -1481,6 +1496,15 @@
     /* Kill leftover absolute top-nav / old header padding */
     .top-nav { display: none !important; }
     header.app-header { position: sticky !important; padding-top: 10px !important; }
+
+
+    h1, h2, h3, .app-title, .brand-title {
+      font-family: var(--font-display) !important;
+      letter-spacing: -0.02em;
+    }
+    .menu-name, .stat-value, .modal-header h2 {
+      font-family: var(--font-display) !important;
+    }
 
   </style>
 </head>
