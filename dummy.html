@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ilmu Ketak | Ruang Belajar</title>
+    
+    <!-- Google Fonts: Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- AOS Animation CSS -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+    <style>
+        /* --- CSS VARIABLES --- */
+        :root {
+            --primary: #ff5722; /* Warna Oranye khas */
+            --primary-dark: #e64a19;
+            --secondary: #1a1a2e; /* Warna gelap */
+            --dark-card: #222222;
+            --text-dark: #333333;
+            --text-light: #777777;
+            --bg-light: #f9f9f9;
+            --white: #ffffff;
+            --font-main: 'Poppins', sans-serif;
+            --transition: all 0.3s ease;
+        }
+
+        /* --- GLOBAL STYLES --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-main);
+            color: var(--text-light);
+            line-height: 1.6;
+            overflow-x: hidden;
+            background-color: var(--white);
+        }
+
+        a { text-decoration: none; color: inherit; transition: var(--transition); }
+        ul { list-style: none; }
+        img { max-width: 100%; height: auto; display: block; }
+
+        /* Typography */
+        h1, h2, h3, h4, h5, h6 { color: var(--text-dark); font-weight: 700; line-height: 1.2; }
+        
+        /* Buttons */
+        .btn {
+            display: inline-block;
+            padding: 12px 28px;
+            background-color: var(--primary);
+            color: var(--white);
+            font-weight: 500;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 15px;
+        }
+        .btn:hover { background-color: var(--primary-dark); transform: translateY(-2px); color: var(--white); }
+        .btn i { margin-left: 8px; font-size: 12px; }
+        
+        .btn-outline {
+            background-color: transparent;
+            color: var(--white);
+            border: 2px solid var(--white);
+        }
+        .btn-outline:hover { background-color: var(--white); color: var(--text-dark); }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        /* --- TOP BAR --- */
+        .topbar {
+            background-color: var(--secondary);
+            color: #ccc;
+            font-size: 13px;
+            padding: 10px 0;
+        }
+        .topbar .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .topbar-left, .topbar-right { display: flex; align-items: center; gap: 20px; }
+        .topbar i { color: var(--primary); margin-right: 5px; }
+        .social-icons a { color: #ccc; margin-left: 10px; }
+        .social-icons a:hover { color: var(--primary); }
+
+        /* --- HEADER & NAV --- */
+        header {
+            background-color: var(--white);
+            padding: 15px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: relative;
+            z-index: 100;
+            transition: var(--transition);
+        }
+        header.sticky {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            animation: slideDown 0.5s ease forwards;
+        }
+        @keyframes slideDown { from { transform: translateY(-100%); } to { transform: translateY(0); } }
+
+        .nav-container { display: flex; justify-content: space-between; align-items: center; }
+        
+        .logo { display: flex; align-items: center; gap: 10px; font-size: 24px; font-weight: 800; color: var(--secondary); }
+        .logo i { color: var(--primary); font-size: 28px; }
+        .logo span { color: var(--primary); }
+
+        .nav-menu { display: flex; gap: 30px; }
+        .nav-menu li a { font-weight: 500; color: var(--text-dark); font-size: 15px; }
+        .nav-menu li a:hover, .nav-menu li a.active { color: var(--primary); }
+        .nav-menu li a i { font-size: 10px; margin-left: 4px; }
+
+        .nav-actions { display: flex; align-items: center; gap: 20px; }
+        .search-icon { font-size: 18px; color: var(--text-dark); cursor: pointer; }
+        .grid-icon { font-size: 20px; color: var(--text-dark); cursor: pointer; }
+
+        .mobile-toggle { display: none; font-size: 24px; cursor: pointer; color: var(--text-dark); }
+
+        /* --- HERO SECTION --- */
+        .hero {
+            position: relative;
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=1920&q=80') no-repeat center center/cover;
+            padding: 150px 0 200px;
+            color: var(--white);
+        }
+        .hero-content {
+            max-width: 650px;
+            margin-left: auto; /* Aligns to right visually like reference */
+        }
+        .subtitle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 15px;
+        }
+        .subtitle i { color: var(--primary); }
+        .hero h1 { font-size: 56px; color: var(--white); margin-bottom: 20px; line-height: 1.1; }
+        .hero p { font-size: 16px; margin-bottom: 30px; opacity: 0.9; }
+        .hero-btns { display: flex; gap: 20px; align-items: center; }
+        .volunteer-link { color: var(--white); font-weight: 500; }
+        .volunteer-link i { color: var(--primary); margin-right: 8px; }
+        .volunteer-link:hover { color: var(--primary); }
+
+        /* --- FEATURES OVERLAP SECTION --- */
+        .features-section {
+            position: relative;
+            margin-top: -80px;
+            z-index: 10;
+        }
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+        .feature-card {
+            background-color: var(--dark-card);
+            padding: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 4px;
+            transition: var(--transition);
+        }
+        .feature-card:hover { transform: translateY(-10px); box-shadow: 0 15px 30px rgba(0,0,0,0.2); }
+        
+        .fc-content { flex: 1; padding-right: 15px; }
+        .fc-category { color: var(--primary); font-style: italic; font-size: 14px; margin-bottom: 10px; display: block; }
+        .fc-content h3 { color: var(--white); font-size: 18px; margin-bottom: 20px; line-height: 1.4; }
+        .fc-btn { background-color: var(--primary); color: var(--white); padding: 8px 15px; font-size: 12px; border-radius: 3px; font-weight: 500; display: inline-block; }
+        .fc-btn:hover { background-color: var(--white); color: var(--primary); }
+        
+        .fc-image { width: 100px; height: 120px; border-radius: 4px; overflow: hidden; }
+        .fc-image img { width: 100%; height: 100%; object-fit: cover; }
+
+        /* --- ABOUT SECTION --- */
+        .about-section { padding: 100px 0; background-color: var(--white); }
+        .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
+        
+        .about-images { position: relative; padding-left: 40px; padding-bottom: 40px; }
+        .bg-shape {
+            position: absolute;
+            top: -20px; left: 0;
+            width: 70%; height: 100%;
+            background-color: #fdf0eb; /* Light orange tint */
+            z-index: 1;
+        }
+        .img-main { position: relative; z-index: 2; border-radius: 4px; overflow: hidden; }
+        .img-sub {
+            position: absolute;
+            bottom: -30px; right: -30px;
+            width: 60%;
+            z-index: 3;
+            border: 8px solid var(--white);
+            border-radius: 4px;
+        }
+        .circle-badge {
+            position: absolute;
+            bottom: 20px; left: -20px;
+            width: 120px; height: 120px;
+            background: var(--white);
+            border-radius: 50%;
+            z-index: 4;
+            display: flex; justify-content: center; align-items: center;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            animation: spin 15s linear infinite;
+        }
+        .circle-badge i { font-size: 30px; color: var(--primary); animation: spinReverse 15s linear infinite; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        @keyframes spinReverse { 100% { transform: rotate(-360deg); } }
+
+        .about-content .sec-subtitle { color: var(--primary); font-size: 16px; font-weight: 600; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+        .about-content h2 { font-size: 40px; margin-bottom: 20px; line-height: 1.2; }
+        .about-content p { margin-bottom: 30px; font-size: 15px; }
+        
+        .feature-list { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 35px; }
+        .feature-list li { display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 500; color: var(--text-dark); }
+        .feature-list li i { color: var(--primary); background: #fdf0eb; padding: 4px; border-radius: 50%; font-size: 10px; }
+
+        /* --- STATS SECTION --- */
+        .stats-section {
+            padding: 80px 0;
+            background: url('https://www.transparenttextures.com/patterns/world-map.png') no-repeat center center; /* Subtle map bg */
+            background-color: var(--bg-light);
+            position: relative;
+        }
+        .stats-container {
+            background-color: var(--white);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+            border-radius: 8px;
+            padding: 50px 30px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+        .stat-box { border-right: 1px solid #eee; }
+        .stat-box:last-child { border-right: none; }
+        .stat-box h3 { font-size: 42px; color: var(--primary); margin-bottom: 5px; }
+        .stat-box p { font-size: 14px; font-weight: 600; color: var(--text-dark); margin-bottom: 15px; }
+        .stat-box i { font-size: 35px; color: #fbc6b7; } /* Faded orange */
+
+        /* --- LATEST COURSES (Bottom part of ref) --- */
+        .courses-section { padding: 100px 0 50px; background-color: var(--white); }
+        .section-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 50px; }
+        .sh-left .sec-subtitle { color: var(--primary); font-size: 16px; font-weight: 600; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+        .sh-left h2 { font-size: 36px; }
+
+        /* --- RESPONSIVE DESIGN --- */
+        @media (max-width: 991px) {
+            .hero h1 { font-size: 42px; }
+            .features-grid { grid-template-columns: 1fr; }
+            .features-section { margin-top: -40px; padding: 0 15px; }
+            .about-grid { grid-template-columns: 1fr; }
+            .stats-container { grid-template-columns: repeat(2, 1fr); gap: 30px 0; }
+            .stat-box:nth-child(2) { border-right: none; }
+            .stat-box { border-bottom: 1px solid #eee; padding-bottom: 20px; }
+            .stat-box:nth-child(3), .stat-box:nth-child(4) { border-bottom: none; padding-bottom: 0; }
+            
+            .nav-menu, .nav-actions .btn { display: none; }
+            .mobile-toggle { display: block; }
+            
+            /* Mobile Menu Styles */
+            .nav-menu.active {
+                display: flex;
+                flex-direction: column;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: var(--white);
+                padding: 20px;
+                box-shadow: 0 10px 15px rgba(0,0,0,0.1);
+            }
+            .topbar { display: none; }
+        }
+
+        @media (max-width: 768px) {
+            .hero { padding: 120px 0; text-align: center; }
+            .hero-content { margin: 0 auto; }
+            .subtitle { justify-content: center; }
+            .hero-btns { justify-content: center; flex-direction: column; }
+            .about-images { padding-left: 0; }
+            .img-sub { width: 80%; bottom: -20px; right: 0; }
+            .feature-list { grid-template-columns: 1fr; }
+            .section-header { flex-direction: column; align-items: flex-start; gap: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- TOP BAR -->
+    <div class="topbar">
+        <div class="container">
+            <div class="topbar-left">
+                <span><i class="fas fa-map-marker-alt"></i> Jl. Pendidikan No 12, Jakarta</span>
+                <span><i class="fas fa-envelope"></i> info@ilmuketak.com</span>
+                <span><i class="fas fa-phone-alt"></i> +62 812 3456 7890</span>
+            </div>
+            <div class="topbar-right">
+                <a href="#"><i class="fas fa-user"></i> Daftar Tutor</a>
+                <div class="social-icons">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- HEADER / NAVBAR -->
+    <header id="header">
+        <div class="container nav-container">
+            <a href="#" class="logo">
+                <i class="fas fa-graduation-cap"></i> Ilmu<span>Ketak</span>
+            </a>
+
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="#" class="active">Beranda <i class="fas fa-chevron-down"></i></a></li>
+                <li><a href="#">Halaman <i class="fas fa-chevron-down"></i></a></li>
+                <li><a href="#">Kelas <i class="fas fa-chevron-down"></i></a></li>
+                <li><a href="#">Portofolio <i class="fas fa-chevron-down"></i></a></li>
+                <li><a href="#">Artikel <i class="fas fa-chevron-down"></i></a></li>
+                <li><a href="#">Kontak</a></li>
+            </ul>
+
+            <div class="nav-actions">
+                <i class="fas fa-search search-icon"></i>
+                <a href="#" class="btn">Mulai Belajar <i class="fas fa-arrow-right"></i></a>
+                <i class="fas fa-th grid-icon"></i>
+                <i class="fas fa-bars mobile-toggle" id="mobileToggle"></i>
+            </div>
+        </div>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content" data-aos="fade-left" data-aos-duration="1000">
+                <div class="subtitle">
+                    <i class="fas fa-book-reader"></i> Platform Edukasi No. 1
+                </div>
+                <h1>Tingkatkan Potensi Belajarmu</h1>
+                <p>Institusi pendidikan memberikan akses belajar tanpa batas. Bergabunglah bersama kami untuk masa depan yang lebih cerah dengan kurikulum terbaik.</p>
+                <div class="hero-btns">
+                    <a href="#" class="btn">Jelajahi Kelas <i class="fas fa-angle-double-right"></i></a>
+                    <a href="#" class="volunteer-link"><i class="fas fa-heart"></i> Jadilah Pengajar</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FEATURES OVERLAP -->
+    <section class="features-section container">
+        <div class="features-grid">
+            <!-- Card 1 -->
+            <div class="feature-card" data-aos="fade-up" data-aos-delay="100">
+                <div class="fc-content">
+                    <span class="fc-category">Sains & Alam</span>
+                    <h3>Eksplorasi Ilmu Pengetahuan Alam</h3>
+                    <a href="#" class="fc-btn">Baca Selengkapnya <i class="fas fa-plus"></i></a>
+                </div>
+                <div class="fc-image">
+                    <img src="https://images.unsplash.com/photo-1532094349884-543bc11b234d?auto=format&fit=crop&w=300&q=80" alt="Sains">
+                </div>
+            </div>
+            <!-- Card 2 -->
+            <div class="feature-card" data-aos="fade-up" data-aos-delay="200">
+                <div class="fc-content">
+                    <span class="fc-category">Teknologi</span>
+                    <h3>Dukungan Belajar Coding & IT</h3>
+                    <a href="#" class="fc-btn">Baca Selengkapnya <i class="fas fa-plus"></i></a>
+                </div>
+                <div class="fc-image">
+                    <img src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=300&q=80" alt="Teknologi">
+                </div>
+            </div>
+            <!-- Card 3 -->
+            <div class="feature-card" data-aos="fade-up" data-aos-delay="300">
+                <div class="fc-content">
+                    <span class="fc-category">Bahasa</span>
+                    <h3>Tingkatkan Skil Bahasa Asing</h3>
+                    <a href="#" class="fc-btn">Baca Selengkapnya <i class="fas fa-plus"></i></a>
+                </div>
+                <div class="fc-image">
+                    <img src="https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?auto=format&fit=crop&w=300&q=80" alt="Bahasa">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ABOUT SECTION -->
+    <section class="about-section">
+        <div class="container about-grid">
+            <div class="about-images" data-aos="fade-right">
+                <div class="bg-shape"></div>
+                <div class="img-main">
+                    <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=600&q=80" alt="Siswa Belajar">
+                </div>
+                <img src="https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?auto=format&fit=crop&w=400&q=80" alt="Siswa Ceria" class="img-sub">
+                <div class="circle-badge">
+                    <i class="fas fa-award"></i>
+                    <!-- SVG for circular text effect -->
+                    <svg viewBox="0 0 100 100" style="position: absolute; width: 100%; height: 100%;">
+                        <path id="curve" d="M 10,50 a 40,40 0 1,1 80,0 a 40,40 0 1,1 -80,0" fill="transparent"/>
+                        <text font-size="10" font-weight="600" letter-spacing="2" fill="#333">
+                            <textPath href="#curve">PLATFORM EDUKASI TERBAIK •</textPath>
+                        </text>
+                    </svg>
+                </div>
+            </div>
+            
+            <div class="about-content" data-aos="fade-left">
+                <span class="sec-subtitle"><i class="fas fa-lightbulb"></i> Tentang Ilmu Ketak</span>
+                <h2>Belajar Adalah Kunci Kesuksesan Masa Depan</h2>
+                <p>Penelitian menunjukkan bahwa pendidikan yang berkualitas dapat mengubah cara pandang dan masa depan seseorang. Di Ilmu Ketak, kami mendobrak batasan ruang kelas tradisional, menghubungkan siswa dengan tutor ahli tanpa batasan budaya dan geografis.</p>
+                
+                <ul class="feature-list">
+                    <li><i class="fas fa-check"></i> Kurikulum Standar Global</li>
+                    <li><i class="fas fa-check"></i> Kelas Interaktif Live</li>
+                    <li><i class="fas fa-check"></i> Mentor Berpengalaman</li>
+                    <li><i class="fas fa-check"></i> Sertifikat Kelulusan</li>
+                    <li><i class="fas fa-check"></i> Akses Modul Selamanya</li>
+                    <li><i class="fas fa-check"></i> Komunitas Belajar Aktif</li>
+                </ul>
+
+                <a href="#" class="btn">Pelajari Lebih Lanjut <i class="fas fa-angle-double-right"></i></a>
+            </div>
+        </div>
+    </section>
+
+    <!-- STATS SECTION -->
+    <section class="stats-section">
+        <div class="container">
+            <div class="stats-container" data-aos="zoom-in">
+                <div class="stat-box">
+                    <h3>35+</h3>
+                    <p>Tahun Pengalaman</p>
+                    <i class="fas fa-magic"></i>
+                </div>
+                <div class="stat-box">
+                    <h3>68+</h3>
+                    <p>Tutor Profesional</p>
+                    <i class="fas fa-chalkboard-teacher"></i>
+                </div>
+                <div class="stat-box">
+                    <h3>8k+</h3>
+                    <p>Siswa Lulus</p>
+                    <i class="fas fa-globe"></i>
+                </div>
+                <div class="stat-box">
+                    <h3>93+</h3>
+                    <p>Penghargaan Edukasi</p>
+                    <i class="fas fa-file-alt"></i>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- LATEST COURSES (Mewakili bagian bawah gambar referensi) -->
+    <section class="courses-section">
+        <div class="container">
+            <div class="section-header">
+                <div class="sh-left" data-aos="fade-right">
+                    <span class="sec-subtitle"><i class="fas fa-star"></i> Kelas Terpopuler</span>
+                    <h2>Jelajahi Kelas Terbaru Kami</h2>
+                </div>
+                <div class="sh-right" data-aos="fade-left">
+                    <a href="#" class="btn">Lihat Semua Kelas <i class="fas fa-angle-double-right"></i></a>
+                </div>
+            </div>
+            <!-- Konten Grid Kelas bisa ditambahkan di sini mengikuti pola yang sama -->
+        </div>
+    </section>
+
+    <!-- AOS JS -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        // Inisialisasi Animasi AOS
+        AOS.init({
+            once: true, // Animasi hanya berjalan sekali saat di-scroll
+            offset: 100, // Offset sebelum animasi dimulai
+        });
+
+        // Script untuk Sticky Header
+        window.addEventListener('scroll', function() {
+            var header = document.getElementById('header');
+            if (window.scrollY > 50) {
+                header.classList.add('sticky');
+            } else {
+                header.classList.remove('sticky');
+            }
+        });
+
+        // Script untuk Mobile Menu Toggle
+        const mobileToggle = document.getElementById('mobileToggle');
+        const navMenu = document.getElementById('navMenu');
+
+        mobileToggle.addEventListener('click', function() {
+            navMenu.classList.toggle('active');
+            if(navMenu.classList.contains('active')){
+                this.classList.remove('fa-bars');
+                this.classList.add('fa-times');
+            } else {
+                this.classList.remove('fa-times');
+                this.classList.add('fa-bars');
+            }
+        });
+    </script>
+</body>
+</html>
