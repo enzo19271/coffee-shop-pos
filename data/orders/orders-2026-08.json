@@ -52,5 +52,30 @@
     "createdAt": "2026-08-30T11:48:57.227Z",
     "updatedAt": "2026-08-30T11:49:39.714Z",
     "updatedBy": "reza"
+  },
+  {
+    "id": "ORD-MTFREJQQ-355C8",
+    "timestamp": "2026-08-30T12:01:58.898Z",
+    "customer": {
+      "name": "Novia syantik",
+      "tableNo": "100000"
+    },
+    "items": [
+      {
+        "menuId": "4",
+        "name": "Mocchi",
+        "price": 12000,
+        "variant": "Medium",
+        "quantity": 1
+      }
+    ],
+    "totalPrice": 12000,
+    "paymentMethod": "cash",
+    "paymentProof": null,
+    "notes": "Pengen toping enzo",
+    "status": "pending",
+    "source": "customer",
+    "createdBy": null,
+    "createdAt": "2026-08-30T12:01:58.898Z"
   }
 ]
