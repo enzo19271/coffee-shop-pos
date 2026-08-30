@@ -52,5 +52,44 @@
     "createdAt": "2026-08-29T04:12:04.104Z",
     "updatedAt": "2026-08-29T04:12:41.979Z",
     "updatedBy": "reza"
+  },
+  {
+    "id": "ORD-MTFQ6EF3-12XVH",
+    "timestamp": "2026-08-30T11:27:39.135Z",
+    "customer": {
+      "name": "Rio",
+      "tableNo": "Kasir"
+    },
+    "items": [
+      {
+        "menuId": "3",
+        "name": "Butterschot",
+        "price": 13000,
+        "variant": "Medium",
+        "quantity": 2
+      },
+      {
+        "menuId": "1",
+        "name": "Cappucino",
+        "price": 10000,
+        "variant": "Besar",
+        "quantity": 4
+      },
+      {
+        "menuId": "4",
+        "name": "Mocchi",
+        "price": 12000,
+        "variant": "Medium",
+        "quantity": 3
+      }
+    ],
+    "totalPrice": 102000,
+    "paymentMethod": "cash",
+    "paymentProof": null,
+    "notes": "aedse",
+    "status": "confirmed",
+    "source": "staff",
+    "createdBy": "reza",
+    "createdAt": "2026-08-30T11:27:39.135Z"
   }
 ]
