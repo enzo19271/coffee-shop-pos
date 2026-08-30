@@ -1014,6 +1014,157 @@
             }
         }
 
+        
+        /* Transaction accordion */
+        .txn-card {
+            padding: 0 !important;
+            overflow: hidden;
+        }
+        .txn-summary {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 16px;
+            cursor: pointer;
+            user-select: none;
+        }
+        .txn-summary:hover { background: rgba(27,122,84,0.04); }
+        .txn-summary .sum-main { flex: 1; min-width: 0; }
+        .txn-summary .sum-name {
+            font-weight: 800;
+            font-size: 14.5px;
+            color: var(--brand-primary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .txn-summary .sum-meta {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 3px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px 12px;
+        }
+        .txn-summary .sum-total {
+            font-weight: 800;
+            color: var(--brand-accent);
+            white-space: nowrap;
+            font-size: 14.5px;
+        }
+        .txn-summary .sum-chevron {
+            color: var(--text-light);
+            transition: transform 0.25s;
+            font-size: 13px;
+        }
+        .txn-card.open .sum-chevron { transform: rotate(180deg); }
+        .txn-detail {
+            display: none;
+            padding: 0 16px 16px;
+            border-top: 1px solid var(--border-color);
+        }
+        .txn-card.open .txn-detail { display: block; padding-top: 14px; }
+
+        /* Stats page */
+        .stats-filter-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: flex-end;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 18px;
+        }
+        .stats-filter-bar .filter-group { min-width: 120px; flex: 1; }
+        .stats-period-pills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            width: 100%;
+            margin-bottom: 4px;
+        }
+        .stats-pill {
+            border: 1.5px solid var(--border-color);
+            background: #fff;
+            color: var(--text-muted);
+            font-family: inherit;
+            font-weight: 700;
+            font-size: 12.5px;
+            padding: 8px 14px;
+            border-radius: 999px;
+            cursor: pointer;
+            min-height: 36px;
+        }
+        .stats-pill.active {
+            background: var(--brand-primary);
+            border-color: var(--brand-primary);
+            color: #fff;
+        }
+        .stats-charts {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 16px;
+            margin-bottom: 18px;
+        }
+        @media (min-width: 900px) {
+            .stats-charts { grid-template-columns: 1.4fr 1fr; }
+        }
+        .chart-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 16px 18px 12px;
+            box-shadow: var(--shadow-sm);
+        }
+        .chart-card h4 {
+            font-size: 14px;
+            font-weight: 800;
+            color: var(--brand-primary);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .chart-wrap {
+            position: relative;
+            width: 100%;
+            height: 260px;
+        }
+        .stats-kpi {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+        @media (min-width: 700px) {
+            .stats-kpi { grid-template-columns: repeat(4, 1fr); }
+        }
+        .stats-kpi .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 16px;
+            text-align: left;
+        }
+        .stats-kpi .stat-value {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--brand-primary);
+            font-family: var(--font-display);
+        }
+        .stats-kpi .stat-label {
+            font-size: 11.5px;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            margin-top: 4px;
+        }
+        #statsCustomRange { display: none; width: 100%; gap: 10px; flex-wrap: wrap; }
+        #statsCustomRange.show { display: flex; }
+
         /* ── Transaction Cards ── */
         .txn-card {
             background: var(--bg-card);
@@ -1842,6 +1993,11 @@
                 </a>
             </li>
             <li>
+                <a data-tab="stats">
+                    <i class="fas fa-chart-line"></i> Statistik Penjualan
+                </a>
+            </li>
+            <li>
                 <a data-tab="staff">
                     <i class="fas fa-users"></i> Staff
                 </a>
@@ -2055,6 +2211,51 @@
                 </div>
 
                 <div id="transactionsList"></div>
+            </div>
+
+
+            <!-- ─── TAB: STATS ─── -->
+            <div id="tab-stats" class="tab-content">
+                <div class="section-header">
+                    <h3><i class="fas fa-chart-line"></i> Statistik Penjualan</h3>
+                </div>
+                <div class="stats-filter-bar">
+                    <div class="stats-period-pills">
+                        <button type="button" class="stats-pill active" data-period="week" onclick="setStatsPeriod('week')">1 Minggu</button>
+                        <button type="button" class="stats-pill" data-period="month" onclick="setStatsPeriod('month')">1 Bulan</button>
+                        <button type="button" class="stats-pill" data-period="year" onclick="setStatsPeriod('year')">1 Tahun</button>
+                        <button type="button" class="stats-pill" data-period="custom" onclick="setStatsPeriod('custom')">Custom</button>
+                    </div>
+                    <div id="statsCustomRange">
+                        <div class="filter-group">
+                            <label>Dari</label>
+                            <input type="date" id="statsFrom" />
+                        </div>
+                        <div class="filter-group">
+                            <label>Sampai</label>
+                            <input type="date" id="statsTo" />
+                        </div>
+                        <button type="button" class="btn btn-primary btn-sm" onclick="loadSalesStats()" style="min-height:42px;align-self:flex-end;">
+                            <i class="fas fa-search"></i> Terapkan
+                        </button>
+                    </div>
+                </div>
+                <div class="stats-kpi" id="statsKpi"></div>
+                <div class="stats-charts">
+                    <div class="chart-card">
+                        <h4><i class="fas fa-chart-area"></i> Omzet harian</h4>
+                        <div class="chart-wrap"><canvas id="chartRevenue"></canvas></div>
+                    </div>
+                    <div class="chart-card">
+                        <h4><i class="fas fa-chart-pie"></i> Status pesanan</h4>
+                        <div class="chart-wrap"><canvas id="chartStatus"></canvas></div>
+                    </div>
+                    <div class="chart-card" style="grid-column:1/-1;">
+                        <h4><i class="fas fa-chart-bar"></i> Jumlah pesanan per hari</h4>
+                        <div class="chart-wrap"><canvas id="chartOrders"></canvas></div>
+                    </div>
+                </div>
+                <p id="statsStatusMsg" style="font-size:12.5px;color:var(--text-muted);font-weight:600;"></p>
             </div>
 
             <!-- ─── TAB: STAFF ─── -->
@@ -2363,6 +2564,7 @@
                 analytics: 'Dashboard',
                 menu: 'Manajemen Menu',
                 transactions: 'Riwayat Transaksi',
+                stats: 'Statistik Penjualan',
                 staff: 'Manajemen Staff',
                 finance: 'Laporan Keuangan',
                 reports: 'Ekspor Laporan',
@@ -2377,6 +2579,7 @@
             if (tabName === 'analytics') loadAnalytics();
             else if (tabName === 'menu') loadMenu();
             else if (tabName === 'transactions') loadTransactions();
+            else if (tabName === 'stats') loadSalesStats();
             else if (tabName === 'staff') loadStaff();
             else if (tabName === 'finance') loadFinance();
         }
@@ -2753,9 +2956,14 @@
             }
         }
 
+        function toggleTxnCard(el) {
+            const card = el.closest('.txn-card');
+            if (card) card.classList.toggle('open');
+        }
+
         function displayTransactions(orders) {
             const container = document.getElementById('transactionsList');
-            if (orders.length === 0) {
+            if (!orders || orders.length === 0) {
                 container.innerHTML =
                     `<div class="empty-state"><i class="fas fa-receipt"></i><p>Belum ada transaksi untuk periode ini</p></div>`;
                 return;
@@ -2763,40 +2971,55 @@
             container.innerHTML = orders.map(order => {
                 const statusClass = order.status || 'pending';
                 const statusLabel = statusLabels[statusClass] || statusClass;
+                const name = (order.customer && order.customer.name) || '-';
+                const tableNo = (order.customer && order.customer.tableNo) || '-';
+                const total = (order.totalPrice || 0).toLocaleString('id-ID');
+                const timeStr = new Date(order.timestamp).toLocaleString('id-ID');
                 return `
                     <div class="txn-card ${statusClass}">
-                        <div class="txn-header">
-                            <span class="txn-id"><i class="fas fa-hashtag"></i> ${order.id}</span>
-                            <span class="txn-status ${statusClass}">${statusLabel}</span>
-                        </div>
-                        <div style="font-size:12px;color:var(--text-muted);margin-bottom:10px;">
-                            <i class="far fa-clock"></i> ${new Date(order.timestamp).toLocaleString('id-ID')}
-                        </div>
-                        <div class="txn-body">
-                            <div class="txn-field">
-                                <span class="label"><i class="fas fa-user"></i> Pembeli</span>
-                                <span class="value">${order.customer?.name || '-'}</span>
+                        <div class="txn-summary" onclick="toggleTxnCard(this)">
+                            <div class="sum-main">
+                                <div class="sum-name">${name}</div>
+                                <div class="sum-meta">
+                                    <span><i class="fas fa-chair"></i> ${tableNo}</span>
+                                    <span><i class="far fa-clock"></i> ${timeStr}</span>
+                                    <span class="txn-status ${statusClass}" style="display:inline-flex;padding:2px 8px;font-size:10px;">${statusLabel}</span>
+                                </div>
                             </div>
-                            <div class="txn-field">
-                                <span class="label"><i class="fas fa-chair"></i> Meja</span>
-                                <span class="value">${order.customer?.tableNo || '-'}</span>
-                            </div>
-                            <div class="txn-field">
-                                <span class="label"><i class="fas fa-credit-card"></i> Metode</span>
-                                <span class="value">${(order.paymentMethod || '-').toUpperCase()}</span>
-                            </div>
-                            <div class="txn-field">
-                                <span class="label"><i class="fas fa-user-pen"></i> Dicatat</span>
-                                <span class="value">${order.recordedBy || '-'}</span>
-                            </div>
+                            <div class="sum-total">Rp ${total}</div>
+                            <i class="fas fa-chevron-down sum-chevron"></i>
                         </div>
-                        <div class="txn-items">
-                            <strong><i class="fas fa-list"></i> Items</strong>
-                            ${(order.items || []).map(it => `• ${it.quantity}x ${it.name}${it.variant ? ' ('+it.variant+')' : ''}`).join('<br>')}
+                        <div class="txn-detail">
+                            <div class="txn-header" style="margin-bottom:10px;">
+                                <span class="txn-id"><i class="fas fa-hashtag"></i> ${order.id}</span>
+                                <span class="txn-status ${statusClass}">${statusLabel}</span>
+                            </div>
+                            <div class="txn-body">
+                                <div class="txn-field">
+                                    <span class="label"><i class="fas fa-user"></i> Pembeli</span>
+                                    <span class="value">${name}</span>
+                                </div>
+                                <div class="txn-field">
+                                    <span class="label"><i class="fas fa-chair"></i> Meja</span>
+                                    <span class="value">${tableNo}</span>
+                                </div>
+                                <div class="txn-field">
+                                    <span class="label"><i class="fas fa-credit-card"></i> Metode</span>
+                                    <span class="value">${(order.paymentMethod || '-').toUpperCase()}</span>
+                                </div>
+                                <div class="txn-field">
+                                    <span class="label"><i class="fas fa-user-pen"></i> Dicatat</span>
+                                    <span class="value">${order.recordedBy || '-'}</span>
+                                </div>
+                            </div>
+                            <div class="txn-items">
+                                <strong><i class="fas fa-list"></i> Items</strong>
+                                ${(order.items || []).map(it => `• ${it.quantity}x ${it.name}${it.variant ? ' ('+it.variant+')' : ''}`).join('<br>')}
+                            </div>
+                            ${order.notes ? `<div style="font-size:13px;color:var(--text-dark);margin-bottom:12px;padding:10px 14px;background:var(--bg-main);border-radius:var(--radius-sm);border:1px solid var(--border-color);"><i class="fas fa-pencil-alt"></i> ${order.notes}</div>` : ''}
+                            ${order.paymentProof ? `<img src="${order.paymentProof}" class="proof-thumb" onclick="event.stopPropagation(); window.open('${order.paymentProof}','_blank')" alt="Bukti bayar">` : ''}
+                            <div class="txn-total"><i class="fas fa-tag"></i> Total: Rp ${total}</div>
                         </div>
-                        ${order.notes ? `<div style="font-size:13px;color:var(--text-dark);margin-bottom:12px;padding:10px 14px;background:var(--bg-main);border-radius:var(--radius-sm);border:1px solid var(--border-color);"><i class="fas fa-pencil-alt"></i> ${order.notes}</div>` : ''}
-                        ${order.paymentProof ? `<img src="${order.paymentProof}" class="proof-thumb" onclick="window.open('${order.paymentProof}','_blank')" alt="Bukti bayar">` : ''}
-                        <div class="txn-total"><i class="fas fa-tag"></i> Total: Rp ${(order.totalPrice || 0).toLocaleString('id-ID')}</div>
                     </div>
                 `;
             }).join('');
@@ -3235,7 +3458,15 @@ async function executeDeleteData() {
                         '<tr><td colspan="8" align="right"><b>GRAND TOTAL</b></td><td><b>' + formatRp(totalSum) + '</b></td></tr>' +
                         '</tbody></table>' +
                         '<p style="margin-top:24px;font-size:11px;color:#666;">© TAN COFFEE · Ilmu Ketak Community</p>' +
-                        '</body></html>';
+                        '
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <p class="footer-brand">© TAN COFFEE · Powered by <strong>Ilmu Ketak Community</strong></p>
+      <p class="footer-wa">WhatsApp / Bisnis: <a href="https://wa.me/6283161695044" target="_blank" rel="noopener">0831-6169-5044</a></p>
+      <p class="footer-cta">Ingin dibuatkan aplikasi seperti ini gratis? hubungi admin ilmu ketak</p>
+    </div>
+  </footer>
+</body></html>';
                     const blob = new Blob(['\ufeff', html], { type: 'application/msword' });
                     const a = document.createElement('a');
                     a.href = URL.createObjectURL(blob);
@@ -3357,11 +3588,251 @@ async function executeDeleteData() {
         }
 
 
+
+        // ─────────────────────────────────────────────
+        //  SALES STATISTICS
+        // ─────────────────────────────────────────────
+        let statsPeriod = 'week';
+        let chartRevenue = null;
+        let chartStatus = null;
+        let chartOrders = null;
+
+        function setStatsPeriod(period) {
+            statsPeriod = period;
+            document.querySelectorAll('.stats-pill').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.period === period);
+            });
+            const custom = document.getElementById('statsCustomRange');
+            if (custom) custom.classList.toggle('show', period === 'custom');
+            if (period !== 'custom') loadSalesStats();
+        }
+
+        function getStatsDateRange() {
+            const now = new Date();
+            const end = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999);
+            let start = new Date(end);
+            if (statsPeriod === 'week') {
+                start.setDate(start.getDate() - 6);
+                start.setHours(0,0,0,0);
+            } else if (statsPeriod === 'month') {
+                start = new Date(now.getFullYear(), now.getMonth(), 1, 0, 0, 0, 0);
+            } else if (statsPeriod === 'year') {
+                start = new Date(now.getFullYear(), 0, 1, 0, 0, 0, 0);
+            } else {
+                const fromEl = document.getElementById('statsFrom');
+                const toEl = document.getElementById('statsTo');
+                if (!fromEl.value || !toEl.value) {
+                    start.setDate(start.getDate() - 6);
+                    start.setHours(0,0,0,0);
+                } else {
+                    start = new Date(fromEl.value + 'T00:00:00');
+                    end.setTime(new Date(toEl.value + 'T23:59:59').getTime());
+                }
+            }
+            return { start, end };
+        }
+
+        function listMonthsBetween(start, end) {
+            const months = [];
+            const cur = new Date(start.getFullYear(), start.getMonth(), 1);
+            const last = new Date(end.getFullYear(), end.getMonth(), 1);
+            while (cur <= last) {
+                const y = cur.getFullYear();
+                const m = String(cur.getMonth() + 1).padStart(2, '0');
+                months.push(y + '-' + m);
+                cur.setMonth(cur.getMonth() + 1);
+            }
+            return months;
+        }
+
+        async function fetchOrdersForMonths(months) {
+            const all = [];
+            for (const month of months) {
+                try {
+                    const res = await fetch('/api/orders?month=' + encodeURIComponent(month), {
+                        headers: { 'Authorization': 'Bearer ' + token }
+                    });
+                    if (!res.ok) continue;
+                    const data = await res.json();
+                    (data.data || []).forEach(o => all.push(o));
+                } catch (e) { /* skip missing month file */ }
+            }
+            return all;
+        }
+
+        function destroyChart(ch) {
+            if (ch && typeof ch.destroy === 'function') ch.destroy();
+        }
+
+        async function loadSalesStats() {
+            const msg = document.getElementById('statsStatusMsg');
+            const kpi = document.getElementById('statsKpi');
+            if (msg) msg.textContent = 'Memuat statistik...';
+            try {
+                if (typeof Chart === 'undefined') {
+                    throw new Error('Chart.js belum termuat. Refresh halaman.');
+                }
+                const { start, end } = getStatsDateRange();
+                if (start > end) throw new Error('Tanggal "Dari" harus sebelum "Sampai"');
+                const months = listMonthsBetween(start, end);
+                let orders = await fetchOrdersForMonths(months);
+                orders = orders.filter(o => {
+                    const t = new Date(o.timestamp).getTime();
+                    return t >= start.getTime() && t <= end.getTime();
+                });
+
+                const completed = orders.filter(o => o.status === 'completed');
+                const revenue = completed.reduce((s, o) => s + (o.totalPrice || 0), 0);
+                const avg = completed.length ? revenue / completed.length : 0;
+
+                if (kpi) {
+                    kpi.innerHTML = `
+                        <div class="stat-card"><div class="stat-value">${orders.length}</div><div class="stat-label">Total Pesanan</div></div>
+                        <div class="stat-card"><div class="stat-value">${completed.length}</div><div class="stat-label">Selesai</div></div>
+                        <div class="stat-card"><div class="stat-value">Rp ${revenue.toLocaleString('id-ID')}</div><div class="stat-label">Omzet</div></div>
+                        <div class="stat-card"><div class="stat-value">Rp ${Math.round(avg).toLocaleString('id-ID')}</div><div class="stat-label">Rata-rata</div></div>
+                    `;
+                }
+
+                // Daily buckets
+                const dayMap = {};
+                const cursor = new Date(start.getFullYear(), start.getMonth(), start.getDate());
+                const endDay = new Date(end.getFullYear(), end.getMonth(), end.getDate());
+                while (cursor <= endDay) {
+                    const key = cursor.toISOString().slice(0, 10);
+                    dayMap[key] = { revenue: 0, count: 0 };
+                    cursor.setDate(cursor.getDate() + 1);
+                }
+                completed.forEach(o => {
+                    const key = (o.timestamp || '').slice(0, 10);
+                    if (!dayMap[key]) dayMap[key] = { revenue: 0, count: 0 };
+                    dayMap[key].revenue += o.totalPrice || 0;
+                    dayMap[key].count += 1;
+                });
+                // also count non-completed for order count chart
+                const orderCountMap = {};
+                Object.keys(dayMap).forEach(k => { orderCountMap[k] = 0; });
+                orders.forEach(o => {
+                    const key = (o.timestamp || '').slice(0, 10);
+                    if (orderCountMap[key] === undefined) orderCountMap[key] = 0;
+                    orderCountMap[key] += 1;
+                });
+
+                const labels = Object.keys(dayMap).sort();
+                const revenueData = labels.map(k => dayMap[k].revenue);
+                const orderData = labels.map(k => orderCountMap[k] || 0);
+                const labelShort = labels.map(k => {
+                    const d = new Date(k + 'T12:00:00');
+                    return d.toLocaleDateString('id-ID', { day: '2-digit', month: 'short' });
+                });
+
+                // Status breakdown
+                const statusCount = {};
+                orders.forEach(o => {
+                    const s = o.status || 'unknown';
+                    statusCount[s] = (statusCount[s] || 0) + 1;
+                });
+                const statusKeys = Object.keys(statusCount);
+                const statusVals = statusKeys.map(k => statusCount[k]);
+                const statusColors = {
+                    completed: '#2e7d32',
+                    confirmed: '#00796b',
+                    pending: '#ef6c00',
+                    pending_verification: '#0277bd',
+                    rejected: '#c62828',
+                    unknown: '#9e9e9e'
+                };
+
+                destroyChart(chartRevenue);
+                destroyChart(chartStatus);
+                destroyChart(chartOrders);
+
+                const revCtx = document.getElementById('chartRevenue');
+                const stCtx = document.getElementById('chartStatus');
+                const orCtx = document.getElementById('chartOrders');
+                if (!revCtx || !stCtx || !orCtx) return;
+
+                chartRevenue = new Chart(revCtx, {
+                    type: 'line',
+                    data: {
+                        labels: labelShort,
+                        datasets: [{
+                            label: 'Omzet (Rp)',
+                            data: revenueData,
+                            borderColor: '#0B4D3A',
+                            backgroundColor: 'rgba(27,122,84,0.15)',
+                            fill: true,
+                            tension: 0.3,
+                            pointRadius: 3
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            y: {
+                                ticks: {
+                                    callback: v => 'Rp ' + Number(v).toLocaleString('id-ID')
+                                }
+                            }
+                        }
+                    }
+                });
+
+                chartStatus = new Chart(stCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: statusKeys.map(k => (statusLabels && statusLabels[k]) || k),
+                        datasets: [{
+                            data: statusVals,
+                            backgroundColor: statusKeys.map(k => statusColors[k] || '#90a4ae')
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 11 } } } }
+                    }
+                });
+
+                chartOrders = new Chart(orCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: labelShort,
+                        datasets: [{
+                            label: 'Pesanan',
+                            data: orderData,
+                            backgroundColor: '#1B7A54',
+                            borderRadius: 6
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }
+                    }
+                });
+
+                if (msg) {
+                    msg.textContent = 'Periode ' + start.toLocaleDateString('id-ID') + ' – ' + end.toLocaleDateString('id-ID') +
+                        ' · ' + orders.length + ' pesanan · omzet Rp ' + revenue.toLocaleString('id-ID');
+                }
+            } catch (err) {
+                console.error(err);
+                if (msg) msg.textContent = err.message || 'Gagal memuat statistik';
+                if (kpi) kpi.innerHTML = '';
+            }
+        }
+
+
 async function executeDeleteOrders() { return executeDeleteData(); }
 
 </script>
 
   <!-- Export libraries -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
