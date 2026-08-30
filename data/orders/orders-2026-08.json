@@ -98,11 +98,11 @@
     "paymentMethod": "cash",
     "paymentProof": null,
     "notes": "Tambahan toping enzo",
-    "status": "confirmed",
+    "status": "completed",
     "source": "customer",
     "createdBy": null,
     "createdAt": "2026-08-30T12:06:20.920Z",
-    "updatedAt": "2026-08-30T12:06:33.303Z",
+    "updatedAt": "2026-08-30T12:07:00.685Z",
     "updatedBy": "reza"
   }
 ]
