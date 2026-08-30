@@ -1,1 +1,27 @@
-[]
+[
+  {
+    "id": "ORD-MTFQWFCR-QW8TZ",
+    "timestamp": "2026-08-30T11:47:53.403Z",
+    "customer": {
+      "name": "Rio",
+      "tableNo": "Kasir"
+    },
+    "items": [
+      {
+        "menuId": "3",
+        "name": "Butterschot",
+        "price": 13000,
+        "variant": "Medium",
+        "quantity": 1
+      }
+    ],
+    "totalPrice": 13000,
+    "paymentMethod": "cash",
+    "paymentProof": null,
+    "notes": "",
+    "status": "confirmed",
+    "source": "staff",
+    "createdBy": "reza",
+    "createdAt": "2026-08-30T11:47:53.403Z"
+  }
+]
