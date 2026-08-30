@@ -762,6 +762,65 @@
             border: 1px solid rgba(198, 40, 40, 0.2);
         }
 
+        #toastContainer {
+            position: fixed;
+            top: 16px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 99999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: min(92vw, 420px);
+            pointer-events: none;
+        }
+        .toast-item {
+            pointer-events: auto;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 14px 16px;
+            border-radius: 14px;
+            font-size: 14px;
+            font-weight: 700;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.18);
+            animation: toastIn 0.28s cubic-bezier(0.4,0,0.2,1);
+            border: 1px solid transparent;
+            line-height: 1.4;
+        }
+        .toast-item.success { background: #e8f5e9; color: #1b5e20; border-color: rgba(46,125,50,0.25); }
+        .toast-item.error { background: #ffebee; color: #b71c1c; border-color: rgba(198,40,40,0.25); }
+        .toast-item.info { background: #e3f2fd; color: #0d47a1; border-color: rgba(2,119,189,0.25); }
+        .toast-item i { font-size: 18px; margin-top: 1px; flex-shrink: 0; }
+        .toast-item .toast-body { flex: 1; }
+        .toast-item .toast-close {
+            background: transparent; border: none; cursor: pointer;
+            color: inherit; opacity: 0.6; font-size: 16px; padding: 0 2px; line-height: 1;
+        }
+        .toast-item .toast-close:hover { opacity: 1; }
+        .toast-item.hiding { animation: toastOut 0.25s ease forwards; }
+        @keyframes toastIn {
+            from { opacity: 0; transform: translateY(-12px) scale(0.96); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        @keyframes toastOut {
+            to { opacity: 0; transform: translateY(-8px) scale(0.96); }
+        }
+
+        .site-footer {
+            background: #ffffff;
+            border-top: 1px solid var(--border-color);
+            margin-top: 32px;
+            padding: 20px 16px 28px;
+        }
+        .footer-inner { max-width: 640px; margin: 0 auto; text-align: center; }
+        .footer-brand { font-size: 12px; color: var(--text-muted); font-weight: 500; margin-bottom: 6px; line-height: 1.5; }
+        .footer-brand strong { color: var(--brand-primary); font-weight: 700; }
+        .footer-wa { font-size: 11.5px; color: var(--text-light); margin-bottom: 8px; }
+        .footer-wa a { color: var(--brand-accent); text-decoration: none; font-weight: 700; }
+        .footer-wa a:hover { text-decoration: underline; }
+        .footer-cta { font-size: 11px; color: var(--text-light); line-height: 1.45; max-width: 360px; margin: 0 auto; }
+
         @keyframes slideDown {
             from {
                 opacity: 0;
@@ -1661,6 +1720,8 @@
 </head>
 
 <body>
+  <div id="toastContainer" aria-live="polite" aria-atomic="true"></div>
+
 
     <!-- ─── SIDEBAR OVERLAY (mobile) ─── -->
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
@@ -1765,14 +1826,7 @@
                         <p class="welcome-meta"><i class="far fa-clock"></i> <span id="welcomeTime"></span></p>
                     </div>
                 </div>
-                <div class="welcome-actions">
-                    <button type="button" class="welcome-action-btn" onclick="document.querySelector('[data-tab=reports]')?.click()">
-                        <i class="fas fa-file-export"></i> Ekspor
-                    </button>
-                    <button type="button" class="welcome-action-btn" onclick="document.querySelector('[data-tab=transactions]')?.click()">
-                        <i class="fas fa-receipt"></i> Transaksi
-                    </button>
-                </div>
+
             </div>
 
             <!-- ─── TAB: ANALYTICS ─── -->
@@ -2235,43 +2289,26 @@
         // ─────────────────────────────────────────────
         //  MESSAGE HELPERS
         // ─────────────────────────────────────────────
-        function showSuccess(msg) {
-            const el = document.getElementById('successMessage');
-            el.innerHTML = `<i class="fas fa-check-circle"></i> ${msg}`;
-            el.classList.add('show');
-            setTimeout(() => el.classList.remove('show'), 3500);
+        function showToast(msg, type) {
+            type = type || 'info';
+            const container = document.getElementById('toastContainer');
+            if (!container) return;
+            const icons = { success: 'fa-circle-check', error: 'fa-circle-exclamation', info: 'fa-circle-info' };
+            const item = document.createElement('div');
+            item.className = 'toast-item ' + type;
+            item.innerHTML = '<i class="fas ' + (icons[type] || icons.info) + '"></i><div class="toast-body">' + msg + '</div><button type="button" class="toast-close" aria-label="Tutup">×</button>';
+            const close = () => { item.classList.add('hiding'); setTimeout(() => item.remove(), 250); };
+            item.querySelector('.toast-close').addEventListener('click', close);
+            container.appendChild(item);
+            setTimeout(close, 3500);
         }
 
-        function showError(msg) {
-            const el = document.getElementById('errorMessage');
-            el.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${msg}`;
-            el.classList.add('show');
-            setTimeout(() => el.classList.remove('show'), 3500);
-        }
-
-        function clearMessages() {
-            document.getElementById('successMessage').classList.remove('show');
-            document.getElementById('errorMessage').classList.remove('show');
-        }
-
-        function showSuccessStaff(msg) {
-            const el = document.getElementById('successMessageStaff');
-            el.innerHTML = `<i class="fas fa-check-circle"></i> ${msg}`;
-            el.classList.add('show');
-            setTimeout(() => el.classList.remove('show'), 3500);
-        }
-
-        function showErrorStaff(msg) {
-            const el = document.getElementById('errorMessageStaff');
-            el.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${msg}`;
-            el.classList.add('show');
-            setTimeout(() => el.classList.remove('show'), 3500);
-        }
-
-        function clearStaffMessages() {
-            document.getElementById('successMessageStaff').classList.remove('show');
-            document.getElementById('errorMessageStaff').classList.remove('show');
-        }
+        function showSuccess(msg) { showToast(msg, 'success'); }
+        function showError(msg) { showToast(msg, 'error'); }
+        function clearMessages() {}
+        function showSuccessStaff(msg) { showToast(msg, 'success'); }
+        function showErrorStaff(msg) { showToast(msg, 'error'); }
+        function clearStaffMessages() {}
 
         // ─────────────────────────────────────────────
         //  ANALYTICS
@@ -3043,7 +3080,15 @@ async function executeDeleteData() {
                         '<tr><td colspan="8" align="right"><b>GRAND TOTAL</b></td><td><b>' + formatRp(totalSum) + '</b></td></tr>' +
                         '</tbody></table>' +
                         '<p style="margin-top:24px;font-size:11px;color:#666;">© TAN COFFEE · Ilmu Ketak Community</p>' +
-                        '</body></html>';
+                        '
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <p class="footer-brand">© TAN COFFEE · Powered by <strong>Ilmu Ketak Community</strong></p>
+      <p class="footer-wa">WhatsApp / Bisnis: <a href="https://wa.me/6283161695044" target="_blank" rel="noopener">0831-6169-5044</a></p>
+      <p class="footer-cta">Ingin dibuatkan aplikasi seperti ini gratis? hubungi admin ilmu ketak</p>
+    </div>
+  </footer>
+</body></html>';
                     const blob = new Blob(['\ufeff', html], { type: 'application/msword' });
                     const a = document.createElement('a');
                     a.href = URL.createObjectURL(blob);

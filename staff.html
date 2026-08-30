@@ -695,7 +695,210 @@
       display: block;
     }
 
+    /* ── Global Toast Overlay ── */
+    #toastContainer {
+      position: fixed;
+      top: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 99999;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      width: min(92vw, 420px);
+      pointer-events: none;
+    }
+    .toast-item {
+      pointer-events: auto;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 14px 16px;
+      border-radius: 14px;
+      font-size: 14px;
+      font-weight: 700;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.18);
+      animation: toastIn 0.28s cubic-bezier(0.4,0,0.2,1);
+      border: 1px solid transparent;
+      line-height: 1.4;
+    }
+    .toast-item.success {
+      background: #e8f5e9;
+      color: #1b5e20;
+      border-color: rgba(46,125,50,0.25);
+    }
+    .toast-item.error {
+      background: #ffebee;
+      color: #b71c1c;
+      border-color: rgba(198,40,40,0.25);
+    }
+    .toast-item.info {
+      background: #e3f2fd;
+      color: #0d47a1;
+      border-color: rgba(2,119,189,0.25);
+    }
+    .toast-item i { font-size: 18px; margin-top: 1px; flex-shrink: 0; }
+    .toast-item .toast-body { flex: 1; }
+    .toast-item .toast-close {
+      background: transparent; border: none; cursor: pointer;
+      color: inherit; opacity: 0.6; font-size: 16px; padding: 0 2px;
+      line-height: 1;
+    }
+    .toast-item .toast-close:hover { opacity: 1; }
+    .toast-item.hiding { animation: toastOut 0.25s ease forwards; }
+    @keyframes toastIn {
+      from { opacity: 0; transform: translateY(-12px) scale(0.96); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    @keyframes toastOut {
+      to { opacity: 0; transform: translateY(-8px) scale(0.96); }
+    }
+
+    /* ── Tab badge ── */
+    .tab-badge {
+      display: none;
+      min-width: 20px;
+      height: 20px;
+      padding: 0 6px;
+      border-radius: 999px;
+      background: #e53935;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 800;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+      box-shadow: 0 2px 6px rgba(229,57,53,0.4);
+    }
+    .tab-badge.show { display: inline-flex; }
+    .tab-btn.active .tab-badge {
+      background: #fff;
+      color: #c62828;
+    }
+
+    /* ── Order sections & accordion ── */
+    .orders-section {
+      margin-bottom: 28px;
+    }
+    .orders-section-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--brand-primary);
+      margin-bottom: 14px;
+      letter-spacing: 0.2px;
+    }
+    .orders-section-title .sec-count {
+      background: var(--brand-primary);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 2px 8px;
+      border-radius: 999px;
+      min-width: 22px;
+      text-align: center;
+    }
+    .orders-section-title.prep .sec-count { background: #00796b; }
+
+    .order-card {
+      padding: 0 !important;
+      overflow: hidden;
+      margin-bottom: 12px !important;
+    }
+    .order-summary {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 18px;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.15s;
+    }
+    .order-summary:hover { background: rgba(27,122,84,0.04); }
+    .order-summary .sum-main { flex: 1; min-width: 0; }
+    .order-summary .sum-name {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--brand-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .order-summary .sum-meta {
+      font-size: 12.5px;
+      color: var(--text-muted);
+      margin-top: 3px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 14px;
+    }
+    .order-summary .sum-meta span { display: inline-flex; align-items: center; gap: 5px; }
+    .order-summary .sum-total {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--brand-accent);
+      white-space: nowrap;
+    }
+    .order-summary .sum-chevron {
+      color: var(--text-light);
+      transition: transform 0.25s;
+      font-size: 14px;
+    }
+    .order-card.open .sum-chevron { transform: rotate(180deg); }
+    .order-detail {
+      display: none;
+      padding: 0 18px 18px;
+      border-top: 1px solid var(--border-color);
+    }
+    .order-card.open .order-detail { display: block; padding-top: 16px; }
+    .order-detail .order-header { margin-bottom: 12px; padding-bottom: 10px; }
+
+    /* ── Site footer ── */
+    .site-footer {
+      background: #ffffff;
+      border-top: 1px solid var(--border-color);
+      margin-top: 32px;
+      padding: 20px 16px 28px;
+    }
+    .footer-inner {
+      max-width: 640px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    .footer-brand {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 500;
+      margin-bottom: 6px;
+      line-height: 1.5;
+    }
+    .footer-brand strong {
+      color: var(--brand-primary);
+      font-weight: 700;
+    }
+    .footer-wa {
+      font-size: 11.5px;
+      color: var(--text-light);
+      margin-bottom: 8px;
+    }
+    .footer-wa a {
+      color: var(--brand-accent);
+      text-decoration: none;
+      font-weight: 700;
+    }
+    .footer-wa a:hover { text-decoration: underline; }
+    .footer-cta {
+      font-size: 11px;
+      color: var(--text-light);
+      line-height: 1.45;
+      max-width: 360px;
+      margin: 0 auto;
+    }
+
     /* ── Image Proof Modal ── */
+    
     #imageModal {
       backdrop-filter: blur(8px);
       -webkit-backdrop-filter: blur(8px);
@@ -1333,6 +1536,8 @@
   </style>
 </head>
 <body>
+  <div id="toastContainer" aria-live="polite" aria-atomic="true"></div>
+
   <!-- Top Header -->
   <header class="app-bar">
     <div class="app-bar-left">
@@ -1352,8 +1557,9 @@
 
     <!-- Tabs Nav -->
     <div class="tabs">
-      <button class="tab-btn active" onclick="switchTab('orders')">
+      <button class="tab-btn active" onclick="switchTab('orders')" id="tabBtnOrders">
         <i class="fas fa-clipboard-list"></i> Pesanan Masuk
+        <span class="tab-badge" id="ordersBadge">0</span>
       </button>
       <button class="tab-btn" onclick="switchTab('kasir')">
         <i class="fas fa-cash-register"></i> Buat Pesanan
@@ -1568,79 +1774,140 @@
       }
     }
 
-    function displayPendingOrders(orders) {
-      const container = document.querySelector('#ordersList');
-
-      if (orders.length === 0) {
-        container.innerHTML = '<div class="empty-state"><div class="empty-state-icon"><i class="fas fa-inbox"></i></div><p>Tidak ada pesanan masuk</p></div>';
-        return;
+    function updateOrdersBadge(count) {
+      const badge = document.getElementById('ordersBadge');
+      if (!badge) return;
+      if (count > 0) {
+        badge.textContent = count > 99 ? '99+' : String(count);
+        badge.classList.add('show');
+      } else {
+        badge.classList.remove('show');
+        badge.textContent = '0';
       }
+    }
 
-      container.innerHTML = orders.map(order => `
-        <div class="order-card ${order.status}">
-          <div class="order-header">
-            <div>
-              <div class="order-id"><i class="fas fa-hashtag" style="color:var(--brand-accent);"></i> ${order.id}</div>
-              <small style="color: var(--text-muted);"><i class="far fa-clock"></i> ${new Date(order.timestamp).toLocaleString('id-ID')}</small>
-            </div>
-            <div class="order-status status-${order.status}">${order.status.replace('_', ' ').toUpperCase()}</div>
-          </div>
+    function toggleOrderCard(el) {
+      const card = el.closest('.order-card');
+      if (!card) return;
+      card.classList.toggle('open');
+    }
 
-          <div class="order-info">
-            <div class="info-item">
-              <div class="info-label"><i class="fas fa-user"></i> Pemesan</div>
-              <div class="info-value">${order.customer.name}</div>
-            </div>
-            <div class="info-item">
-              <div class="info-label"><i class="fas fa-chair"></i> Nomor Meja</div>
-              <div class="info-value">${order.customer.tableNo}</div>
-            </div>
-            <div class="info-item">
-              <div class="info-label"><i class="fas fa-credit-card"></i> Metode Bayar</div>
-              <div class="info-value">${order.paymentMethod.toUpperCase()}</div>
-            </div>
-            <div class="info-item">
-              <div class="info-label"><i class="fas fa-wallet"></i> Total</div>
-              <div class="info-value">Rp ${order.totalPrice.toLocaleString('id-ID')}</div>
-            </div>
-          </div>
-
-          <div class="order-items">
-            <strong style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;"><i class="fas fa-utensils"></i> PESANAN:</strong>
-            ${order.items.map(item => `
+    function buildOrderCard(order) {
+      const statusLabel = (order.status || '').replace(/_/g, ' ').toUpperCase();
+      const statusClass = 'status-' + (order.status || 'pending');
+      const timeStr = new Date(order.timestamp).toLocaleString('id-ID');
+      const itemsHtml = (order.items || []).map(item => `
               <div class="order-item">
                 <span>• ${item.name} (${item.variant}) ×${item.quantity}</span>
                 <span>Rp ${(item.price * item.quantity).toLocaleString('id-ID')}</span>
               </div>
-            `).join('')}
-            <div class="order-total">Total: Rp ${order.totalPrice.toLocaleString('id-ID')}</div>
-          </div>
-
-          ${order.paymentProof ? `
+            `).join('');
+      const proofHtml = order.paymentProof ? `
             <div class="payment-proof">
               <strong style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;"><i class="fas fa-image"></i> BUKTI PEMBAYARAN:</strong>
-              <img src="${order.paymentProof}" class="proof-image" onclick="showImage(this.src)" alt="Proof">
+              <img src="${order.paymentProof}" class="proof-image" onclick="event.stopPropagation(); showImage(this.src)" alt="Proof">
             </div>
-          ` : ''}
-
-          ${order.notes ? `
-            <div style="background: var(--bg-main); padding: 12px 16px; border-radius: var(--radius-sm); margin-bottom: 20px; font-size: 13.5px; border: 1px solid var(--border-color); color: var(--text-main);">
+          ` : '';
+      const notesHtml = order.notes ? `
+            <div style="background: var(--bg-main); padding: 12px 16px; border-radius: var(--radius-sm); margin-bottom: 16px; font-size: 13.5px; border: 1px solid var(--border-color); color: var(--text-main);">
               <strong style="color: var(--brand-primary);"><i class="fas fa-pen"></i> Catatan:</strong> ${order.notes}
             </div>
-          ` : ''}
+          ` : '';
+      let actions = '';
+      if (order.status === 'pending_verification') {
+        actions = `
+              <button class="btn btn-confirm" onclick="event.stopPropagation(); updateOrderStatus('${order.id}', 'confirmed')"><i class="fas fa-check"></i> Terima (Terverifikasi)</button>
+              <button class="btn btn-reject" onclick="event.stopPropagation(); updateOrderStatus('${order.id}', 'rejected')"><i class="fas fa-xmark"></i> Tolak</button>`;
+      } else if (order.status === 'pending') {
+        actions = `
+              <button class="btn btn-confirm" onclick="event.stopPropagation(); updateOrderStatus('${order.id}', 'confirmed')"><i class="fas fa-check"></i> Terima Pesanan</button>`;
+      } else if (order.status === 'confirmed') {
+        actions = `
+              <button class="btn btn-complete" onclick="event.stopPropagation(); updateOrderStatus('${order.id}', 'completed')"><i class="fas fa-check-double"></i> Pesanan Siap</button>`;
+      }
 
-          <div class="action-buttons">
-            ${order.status === 'pending_verification' ? `
-              <button class="btn btn-confirm" onclick="updateOrderStatus('${order.id}', 'confirmed')"><i class="fas fa-check"></i> Terima (Terverifikasi)</button>
-              <button class="btn btn-reject" onclick="updateOrderStatus('${order.id}', 'rejected')"><i class="fas fa-xmark"></i> Tolak</button>
-            ` : order.status === 'pending' ? `
-              <button class="btn btn-confirm" onclick="updateOrderStatus('${order.id}', 'confirmed')"><i class="fas fa-check"></i> Terima Pesanan</button>
-            ` : order.status === 'confirmed' ? `
-              <button class="btn btn-complete" onclick="updateOrderStatus('${order.id}', 'completed')"><i class="fas fa-check-double"></i> Pesanan Siap</button>
-            ` : ''}
+      return `
+        <div class="order-card ${order.status}" data-order-id="${order.id}">
+          <div class="order-summary" onclick="toggleOrderCard(this)">
+            <div class="sum-main">
+              <div class="sum-name">${(order.customer && order.customer.name) || '-'}</div>
+              <div class="sum-meta">
+                <span><i class="fas fa-chair"></i> ${(order.customer && order.customer.tableNo) || '-'}</span>
+                <span><i class="far fa-clock"></i> ${timeStr}</span>
+              </div>
+            </div>
+            <div class="sum-total">Rp ${(order.totalPrice || 0).toLocaleString('id-ID')}</div>
+            <i class="fas fa-chevron-down sum-chevron" aria-hidden="true"></i>
           </div>
-        </div>
-      `).join('');
+          <div class="order-detail">
+            <div class="order-header">
+              <div>
+                <div class="order-id"><i class="fas fa-hashtag" style="color:var(--brand-accent);"></i> ${order.id}</div>
+                <small style="color: var(--text-muted);"><i class="far fa-clock"></i> ${timeStr}</small>
+              </div>
+              <div class="order-status ${statusClass}">${statusLabel}</div>
+            </div>
+            <div class="order-info">
+              <div class="info-item">
+                <div class="info-label"><i class="fas fa-user"></i> Pemesan</div>
+                <div class="info-value">${(order.customer && order.customer.name) || '-'}</div>
+              </div>
+              <div class="info-item">
+                <div class="info-label"><i class="fas fa-chair"></i> Nomor Meja</div>
+                <div class="info-value">${(order.customer && order.customer.tableNo) || '-'}</div>
+              </div>
+              <div class="info-item">
+                <div class="info-label"><i class="fas fa-credit-card"></i> Metode Bayar</div>
+                <div class="info-value">${(order.paymentMethod || '').toUpperCase()}</div>
+              </div>
+              <div class="info-item">
+                <div class="info-label"><i class="fas fa-wallet"></i> Total</div>
+                <div class="info-value">Rp ${(order.totalPrice || 0).toLocaleString('id-ID')}</div>
+              </div>
+            </div>
+            <div class="order-items">
+              <strong style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;"><i class="fas fa-utensils"></i> PESANAN:</strong>
+              ${itemsHtml}
+              <div class="order-total">Total: Rp ${(order.totalPrice || 0).toLocaleString('id-ID')}</div>
+            </div>
+            ${proofHtml}
+            ${notesHtml}
+            <div class="action-buttons">${actions}</div>
+          </div>
+        </div>`;
+    }
+
+    function displayPendingOrders(orders) {
+      const container = document.querySelector('#ordersList');
+      if (!orders || orders.length === 0) {
+        container.innerHTML = '<div class="empty-state"><div class="empty-state-icon"><i class="fas fa-inbox"></i></div><p>Tidak ada pesanan masuk</p></div>';
+        updateOrdersBadge(0);
+        return;
+      }
+
+      const sorted = [...orders].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+      const incoming = sorted.filter(o => o.status === 'pending' || o.status === 'pending_verification');
+      const preparing = sorted.filter(o => o.status === 'confirmed');
+      updateOrdersBadge(incoming.length);
+
+      let html = '';
+      html += '<div class="orders-section"><div class="orders-section-title"><i class="fas fa-bell" style="color:#e53935;"></i> Pesanan Baru Masuk <span class="sec-count">' + incoming.length + '</span></div>';
+      if (incoming.length === 0) {
+        html += '<div class="empty-state" style="padding:28px 16px;margin-bottom:8px;"><p style="font-size:13.5px;">Tidak ada pesanan baru</p></div>';
+      } else {
+        html += incoming.map(o => buildOrderCard(o)).join('');
+      }
+      html += '</div>';
+
+      html += '<div class="orders-section"><div class="orders-section-title prep"><i class="fas fa-fire-burner" style="color:#00796b;"></i> Siap Disiapkan <span class="sec-count">' + preparing.length + '</span></div>';
+      if (preparing.length === 0) {
+        html += '<div class="empty-state" style="padding:28px 16px;"><p style="font-size:13.5px;">Belum ada pesanan untuk disiapkan</p></div>';
+      } else {
+        html += preparing.map(o => buildOrderCard(o)).join('');
+      }
+      html += '</div>';
+
+      container.innerHTML = html;
     }
 
     async function updateOrderStatus(orderId, newStatus) {
@@ -1659,11 +1926,13 @@
 
         if (!response.ok) throw new Error('Failed to update order');
 
-        showSuccessMessage('✓ Status pesanan berhasil diperbarui');
+        showToast('✓ Status pesanan berhasil diperbarui', 'success');
         loadPendingOrders();
+        const salesTab = document.getElementById('tab-sales');
+        if (salesTab && salesTab.classList.contains('active')) loadSalesData();
       } catch (error) {
         console.error('Error:', error);
-        showErrorMessage('Gagal memperbarui status pesanan');
+        showToast('Gagal memperbarui status pesanan', 'error');
       }
     }
 
@@ -1679,9 +1948,62 @@
 
         const data = await response.json();
         displaySalesStats(data.data);
-        loadPendingOrders(); // Reuse to show completed orders
+        await loadTodayCompletedOrders();
       } catch (error) {
         console.error('Error:', error);
+        showToast('Gagal memuat data penjualan', 'error');
+      }
+    }
+
+    async function loadTodayCompletedOrders() {
+      const listEl = document.getElementById('dailyOrdersList');
+      if (!listEl) return;
+      try {
+        const response = await fetch('/api/orders?status=completed', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (!response.ok) throw new Error('Failed');
+        const data = await response.json();
+        const today = new Date().toISOString().split('T')[0];
+        const orders = (data.data || [])
+          .filter(o => (o.timestamp || '').startsWith(today))
+          .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+        if (!orders.length) {
+          listEl.innerHTML = '<div class="empty-state"><div class="empty-state-icon"><i class="fas fa-receipt"></i></div><p>Belum ada pesanan selesai hari ini</p></div>';
+          return;
+        }
+
+        listEl.innerHTML = orders.map(order => `
+          <div class="order-card completed" style="margin-bottom:12px;">
+            <div class="order-summary" style="cursor:default;">
+              <div class="sum-main">
+                <div class="sum-name">${(order.customer && order.customer.name) || '-'}</div>
+                <div class="sum-meta">
+                  <span><i class="fas fa-chair"></i> ${(order.customer && order.customer.tableNo) || '-'}</span>
+                  <span><i class="far fa-clock"></i> ${new Date(order.timestamp).toLocaleString('id-ID')}</span>
+                  <span class="order-status status-completed" style="display:inline-flex;padding:2px 8px;font-size:10px;">SELESAI</span>
+                </div>
+              </div>
+              <div class="sum-total">Rp ${(order.totalPrice || 0).toLocaleString('id-ID')}</div>
+            </div>
+            <div class="order-detail" style="display:block;padding:0 18px 16px;border-top:1px solid var(--border-color);padding-top:12px;">
+              <div class="order-items" style="margin:0;">
+                <strong style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;"><i class="fas fa-utensils"></i> PESANAN:</strong>
+                ${(order.items || []).map(item => `
+                  <div class="order-item">
+                    <span>• ${item.name} (${item.variant}) ×${item.quantity}</span>
+                    <span>Rp ${(item.price * item.quantity).toLocaleString('id-ID')}</span>
+                  </div>
+                `).join('')}
+                <div class="order-total">Total: Rp ${(order.totalPrice || 0).toLocaleString('id-ID')}</div>
+              </div>
+            </div>
+          </div>
+        `).join('');
+      } catch (err) {
+        console.error(err);
+        listEl.innerHTML = '<p style="color:var(--danger);font-weight:700;">Gagal memuat pesanan hari ini</p>';
       }
     }
 
@@ -1709,7 +2031,6 @@
 
     async function addExpense(event) {
       event.preventDefault();
-      clearExpenseMessages();
 
       const category = document.querySelector('#expenseCategory').value;
       const amount = parseInt(document.querySelector('#expenseAmount').value);
@@ -1732,18 +2053,12 @@
 
         if (!response.ok) throw new Error('Failed to add expense');
 
-        showSuccessMessageExpense('✓ Pengeluaran berhasil dicatat');
-        
-        // Reset form
+        showToast('✓ Pengeluaran berhasil dicatat', 'success');
         event.target.reset();
-        
-        // Reload expenses
-        setTimeout(() => {
-          loadExpenses();
-        }, 1000);
+        setTimeout(() => { loadExpenses(); }, 600);
       } catch (error) {
         console.error('Error:', error);
-        showErrorMessageExpense('Gagal mencatat pengeluaran');
+        showToast('Gagal mencatat pengeluaran', 'error');
       }
     }
 
@@ -1791,46 +2106,47 @@
       document.querySelector('#imageModal').style.display = 'none';
     }
 
-    function showSuccessMessage(msg) {
-      const el = document.querySelector('#successMessage');
-      el.textContent = msg;
-      el.classList.add('show');
-      setTimeout(() => el.classList.remove('show'), 3000);
+    function showToast(msg, type) {
+      type = type || 'info';
+      const container = document.getElementById('toastContainer');
+      if (!container) return;
+      const icons = { success: 'fa-circle-check', error: 'fa-circle-exclamation', info: 'fa-circle-info' };
+      const item = document.createElement('div');
+      item.className = 'toast-item ' + type;
+      item.innerHTML = '<i class="fas ' + (icons[type] || icons.info) + '"></i><div class="toast-body">' + msg + '</div><button type="button" class="toast-close" aria-label="Tutup">×</button>';
+      const close = () => {
+        item.classList.add('hiding');
+        setTimeout(() => item.remove(), 250);
+      };
+      item.querySelector('.toast-close').addEventListener('click', close);
+      container.appendChild(item);
+      setTimeout(close, 3500);
     }
 
-    function showErrorMessage(msg) {
-      const el = document.querySelector('#errorMessage');
-      el.textContent = msg;
-      el.classList.add('show');
-      setTimeout(() => el.classList.remove('show'), 3000);
-    }
+    function showSuccessMessage(msg) { showToast(msg, 'success'); }
+    function showErrorMessage(msg) { showToast(msg, 'error'); }
+    function clearMessages() {}
+    function showSuccessMessageExpense(msg) { showToast(msg, 'success'); }
+    function showErrorMessageExpense(msg) { showToast(msg, 'error'); }
+    function clearExpenseMessages() {}
 
-    function clearMessages() {
-      document.querySelector('#successMessage').classList.remove('show');
-      document.querySelector('#errorMessage').classList.remove('show');
-    }
-
-    function showSuccessMessageExpense(msg) {
-      const el = document.querySelector('#successMessageExpense');
-      el.textContent = msg;
-      el.classList.add('show');
-      setTimeout(() => el.classList.remove('show'), 3000);
-    }
-
-    function showErrorMessageExpense(msg) {
-      const el = document.querySelector('#errorMessageExpense');
-      el.textContent = msg;
-      el.classList.add('show');
-      setTimeout(() => el.classList.remove('show'), 3000);
-    }
-
-    function clearExpenseMessages() {
-      document.querySelector('#successMessageExpense').classList.remove('show');
-      document.querySelector('#errorMessageExpense').classList.remove('show');
-    }
-
-    // Load initial data
+    // Load initial data + light polling for badge/orders
     loadPendingOrders();
+    setInterval(() => {
+      const ordersTab = document.getElementById('tab-orders');
+      if (ordersTab && ordersTab.classList.contains('active')) {
+        loadPendingOrders();
+      } else {
+        // still refresh badge count quietly
+        fetch('/api/pending', { headers: { 'Authorization': 'Bearer ' + token } })
+          .then(r => r.ok ? r.json() : null)
+          .then(d => {
+            if (!d) return;
+            const incoming = (d.data || []).filter(o => o.status === 'pending' || o.status === 'pending_verification');
+            updateOrdersBadge(incoming.length);
+          }).catch(() => {});
+      }
+    }, 20000);
 
         // ─── KASIR (professional list + overlay, no native prompt) ───
     let kasirCart = [];
@@ -2026,7 +2342,7 @@
       if (errorEl) errorEl.classList.remove('show');
 
       if (!kasirCart.length) {
-        if (errorEl) { errorEl.textContent = 'Tambahkan minimal 1 menu'; errorEl.classList.add('show'); }
+        showToast('Tambahkan minimal 1 menu', 'error');
         return;
       }
 
@@ -2055,17 +2371,14 @@
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || 'Gagal membuat pesanan');
 
-        if (successEl) {
-          successEl.innerHTML = '<i class="fas fa-circle-check"></i> Pesanan ' + data.orderId + ' berhasil dibuat & otomatis terverifikasi!';
-          successEl.classList.add('show');
-        }
+        showToast('<i class="fas fa-circle-check"></i> Pesanan ' + data.orderId + ' berhasil dibuat & otomatis terverifikasi!', 'success');
         kasirCart = [];
         renderKasirCart();
         document.getElementById('kasirForm').reset();
         document.getElementById('kasirTableNo').value = 'Kasir';
         if (typeof loadPendingOrders === 'function') loadPendingOrders();
       } catch (err) {
-        if (errorEl) { errorEl.textContent = err.message || 'Terjadi kesalahan'; errorEl.classList.add('show'); }
+        showToast(err.message || 'Terjadi kesalahan', 'error');
       }
     }
 
@@ -2109,5 +2422,13 @@
 
 
   </script>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <p class="footer-brand">© TAN COFFEE · Powered by <strong>Ilmu Ketak Community</strong></p>
+      <p class="footer-wa">WhatsApp / Bisnis: <a href="https://wa.me/6283161695044" target="_blank" rel="noopener">0831-6169-5044</a></p>
+      <p class="footer-cta">Ingin dibuatkan aplikasi seperti ini gratis? hubungi admin ilmu ketak</p>
+    </div>
+  </footer>
 </body>
 </html>
