@@ -77,5 +77,30 @@
     "source": "customer",
     "createdBy": null,
     "createdAt": "2026-08-30T12:01:58.898Z"
+  },
+  {
+    "id": "ORD-MTFRK5X4-91OX7",
+    "timestamp": "2026-08-30T12:06:20.920Z",
+    "customer": {
+      "name": "Novia syantik",
+      "tableNo": "2000000"
+    },
+    "items": [
+      {
+        "menuId": "4",
+        "name": "Mocchi",
+        "price": 12000,
+        "variant": "Medium",
+        "quantity": 1
+      }
+    ],
+    "totalPrice": 12000,
+    "paymentMethod": "cash",
+    "paymentProof": null,
+    "notes": "Tambahan toping enzo",
+    "status": "pending",
+    "source": "customer",
+    "createdBy": null,
+    "createdAt": "2026-08-30T12:06:20.920Z"
   }
 ]
