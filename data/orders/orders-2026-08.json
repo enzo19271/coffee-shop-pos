@@ -87,9 +87,11 @@
     "paymentMethod": "cash",
     "paymentProof": null,
     "notes": "aedse",
-    "status": "confirmed",
+    "status": "completed",
     "source": "staff",
     "createdBy": "reza",
-    "createdAt": "2026-08-30T11:27:39.135Z"
+    "createdAt": "2026-08-30T11:27:39.135Z",
+    "updatedAt": "2026-08-30T11:28:38.383Z",
+    "updatedBy": "reza"
   }
 ]
