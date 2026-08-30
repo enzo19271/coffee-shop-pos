@@ -73,10 +73,12 @@
     "paymentMethod": "cash",
     "paymentProof": null,
     "notes": "Pengen toping enzo",
-    "status": "pending",
+    "status": "confirmed",
     "source": "customer",
     "createdBy": null,
-    "createdAt": "2026-08-30T12:01:58.898Z"
+    "createdAt": "2026-08-30T12:01:58.898Z",
+    "updatedAt": "2026-08-30T12:07:11.179Z",
+    "updatedBy": "reza"
   },
   {
     "id": "ORD-MTFRK5X4-91OX7",
