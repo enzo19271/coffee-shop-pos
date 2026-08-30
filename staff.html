@@ -777,6 +777,66 @@
     }
 
     /* ── Order sections & accordion ── */
+    /* Order sub-tabs (Baru Masuk / Siap Disiapkan) */
+    .order-subtabs {
+      display: flex;
+      gap: 8px;
+      margin: 4px 0 16px;
+      padding: 4px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      box-shadow: var(--shadow-sm);
+    }
+    .order-subtab {
+      flex: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 10px;
+      border: none;
+      border-radius: 11px;
+      background: transparent;
+      color: var(--text-muted);
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: var(--transition);
+      min-height: 44px;
+    }
+    .order-subtab i { font-size: 14px; opacity: 0.85; }
+    .order-subtab .sub-count {
+      min-width: 20px;
+      height: 20px;
+      padding: 0 6px;
+      border-radius: 999px;
+      background: #e8e4df;
+      color: var(--text-muted);
+      font-size: 11px;
+      font-weight: 800;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .order-subtab.active {
+      background: var(--brand-primary);
+      color: #fff;
+      box-shadow: 0 4px 12px rgba(11, 77, 58, 0.25);
+    }
+    .order-subtab.active .sub-count {
+      background: #fff;
+      color: #c62828;
+    }
+    .order-subtab.active.prep .sub-count {
+      color: #00796b;
+    }
+    .order-subtab:not(.active):hover {
+      background: rgba(27, 122, 84, 0.06);
+      color: var(--brand-primary);
+    }
+
     .orders-section {
       margin-bottom: 28px;
     }
@@ -1576,6 +1636,16 @@
     <div id="tab-orders" class="tab-content active">
       <div id="successMessage" class="success-message"></div>
       <div id="errorMessage" class="error-message"></div>
+      <div class="order-subtabs" role="tablist" aria-label="Filter pesanan">
+        <button type="button" class="order-subtab active" id="subtabIncoming" onclick="setOrderSubTab('incoming')" role="tab" aria-selected="true">
+          <i class="fas fa-bell"></i> Baru Masuk
+          <span class="sub-count" id="countIncoming">0</span>
+        </button>
+        <button type="button" class="order-subtab prep" id="subtabPreparing" onclick="setOrderSubTab('preparing')" role="tab" aria-selected="false">
+          <i class="fas fa-fire-burner"></i> Siap Disiapkan
+          <span class="sub-count" id="countPreparing">0</span>
+        </button>
+      </div>
       <div id="ordersList"></div>
     </div>
 
@@ -1877,37 +1947,51 @@
         </div>`;
     }
 
-    function displayPendingOrders(orders) {
-      const container = document.querySelector('#ordersList');
-      if (!orders || orders.length === 0) {
-        container.innerHTML = '<div class="empty-state"><div class="empty-state-icon"><i class="fas fa-inbox"></i></div><p>Tidak ada pesanan masuk</p></div>';
-        updateOrdersBadge(0);
-        return;
-      }
+    let currentOrderSubTab = 'incoming';
+    let cachedPendingOrders = [];
 
-      const sorted = [...orders].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+    function setOrderSubTab(which) {
+      currentOrderSubTab = which === 'preparing' ? 'preparing' : 'incoming';
+      const btnIn = document.getElementById('subtabIncoming');
+      const btnPr = document.getElementById('subtabPreparing');
+      if (btnIn && btnPr) {
+        btnIn.classList.toggle('active', currentOrderSubTab === 'incoming');
+        btnPr.classList.toggle('active', currentOrderSubTab === 'preparing');
+        btnIn.setAttribute('aria-selected', currentOrderSubTab === 'incoming' ? 'true' : 'false');
+        btnPr.setAttribute('aria-selected', currentOrderSubTab === 'preparing' ? 'true' : 'false');
+      }
+      renderOrdersBySubTab();
+    }
+
+    function displayPendingOrders(orders) {
+      cachedPendingOrders = Array.isArray(orders) ? orders : [];
+      const sorted = [...cachedPendingOrders].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
       const incoming = sorted.filter(o => o.status === 'pending' || o.status === 'pending_verification');
       const preparing = sorted.filter(o => o.status === 'confirmed');
       updateOrdersBadge(incoming.length);
+      const cIn = document.getElementById('countIncoming');
+      const cPr = document.getElementById('countPreparing');
+      if (cIn) cIn.textContent = String(incoming.length);
+      if (cPr) cPr.textContent = String(preparing.length);
+      renderOrdersBySubTab();
+    }
 
-      let html = '';
-      html += '<div class="orders-section"><div class="orders-section-title"><i class="fas fa-bell" style="color:#e53935;"></i> Pesanan Baru Masuk <span class="sec-count">' + incoming.length + '</span></div>';
-      if (incoming.length === 0) {
-        html += '<div class="empty-state" style="padding:28px 16px;margin-bottom:8px;"><p style="font-size:13.5px;">Tidak ada pesanan baru</p></div>';
-      } else {
-        html += incoming.map(o => buildOrderCard(o)).join('');
+    function renderOrdersBySubTab() {
+      const container = document.querySelector('#ordersList');
+      if (!container) return;
+      const sorted = [...cachedPendingOrders].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+      const incoming = sorted.filter(o => o.status === 'pending' || o.status === 'pending_verification');
+      const preparing = sorted.filter(o => o.status === 'confirmed');
+      const list = currentOrderSubTab === 'preparing' ? preparing : incoming;
+      const emptyMsg = currentOrderSubTab === 'preparing'
+        ? 'Belum ada pesanan untuk disiapkan'
+        : 'Tidak ada pesanan baru masuk';
+
+      if (!list.length) {
+        container.innerHTML = '<div class="empty-state"><div class="empty-state-icon"><i class="fas fa-inbox"></i></div><p>' + emptyMsg + '</p></div>';
+        return;
       }
-      html += '</div>';
-
-      html += '<div class="orders-section"><div class="orders-section-title prep"><i class="fas fa-fire-burner" style="color:#00796b;"></i> Siap Disiapkan <span class="sec-count">' + preparing.length + '</span></div>';
-      if (preparing.length === 0) {
-        html += '<div class="empty-state" style="padding:28px 16px;"><p style="font-size:13.5px;">Belum ada pesanan untuk disiapkan</p></div>';
-      } else {
-        html += preparing.map(o => buildOrderCard(o)).join('');
-      }
-      html += '</div>';
-
-      container.innerHTML = html;
+      container.innerHTML = list.map(o => buildOrderCard(o)).join('');
     }
 
     async function updateOrderStatus(orderId, newStatus) {
