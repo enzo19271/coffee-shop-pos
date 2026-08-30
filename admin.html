@@ -2468,6 +2468,12 @@
         </div><!-- /content -->
     </div><!-- /main -->
 
+  <!-- Libraries (must load before app scripts) -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+
     <script>
         // ─────────────────────────────────────────────
         //  STATE
@@ -2956,7 +2962,7 @@
             }
         }
 
-        function toggleTxnCard(el) {
+        window.toggleTxnCard = function toggleTxnCard(el) {
             const card = el.closest('.txn-card');
             if (card) card.classList.toggle('open');
         }
@@ -3457,16 +3463,8 @@ async function executeDeleteData() {
                         '</tr></thead><tbody>' + tableRows +
                         '<tr><td colspan="8" align="right"><b>GRAND TOTAL</b></td><td><b>' + formatRp(totalSum) + '</b></td></tr>' +
                         '</tbody></table>' +
-                        '<p style="margin-top:24px;font-size:11px;color:#666;">© TAN COFFEE · Ilmu Ketak Community</p>' +
-                        '
-  <footer class="site-footer">
-    <div class="footer-inner">
-      <p class="footer-brand">© TAN COFFEE · Powered by <strong>Ilmu Ketak Community</strong></p>
-      <p class="footer-wa">WhatsApp / Bisnis: <a href="https://wa.me/6283161695044" target="_blank" rel="noopener">0831-6169-5044</a></p>
-      <p class="footer-cta">Ingin dibuatkan aplikasi seperti ini gratis? hubungi admin ilmu ketak</p>
-    </div>
-  </footer>
-</body></html>';
+                        '<p style="margin-top:24px;font-size:11px;color:#666;">(c) TAN COFFEE - Ilmu Ketak Community</p>' +
+                        '</body></html>';
                     const blob = new Blob(['\ufeff', html], { type: 'application/msword' });
                     const a = document.createElement('a');
                     a.href = URL.createObjectURL(blob);
@@ -3597,7 +3595,7 @@ async function executeDeleteData() {
         let chartStatus = null;
         let chartOrders = null;
 
-        function setStatsPeriod(period) {
+        window.setStatsPeriod = function setStatsPeriod(period) {
             statsPeriod = period;
             document.querySelectorAll('.stats-pill').forEach(btn => {
                 btn.classList.toggle('active', btn.dataset.period === period);
@@ -3649,8 +3647,9 @@ async function executeDeleteData() {
             const all = [];
             for (const month of months) {
                 try {
+                    const authToken = (typeof token !== 'undefined' && token) ? token : localStorage.getItem('staffToken');
                     const res = await fetch('/api/orders?month=' + encodeURIComponent(month), {
-                        headers: { 'Authorization': 'Bearer ' + token }
+                        headers: { 'Authorization': 'Bearer ' + authToken }
                     });
                     if (!res.ok) continue;
                     const data = await res.json();
@@ -3664,7 +3663,7 @@ async function executeDeleteData() {
             if (ch && typeof ch.destroy === 'function') ch.destroy();
         }
 
-        async function loadSalesStats() {
+        window.loadSalesStats = async function loadSalesStats() {
             const msg = document.getElementById('statsStatusMsg');
             const kpi = document.getElementById('statsKpi');
             if (msg) msg.textContent = 'Memuat statistik...';
@@ -3816,13 +3815,17 @@ async function executeDeleteData() {
                 });
 
                 if (msg) {
-                    msg.textContent = 'Periode ' + start.toLocaleDateString('id-ID') + ' – ' + end.toLocaleDateString('id-ID') +
-                        ' · ' + orders.length + ' pesanan · omzet Rp ' + revenue.toLocaleString('id-ID');
+                    if (!orders.length) {
+                        msg.textContent = 'Tidak ada data pesanan pada periode ' + start.toLocaleDateString('id-ID') + ' – ' + end.toLocaleDateString('id-ID') + '. Coba rentang lain atau pastikan ada pesanan selesai.';
+                    } else {
+                        msg.textContent = 'Periode ' + start.toLocaleDateString('id-ID') + ' – ' + end.toLocaleDateString('id-ID') +
+                            ' · ' + orders.length + ' pesanan · omzet Rp ' + revenue.toLocaleString('id-ID');
+                    }
                 }
             } catch (err) {
                 console.error(err);
                 if (msg) msg.textContent = err.message || 'Gagal memuat statistik';
-                if (kpi) kpi.innerHTML = '';
+                if (kpi) kpi.innerHTML = '<div class="stat-card"><div class="stat-value">—</div><div class="stat-label">Error</div></div>';
             }
         }
 
@@ -3831,11 +3834,6 @@ async function executeDeleteOrders() { return executeDeleteData(); }
 
 </script>
 
-  <!-- Export libraries -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 
 </body>
 </html>
