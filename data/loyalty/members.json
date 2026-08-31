@@ -2,8 +2,15 @@
   {
     "name": "Enzo",
     "nameKey": "enzo",
-    "points": 20,
+    "points": 15,
     "history": [
+      {
+        "type": "redeem",
+        "points": -5,
+        "voucherId": "VCH-MTGS9TBH-57CK",
+        "code": "TC-4VRYTDOP",
+        "at": "2026-08-31T06:15:56.305Z"
+      },
       {
         "type": "earn",
         "points": 18,
@@ -24,6 +31,6 @@
       }
     ],
     "createdAt": "2026-08-31T05:14:55.270Z",
-    "updatedAt": "2026-08-31T06:15:40.103Z"
+    "updatedAt": "2026-08-31T06:15:56.305Z"
   }
 ]
