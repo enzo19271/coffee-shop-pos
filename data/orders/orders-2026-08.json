@@ -66,13 +66,15 @@
     "paymentMethod": "cash",
     "paymentProof": null,
     "notes": "",
-    "status": "pending",
+    "status": "confirmed",
     "source": "customer",
     "createdBy": null,
     "createdAt": "2026-08-31T06:16:27.267Z",
     "voucherCode": "TC-4VRYTDOP",
     "voucherDiscount": 5000,
     "voucherFreeItem": "",
-    "pointsAwarded": false
+    "pointsAwarded": false,
+    "updatedAt": "2026-08-31T06:16:59.066Z",
+    "updatedBy": "reza"
   }
 ]
