@@ -386,7 +386,8 @@ async function handleUpdateStatus(req, res) {
         if (member) {
           orders[orderIndex].pointsAwarded = true;
           orders[orderIndex].pointsAwardedTo = member.name;
-          pointsInfo = { name: member.name, points: member.points };
+          orders[orderIndex].pointsEarned = member.lastEarned || 0;
+          pointsInfo = { name: member.name, points: member.points, earned: member.lastEarned || 0 };
         }
       } catch (pe) {
         console.error('Award point error:', pe);
@@ -1073,6 +1074,14 @@ async function awardPointForOrder(order) {
   const nameKey = normalizeMemberName(rawName);
   if (!nameKey) return null;
 
+  // 1 qty produk = 1 poin
+  let earn = 0;
+  (order.items || []).forEach(it => {
+    const q = Number(it.quantity);
+    earn += Number.isFinite(q) && q > 0 ? Math.floor(q) : 1;
+  });
+  if (earn < 1) earn = 1;
+
   const members = await readJsonFile('data/loyalty/members.json', []);
   let member = members.find(m => m.nameKey === nameKey);
   if (!member) {
@@ -1085,18 +1094,18 @@ async function awardPointForOrder(order) {
     };
     members.push(member);
   }
-  member.points = (member.points || 0) + 1;
+  member.points = (member.points || 0) + earn;
   member.history = member.history || [];
   member.history.unshift({
     type: 'earn',
-    points: 1,
+    points: earn,
     orderId: order.id,
     at: new Date().toISOString()
   });
   if (member.history.length > 50) member.history = member.history.slice(0, 50);
   member.updatedAt = new Date().toISOString();
-  await writeJsonFile('data/loyalty/members.json', members, `Award 1 point to ${member.name} for ${order.id}`);
-  return member;
+  await writeJsonFile('data/loyalty/members.json', members, `Award ${earn} point(s) to ${member.name} for ${order.id}`);
+  return { ...member, lastEarned: earn };
 }
 
 async function handleLoyaltyMember(req, res) {
