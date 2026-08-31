@@ -1,1 +1,17 @@
-[]
+[
+  {
+    "name": "Enzo",
+    "nameKey": "enzo",
+    "points": 1,
+    "history": [
+      {
+        "type": "earn",
+        "points": 1,
+        "orderId": "ORD-MTGSAH9S-TWAGB",
+        "at": "2026-08-31T05:14:55.270Z"
+      }
+    ],
+    "createdAt": "2026-08-31T05:14:55.270Z",
+    "updatedAt": "2026-08-31T05:14:55.270Z"
+  }
+]
