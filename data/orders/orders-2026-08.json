@@ -1,1 +1,45 @@
-[]
+[
+  {
+    "id": "ORD-MTGUGVOU-2IV1E",
+    "timestamp": "2026-08-31T06:15:32.718Z",
+    "customer": {
+      "name": "Enzo",
+      "tableNo": "Kasir"
+    },
+    "items": [
+      {
+        "menuId": "3",
+        "name": "Butterschot",
+        "price": 13000,
+        "variant": "Medium",
+        "quantity": 10
+      },
+      {
+        "menuId": "1",
+        "name": "Cappucino",
+        "price": 10000,
+        "variant": "Medium",
+        "quantity": 4
+      },
+      {
+        "menuId": "2",
+        "name": "Matcha Latte",
+        "price": 12000,
+        "variant": "Medium",
+        "quantity": 4
+      }
+    ],
+    "totalPrice": 218000,
+    "paymentMethod": "cash",
+    "paymentProof": null,
+    "notes": "",
+    "status": "confirmed",
+    "source": "staff",
+    "createdBy": "reza",
+    "createdAt": "2026-08-31T06:15:32.718Z",
+    "voucherCode": null,
+    "voucherDiscount": 0,
+    "voucherFreeItem": "",
+    "pointsAwarded": false
+  }
+]
