@@ -32,5 +32,20 @@
     ],
     "createdAt": "2026-08-31T05:14:55.270Z",
     "updatedAt": "2026-08-31T06:15:56.305Z"
+  },
+  {
+    "name": "Dea",
+    "nameKey": "dea",
+    "points": 1,
+    "history": [
+      {
+        "type": "earn",
+        "points": 1,
+        "orderId": "ORD-MTGUI1S3-SH3ZV",
+        "at": "2026-08-31T06:18:02.435Z"
+      }
+    ],
+    "createdAt": "2026-08-31T06:18:02.435Z",
+    "updatedAt": "2026-08-31T06:18:02.435Z"
   }
 ]
