@@ -3503,12 +3503,11 @@
 <script>
 
 function toggleDeleteTypeFields() {
-            const type = document.getElementById('deleteType')?.value;
-            ['orders', 'expenses', 'staff', 'loyalty'].forEach(t => {
-                const el = document.getElementById('deleteType-' + t);
-                if (el) el.style.display = t === type ? '' : 'none';
-            });
-        });
+  const type = document.getElementById('deleteType')?.value;
+  ['orders', 'expenses', 'staff', 'loyalty'].forEach(t => {
+    const el = document.getElementById('deleteType-' + t);
+    if (el) el.style.display = t === type ? '' : 'none';
+  });
 }
 function toggleDeleteFields() {
   const mode = document.getElementById('deleteMode').value;
@@ -4189,24 +4188,24 @@ async function executeDeleteData() {
                 const data = await res.json();
                 const list = data.data || [];
                 if (!list.length) {
-                    box.innerHTML = '<p style="color:var(--text-muted);font-weight:600;">Belum ada member. Poin muncul setelah pesanan status <em>selesai</em>.</p>';
+                    box.innerHTML = '<p style="color:var(--text-muted);font-weight:600;">Belum ada member. Poin muncul setelah pesanan status selesai.</p>';
                     return;
                 }
-                box.innerHTML = list.map(m =>
-                    '<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border-color);gap:10px;flex-wrap:wrap;">' +
-                    '<div style="min-width:0;flex:1;"><strong>' + (m.name || '-') + '</strong><div style="font-size:12px;color:var(--text-muted);">' + (m.history?.length || 0) + ' riwayat</div></div>' +
-                    '<span style="font-weight:800;color:var(--brand-primary);font-size:18px;">' + (m.points || 0) + ' <small style="font-size:11px;font-weight:700;">poin</small></span>' +
-                    '<div style="display:flex;gap:6px;">' +
-                    '<button type="button" class="btn btn-sm" style="background:#ef6c00;color:#fff;" onclick="resetMemberPoints('' + String(m.name||'').replace(/'/g, "\\'") + '')">Reset poin</button>' +
-                    '<button type="button" class="btn btn-sm" style="background:#c62828;color:#fff;" onclick="deleteMember('' + String(m.name||'').replace(/'/g, "\\'") + '')">Hapus</button>' +
-                    '</div></div>'
-                ).join('');
+                box.innerHTML = list.map(m => {
+                    const safeName = String(m.name || '-').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
+                    const esc = String(m.name || '').replace(/\\/g,'\\\\').replace(/'/g, "\\'");
+                    return '<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border-color);gap:10px;flex-wrap:wrap;">' +
+                        '<div style="min-width:0;flex:1;"><strong>' + safeName + '</strong><div style="font-size:12px;color:var(--text-muted);">' + (m.history && m.history.length || 0) + ' riwayat</div></div>' +
+                        '<span style="font-weight:800;color:var(--brand-primary);font-size:18px;">' + (m.points || 0) + ' <small style="font-size:11px;font-weight:700;">poin</small></span>' +
+                        '<div style="display:flex;gap:6px;">' +
+                        '<button type="button" class="btn btn-sm" style="background:#ef6c00;color:#fff;" onclick="resetMemberPoints(\'' + esc + '\')">Reset poin</button>' +
+                        '<button type="button" class="btn btn-sm" style="background:#c62828;color:#fff;" onclick="deleteMember(\'' + esc + '\')">Hapus</button>' +
+                        '</div></div>';
+                }).join('');
             } catch (e) {
                 box.innerHTML = '<p style="color:var(--danger);">Gagal memuat member (admin only)</p>';
             }
         }
-
-
 
         async function deleteLoyaltyVoucher(id) {
             if (!confirm('Hapus voucher ini permanen?')) return;
