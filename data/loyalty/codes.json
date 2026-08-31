@@ -8,7 +8,9 @@
     "freeItemName": "",
     "memberName": "Enzo",
     "nameKey": "enzo",
-    "status": "unused",
-    "createdAt": "2026-08-31T06:15:56.414Z"
+    "status": "used",
+    "createdAt": "2026-08-31T06:15:56.414Z",
+    "usedAt": "2026-08-31T06:16:28.284Z",
+    "usedOnOrderId": "ORD-MTGUI1S3-SH3ZV"
   }
 ]
