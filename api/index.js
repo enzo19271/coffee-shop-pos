@@ -979,8 +979,6 @@ async function handleDeleteData(req, res) {
       return res.status(200).json({ success: true, type: 'staff', message: `Deleted ${deletedCount} staff account(s)`, deletedCount });
     }
 
-    return res.status(400).json({ error: 'Unknown type' });
-
     if (type === 'loyalty') {
       // mode: all | vouchers | members | codes | member_one | voucher_one
       const lmode = mode || 'all';
@@ -1032,6 +1030,8 @@ async function handleDeleteData(req, res) {
       }
       return res.status(200).json({ success: true, message: 'Loyalty data updated', results });
     }
+
+    return res.status(400).json({ error: 'Unknown type' });
 
   } catch (error) {
     console.error('Delete data error:', error);
