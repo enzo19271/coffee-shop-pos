@@ -837,8 +837,8 @@ async function handleDeleteData(req, res) {
 
     const { type, mode, orderId, startDate, endDate, month, staffId, username } = req.body || {};
     // type: 'orders' | 'expenses' | 'staff'
-    if (!type || !['orders', 'expenses', 'staff'].includes(type)) {
-      return res.status(400).json({ error: 'type required: orders | expenses | staff' });
+    if (!type || !['orders', 'expenses', 'staff', 'loyalty'].includes(type)) {
+      return res.status(400).json({ error: 'type required: orders | expenses | staff | loyalty' });
     }
 
     if (type === 'orders') {
@@ -980,6 +980,59 @@ async function handleDeleteData(req, res) {
     }
 
     return res.status(400).json({ error: 'Unknown type' });
+
+    if (type === 'loyalty') {
+      // mode: all | vouchers | members | codes | member_one | voucher_one
+      const lmode = mode || 'all';
+      const results = [];
+      if (lmode === 'all' || lmode === 'vouchers') {
+        await writeJsonFile('data/loyalty/vouchers.json', [], `Reset vouchers by ${payload.username}`);
+        results.push({ file: 'vouchers', deleted: 'all' });
+      }
+      if (lmode === 'all' || lmode === 'codes') {
+        await writeJsonFile('data/loyalty/codes.json', [], `Reset codes by ${payload.username}`);
+        results.push({ file: 'codes', deleted: 'all' });
+      }
+      if (lmode === 'all' || lmode === 'members') {
+        await writeJsonFile('data/loyalty/members.json', [], `Reset members/points by ${payload.username}`);
+        results.push({ file: 'members', deleted: 'all' });
+      }
+      if (lmode === 'member_one') {
+        const nameKey = normalizeMemberName(username || req.body?.name || '');
+        if (!nameKey) return res.status(400).json({ error: 'name/username member wajib' });
+        let members = await readJsonFile('data/loyalty/members.json', []);
+        const before = members.length;
+        members = members.filter(m => m.nameKey !== nameKey);
+        if (members.length === before) return res.status(404).json({ error: 'Member tidak ditemukan' });
+        await writeJsonFile('data/loyalty/members.json', members, `Delete member ${nameKey} by ${payload.username}`);
+        results.push({ file: 'members', deleted: 1, nameKey });
+      }
+      if (lmode === 'voucher_one') {
+        const vid = req.body?.voucherId || orderId;
+        if (!vid) return res.status(400).json({ error: 'voucherId wajib' });
+        let vouchers = await readJsonFile('data/loyalty/vouchers.json', []);
+        const before = vouchers.length;
+        vouchers = vouchers.filter(v => v.id !== vid);
+        if (vouchers.length === before) return res.status(404).json({ error: 'Voucher tidak ditemukan' });
+        await writeJsonFile('data/loyalty/vouchers.json', vouchers, `Delete voucher ${vid} by ${payload.username}`);
+        results.push({ file: 'vouchers', deleted: 1, id: vid });
+      }
+      if (lmode === 'reset_points_one') {
+        const nameKey = normalizeMemberName(username || req.body?.name || '');
+        if (!nameKey) return res.status(400).json({ error: 'name member wajib' });
+        let members = await readJsonFile('data/loyalty/members.json', []);
+        const m = members.find(x => x.nameKey === nameKey);
+        if (!m) return res.status(404).json({ error: 'Member tidak ditemukan' });
+        m.points = 0;
+        m.history = m.history || [];
+        m.history.unshift({ type: 'reset', points: 0, at: new Date().toISOString(), by: payload.username });
+        m.updatedAt = new Date().toISOString();
+        await writeJsonFile('data/loyalty/members.json', members, `Reset points ${nameKey} by ${payload.username}`);
+        results.push({ file: 'members', reset: nameKey });
+      }
+      return res.status(200).json({ success: true, message: 'Loyalty data updated', results });
+    }
+
   } catch (error) {
     console.error('Delete data error:', error);
     return res.status(500).json({ error: 'Failed to delete data: ' + error.message });
@@ -1194,11 +1247,17 @@ async function handleLoyaltyVouchers(req, res) {
     if (req.method === 'PATCH') {
       const payload = getAuthPayload(req);
       if (!payload || payload.role !== 'admin') return res.status(403).json({ error: 'Admin only' });
-      const { id, active, title, pointsCost, discountValue, freeItemName, stock } = req.body || {};
+      const { id, active, title, pointsCost, discountValue, freeItemName, stock, delete: delFlag } = req.body || {};
       if (!id) return res.status(400).json({ error: 'ID voucher wajib' });
-      const vouchers = await readJsonFile('data/loyalty/vouchers.json', []);
+      let vouchers = await readJsonFile('data/loyalty/vouchers.json', []);
       const idx = vouchers.findIndex(v => v.id === id);
       if (idx === -1) return res.status(404).json({ error: 'Voucher tidak ditemukan' });
+      if (delFlag === true) {
+        const removed = vouchers[idx];
+        vouchers.splice(idx, 1);
+        await writeJsonFile('data/loyalty/vouchers.json', vouchers, `Delete voucher ${id}`);
+        return res.status(200).json({ success: true, deleted: removed });
+      }
       if (active !== undefined) vouchers[idx].active = !!active;
       if (title) vouchers[idx].title = String(title).trim();
       if (pointsCost != null && Number(pointsCost) >= 1) vouchers[idx].pointsCost = Number(pointsCost);
