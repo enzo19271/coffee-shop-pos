@@ -2,8 +2,14 @@
   {
     "name": "Enzo",
     "nameKey": "enzo",
-    "points": 1,
+    "points": 2,
     "history": [
+      {
+        "type": "earn",
+        "points": 1,
+        "orderId": "ORD-MTGSC7JD-YAWPI",
+        "at": "2026-08-31T05:18:35.421Z"
+      },
       {
         "type": "earn",
         "points": 1,
@@ -12,6 +18,6 @@
       }
     ],
     "createdAt": "2026-08-31T05:14:55.270Z",
-    "updatedAt": "2026-08-31T05:14:55.270Z"
+    "updatedAt": "2026-08-31T05:18:35.421Z"
   }
 ]
