@@ -209,9 +209,11 @@
     "paymentMethod": "cash",
     "paymentProof": null,
     "notes": "Anjayyyy",
-    "status": "confirmed",
+    "status": "completed",
     "source": "staff",
     "createdBy": "reza",
-    "createdAt": "2026-08-31T04:38:26.649Z"
+    "createdAt": "2026-08-31T04:38:26.649Z",
+    "updatedAt": "2026-08-31T04:45:53.136Z",
+    "updatedBy": "reza"
   }
 ]
