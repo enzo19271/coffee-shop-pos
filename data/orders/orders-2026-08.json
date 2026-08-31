@@ -99,15 +99,17 @@
     "paymentMethod": "cash",
     "paymentProof": null,
     "notes": "",
-    "status": "confirmed",
+    "status": "completed",
     "source": "customer",
     "createdBy": null,
     "createdAt": "2026-08-31T06:29:30.912Z",
     "voucherCode": null,
     "voucherDiscount": 0,
     "voucherFreeItem": "",
-    "pointsAwarded": false,
-    "updatedAt": "2026-08-31T06:29:50.491Z",
-    "updatedBy": "reza"
+    "pointsAwarded": true,
+    "updatedAt": "2026-08-31T06:29:54.465Z",
+    "updatedBy": "reza",
+    "pointsAwardedTo": "Enzo",
+    "pointsEarned": 2
   }
 ]
