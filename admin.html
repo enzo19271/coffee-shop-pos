@@ -1108,8 +1108,81 @@
             gap: 16px;
             margin-bottom: 18px;
         }
-        @media (min-width: 900px) {
-            .stats-charts { grid-template-columns: 1.4fr 1fr; }
+        .stats-carousel {
+            position: relative;
+            overflow: hidden;
+            border-radius: 16px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-sm);
+        }
+        .stats-carousel-track {
+            display: flex;
+            transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            width: 100%;
+        }
+        .stats-carousel-slide {
+            min-width: 100%;
+            width: 100%;
+            flex-shrink: 0;
+            padding: 16px 18px 12px;
+            box-sizing: border-box;
+        }
+        .stats-carousel-slide h4 {
+            font-size: 14px;
+            font-weight: 800;
+            color: var(--brand-primary);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .stats-carousel-nav {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding: 8px 12px 14px;
+        }
+        .stats-carousel-nav button {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 1.5px solid var(--border-color);
+            background: #fff;
+            color: var(--brand-primary);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+        .stats-carousel-nav button:active {
+            background: var(--brand-primary);
+            color: #fff;
+        }
+        .stats-carousel-dots {
+            display: flex;
+            gap: 6px;
+        }
+        .stats-carousel-dots span {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #d0d0d0;
+            cursor: pointer;
+        }
+        .stats-carousel-dots span.active {
+            background: var(--brand-primary);
+            width: 18px;
+            border-radius: 6px;
+        }
+        .stats-carousel-hint {
+            text-align: center;
+            font-size: 11px;
+            color: var(--text-muted);
+            padding-bottom: 10px;
+            font-weight: 600;
         }
         .chart-card {
             background: var(--bg-card);
@@ -2308,12 +2381,29 @@
                         <h4><i class="fas fa-chart-area"></i> Omzet harian</h4>
                         <div class="chart-wrap"><canvas id="chartRevenue"></canvas></div>
                     </div>
-                    <div class="chart-card">
-                        <h4><i class="fas fa-chart-pie"></i> Status pesanan</h4>
-                        <div class="chart-wrap"><canvas id="chartStatus"></canvas></div>
+                    <div class="stats-carousel" id="statsCarousel">
+                        <div class="stats-carousel-track" id="statsCarouselTrack">
+                            <div class="stats-carousel-slide">
+                                <h4><i class="fas fa-mug-hot"></i> Produk terlaris hari ini</h4>
+                                <div class="chart-wrap"><canvas id="chartProducts"></canvas></div>
+                            </div>
+                            <div class="stats-carousel-slide">
+                                <h4><i class="fas fa-chart-bar"></i> Jumlah pesanan hari ini</h4>
+                                <div class="chart-wrap"><canvas id="chartOrdersToday"></canvas></div>
+                            </div>
+                        </div>
+                        <div class="stats-carousel-nav">
+                            <button type="button" onclick="shiftStatsCarousel(-1)" aria-label="Sebelumnya"><i class="fas fa-chevron-left"></i></button>
+                            <div class="stats-carousel-dots" id="statsCarouselDots">
+                                <span class="active" onclick="goStatsCarousel(0)"></span>
+                                <span onclick="goStatsCarousel(1)"></span>
+                            </div>
+                            <button type="button" onclick="shiftStatsCarousel(1)" aria-label="Berikutnya"><i class="fas fa-chevron-right"></i></button>
+                        </div>
+                        <p class="stats-carousel-hint">Geser kiri/kanan · Produk terlaris &amp; jumlah pesanan hari ini</p>
                     </div>
-                    <div class="chart-card" style="grid-column:1/-1;">
-                        <h4><i class="fas fa-chart-bar"></i> Jumlah pesanan per hari</h4>
+                    <div class="chart-card">
+                        <h4><i class="fas fa-chart-bar"></i> Jumlah pesanan per hari (periode)</h4>
                         <div class="chart-wrap"><canvas id="chartOrders"></canvas></div>
                     </div>
                 </div>
@@ -3654,8 +3744,36 @@ async function executeDeleteData() {
         // ─────────────────────────────────────────────
         let statsPeriod = 'week';
         let chartRevenue = null;
-        let chartStatus = null;
+        let chartProducts = null;
+        let chartOrdersToday = null;
         let chartOrders = null;
+        let statsCarouselIndex = 0;
+
+        window.shiftStatsCarousel = function(dir) {
+            goStatsCarousel(statsCarouselIndex + dir);
+        };
+        window.goStatsCarousel = function(idx) {
+            const track = document.getElementById('statsCarouselTrack');
+            const dots = document.querySelectorAll('#statsCarouselDots span');
+            if (!track) return;
+            const max = 1;
+            statsCarouselIndex = Math.max(0, Math.min(max, idx));
+            track.style.transform = 'translateX(-' + (statsCarouselIndex * 100) + '%)';
+            dots.forEach((d, i) => d.classList.toggle('active', i === statsCarouselIndex));
+        };
+
+        // Touch swipe on carousel
+        (function initStatsSwipe() {
+            const el = document.getElementById('statsCarousel');
+            if (!el) return;
+            let startX = 0;
+            el.addEventListener('touchstart', (e) => { startX = e.changedTouches[0].screenX; }, { passive: true });
+            el.addEventListener('touchend', (e) => {
+                const dx = e.changedTouches[0].screenX - startX;
+                if (Math.abs(dx) < 40) return;
+                shiftStatsCarousel(dx < 0 ? 1 : -1);
+            }, { passive: true });
+        })();
 
         window.setStatsPeriod = function setStatsPeriod(period) {
             statsPeriod = period;
@@ -3787,31 +3905,72 @@ async function executeDeleteData() {
                     return d.toLocaleDateString('id-ID', { day: '2-digit', month: 'short' });
                 });
 
-                // Status breakdown
-                const statusCount = {};
-                orders.forEach(o => {
-                    const s = o.status || 'unknown';
-                    statusCount[s] = (statusCount[s] || 0) + 1;
+                // ===== Today-only data for product & order charts =====
+                const todayKey = new Date().toISOString().slice(0, 10);
+                const todayOrders = orders.filter(o => (o.timestamp || '').startsWith(todayKey));
+                // If period filter excludes today, still fetch today's orders for carousel
+                let todayOrdersAll = todayOrders;
+                if (!todayOrdersAll.length) {
+                    try {
+                        const m = todayKey.slice(0, 7);
+                        const authToken = (typeof token !== 'undefined' && token) ? token : localStorage.getItem('staffToken');
+                        const resT = await fetch('/api/orders?month=' + encodeURIComponent(m), {
+                            headers: { 'Authorization': 'Bearer ' + authToken }
+                        });
+                        if (resT.ok) {
+                            const dt = await resT.json();
+                            todayOrdersAll = (dt.data || []).filter(o => (o.timestamp || '').startsWith(todayKey));
+                        }
+                    } catch (e) { /* ignore */ }
+                }
+
+                // Product qty ranking (completed preferred, else all)
+                const productSource = todayOrdersAll.filter(o => o.status === 'completed');
+                const srcItems = (productSource.length ? productSource : todayOrdersAll);
+                const productMap = {};
+                srcItems.forEach(o => {
+                    (o.items || []).forEach(it => {
+                        const name = (it.name || 'Lainnya') + (it.variant ? ' (' + it.variant + ')' : '');
+                        productMap[name] = (productMap[name] || 0) + (Number(it.quantity) || 0);
+                    });
                 });
-                const statusKeys = Object.keys(statusCount);
-                const statusVals = statusKeys.map(k => statusCount[k]);
-                const statusColors = {
-                    completed: '#2e7d32',
-                    confirmed: '#00796b',
-                    pending: '#ef6c00',
-                    pending_verification: '#0277bd',
-                    rejected: '#c62828',
-                    unknown: '#9e9e9e'
-                };
+                const productRank = Object.keys(productMap)
+                    .map(k => ({ name: k, qty: productMap[k] }))
+                    .sort((a, b) => b.qty - a.qty)
+                    .slice(0, 8);
+
+                // Hourly order counts today
+                const hourCounts = Array(24).fill(0);
+                todayOrdersAll.forEach(o => {
+                    const h = new Date(o.timestamp).getHours();
+                    if (h >= 0 && h < 24) hourCounts[h] += 1;
+                });
+                // only show hours that have activity, or 8-22 if empty range
+                let hourLabels = [];
+                let hourData = [];
+                for (let h = 0; h < 24; h++) {
+                    if (hourCounts[h] > 0) {
+                        hourLabels.push(String(h).padStart(2, '0') + ':00');
+                        hourData.push(hourCounts[h]);
+                    }
+                }
+                if (!hourLabels.length) {
+                    for (let h = 8; h <= 21; h++) {
+                        hourLabels.push(String(h).padStart(2, '0') + ':00');
+                        hourData.push(0);
+                    }
+                }
 
                 destroyChart(chartRevenue);
-                destroyChart(chartStatus);
+                destroyChart(chartProducts);
+                destroyChart(chartOrdersToday);
                 destroyChart(chartOrders);
 
                 const revCtx = document.getElementById('chartRevenue');
-                const stCtx = document.getElementById('chartStatus');
+                const prodCtx = document.getElementById('chartProducts');
+                const otCtx = document.getElementById('chartOrdersToday');
                 const orCtx = document.getElementById('chartOrders');
-                if (!revCtx || !stCtx || !orCtx) return;
+                if (!revCtx || !prodCtx || !otCtx || !orCtx) return;
 
                 chartRevenue = new Chart(revCtx, {
                     type: 'line',
@@ -3841,19 +4000,46 @@ async function executeDeleteData() {
                     }
                 });
 
-                chartStatus = new Chart(stCtx, {
-                    type: 'doughnut',
+                const prodLabels = productRank.length ? productRank.map(p => p.name) : ['Belum ada data'];
+                const prodData = productRank.length ? productRank.map(p => p.qty) : [0];
+                chartProducts = new Chart(prodCtx, {
+                    type: 'bar',
                     data: {
-                        labels: statusKeys.map(k => (statusLabels && statusLabels[k]) || k),
+                        labels: prodLabels,
                         datasets: [{
-                            data: statusVals,
-                            backgroundColor: statusKeys.map(k => statusColors[k] || '#90a4ae')
+                            label: 'Qty terjual',
+                            data: prodData,
+                            backgroundColor: '#0B4D3A',
+                            borderRadius: 6
+                        }]
+                    },
+                    options: {
+                        indexAxis: 'y',
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            x: { beginAtZero: true, ticks: { stepSize: 1 } }
+                        }
+                    }
+                });
+
+                chartOrdersToday = new Chart(otCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: hourLabels,
+                        datasets: [{
+                            label: 'Pesanan',
+                            data: hourData,
+                            backgroundColor: '#1B7A54',
+                            borderRadius: 6
                         }]
                     },
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
-                        plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 11 } } } }
+                        plugins: { legend: { display: false } },
+                        scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }
                     }
                 });
 
