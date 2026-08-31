@@ -1,1 +1,15 @@
-[]
+[
+  {
+    "id": "VCH-MTGS9TBH-57CK",
+    "title": "Diskon Rp 5.000",
+    "type": "discount_nominal",
+    "pointsCost": 5,
+    "discountValue": 5000,
+    "freeItemName": "",
+    "freeItemId": null,
+    "active": true,
+    "stock": null,
+    "createdAt": "2026-08-31T05:14:03.821Z",
+    "createdBy": "admin"
+  }
+]
