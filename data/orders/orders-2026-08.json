@@ -45,5 +45,34 @@
     "updatedBy": "reza",
     "pointsAwardedTo": "Enzo",
     "pointsEarned": 18
+  },
+  {
+    "id": "ORD-MTGUI1S3-SH3ZV",
+    "timestamp": "2026-08-31T06:16:27.267Z",
+    "customer": {
+      "name": "Dea",
+      "tableNo": "A1"
+    },
+    "items": [
+      {
+        "menuId": "2",
+        "name": "Matcha Latte",
+        "price": 12000,
+        "variant": "Besar",
+        "quantity": 1
+      }
+    ],
+    "totalPrice": 7000,
+    "paymentMethod": "cash",
+    "paymentProof": null,
+    "notes": "",
+    "status": "pending",
+    "source": "customer",
+    "createdBy": null,
+    "createdAt": "2026-08-31T06:16:27.267Z",
+    "voucherCode": "TC-4VRYTDOP",
+    "voucherDiscount": 5000,
+    "voucherFreeItem": "",
+    "pointsAwarded": false
   }
 ]
