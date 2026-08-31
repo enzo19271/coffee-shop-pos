@@ -2388,8 +2388,8 @@
                                 <div class="chart-wrap"><canvas id="chartProducts"></canvas></div>
                             </div>
                             <div class="stats-carousel-slide">
-                                <h4><i class="fas fa-chart-bar"></i> Jumlah pesanan hari ini</h4>
-                                <div class="chart-wrap"><canvas id="chartOrdersToday"></canvas></div>
+                                <h4><i class="fas fa-chart-bar"></i> Jumlah pesanan per hari (periode)</h4>
+                                <div class="chart-wrap"><canvas id="chartOrders"></canvas></div>
                             </div>
                         </div>
                         <div class="stats-carousel-nav">
@@ -2400,11 +2400,7 @@
                             </div>
                             <button type="button" onclick="shiftStatsCarousel(1)" aria-label="Berikutnya"><i class="fas fa-chevron-right"></i></button>
                         </div>
-                        <p class="stats-carousel-hint">Geser kiri/kanan · Produk terlaris &amp; jumlah pesanan hari ini</p>
-                    </div>
-                    <div class="chart-card">
-                        <h4><i class="fas fa-chart-bar"></i> Jumlah pesanan per hari (periode)</h4>
-                        <div class="chart-wrap"><canvas id="chartOrders"></canvas></div>
+                        <p class="stats-carousel-hint">Geser kiri/kanan · Produk terlaris hari ini &amp; pesanan per hari (periode)</p>
                     </div>
                 </div>
                 <p id="statsStatusMsg" style="font-size:12.5px;color:var(--text-muted);font-weight:600;"></p>
@@ -3745,7 +3741,6 @@ async function executeDeleteData() {
         let statsPeriod = 'week';
         let chartRevenue = null;
         let chartProducts = null;
-        let chartOrdersToday = null;
         let chartOrders = null;
         let statsCarouselIndex = 0;
 
@@ -3939,38 +3934,14 @@ async function executeDeleteData() {
                     .sort((a, b) => b.qty - a.qty)
                     .slice(0, 8);
 
-                // Hourly order counts today
-                const hourCounts = Array(24).fill(0);
-                todayOrdersAll.forEach(o => {
-                    const h = new Date(o.timestamp).getHours();
-                    if (h >= 0 && h < 24) hourCounts[h] += 1;
-                });
-                // only show hours that have activity, or 8-22 if empty range
-                let hourLabels = [];
-                let hourData = [];
-                for (let h = 0; h < 24; h++) {
-                    if (hourCounts[h] > 0) {
-                        hourLabels.push(String(h).padStart(2, '0') + ':00');
-                        hourData.push(hourCounts[h]);
-                    }
-                }
-                if (!hourLabels.length) {
-                    for (let h = 8; h <= 21; h++) {
-                        hourLabels.push(String(h).padStart(2, '0') + ':00');
-                        hourData.push(0);
-                    }
-                }
-
                 destroyChart(chartRevenue);
                 destroyChart(chartProducts);
-                destroyChart(chartOrdersToday);
                 destroyChart(chartOrders);
 
                 const revCtx = document.getElementById('chartRevenue');
                 const prodCtx = document.getElementById('chartProducts');
-                const otCtx = document.getElementById('chartOrdersToday');
                 const orCtx = document.getElementById('chartOrders');
-                if (!revCtx || !prodCtx || !otCtx || !orCtx) return;
+                if (!revCtx || !prodCtx || !orCtx) return;
 
                 chartRevenue = new Chart(revCtx, {
                     type: 'line',
@@ -4021,25 +3992,6 @@ async function executeDeleteData() {
                         scales: {
                             x: { beginAtZero: true, ticks: { stepSize: 1 } }
                         }
-                    }
-                });
-
-                chartOrdersToday = new Chart(otCtx, {
-                    type: 'bar',
-                    data: {
-                        labels: hourLabels,
-                        datasets: [{
-                            label: 'Pesanan',
-                            data: hourData,
-                            backgroundColor: '#1B7A54',
-                            borderRadius: 6
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: { legend: { display: false } },
-                        scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }
                     }
                 });
 
