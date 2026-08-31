@@ -111,5 +111,34 @@
     "updatedBy": "reza",
     "pointsAwardedTo": "Enzo",
     "pointsEarned": 2
+  },
+  {
+    "id": "ORD-MTGV816G-8QMG6",
+    "timestamp": "2026-08-31T06:36:39.545Z",
+    "customer": {
+      "name": "Enzo",
+      "tableNo": "A1"
+    },
+    "items": [
+      {
+        "menuId": "1",
+        "name": "Cappucino",
+        "price": 10000,
+        "variant": "Medium",
+        "quantity": 2
+      }
+    ],
+    "totalPrice": 15000,
+    "paymentMethod": "cash",
+    "paymentProof": null,
+    "notes": "",
+    "status": "pending",
+    "source": "customer",
+    "createdBy": null,
+    "createdAt": "2026-08-31T06:36:39.545Z",
+    "voucherCode": "TC-GQRR7FIP",
+    "voucherDiscount": 5000,
+    "voucherFreeItem": "",
+    "pointsAwarded": false
   }
 ]
