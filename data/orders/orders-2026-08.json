@@ -132,13 +132,15 @@
     "paymentMethod": "cash",
     "paymentProof": null,
     "notes": "",
-    "status": "pending",
+    "status": "confirmed",
     "source": "customer",
     "createdBy": null,
     "createdAt": "2026-08-31T06:36:39.545Z",
     "voucherCode": "TC-GQRR7FIP",
     "voucherDiscount": 5000,
     "voucherFreeItem": "",
-    "pointsAwarded": false
+    "pointsAwarded": false,
+    "updatedAt": "2026-08-31T06:37:21.403Z",
+    "updatedBy": "reza"
   }
 ]
