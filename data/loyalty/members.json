@@ -2,8 +2,14 @@
   {
     "name": "Enzo",
     "nameKey": "enzo",
-    "points": 15,
+    "points": 17,
     "history": [
+      {
+        "type": "earn",
+        "points": 2,
+        "orderId": "ORD-MTGUYUG0-DKNC7",
+        "at": "2026-08-31T06:29:54.558Z"
+      },
       {
         "type": "redeem",
         "points": -5,
@@ -31,7 +37,7 @@
       }
     ],
     "createdAt": "2026-08-31T05:14:55.270Z",
-    "updatedAt": "2026-08-31T06:15:56.305Z"
+    "updatedAt": "2026-08-31T06:29:54.558Z"
   },
   {
     "name": "Dea",
