@@ -2384,7 +2384,7 @@
                     <div class="stats-carousel" id="statsCarousel">
                         <div class="stats-carousel-track" id="statsCarouselTrack">
                             <div class="stats-carousel-slide">
-                                <h4><i class="fas fa-mug-hot"></i> Produk terlaris hari ini</h4>
+                                <h4><i class="fas fa-mug-hot"></i> Produk terlaris (periode)</h4>
                                 <div class="chart-wrap"><canvas id="chartProducts"></canvas></div>
                             </div>
                             <div class="stats-carousel-slide">
@@ -2400,7 +2400,7 @@
                             </div>
                             <button type="button" onclick="shiftStatsCarousel(1)" aria-label="Berikutnya"><i class="fas fa-chevron-right"></i></button>
                         </div>
-                        <p class="stats-carousel-hint">Geser kiri/kanan · Produk terlaris hari ini &amp; pesanan per hari (periode)</p>
+                        <p class="stats-carousel-hint">Geser kiri/kanan · Produk terlaris &amp; pesanan per hari (periode)</p>
                     </div>
                 </div>
                 <p id="statsStatusMsg" style="font-size:12.5px;color:var(--text-muted);font-weight:600;"></p>
@@ -3900,30 +3900,10 @@ async function executeDeleteData() {
                     return d.toLocaleDateString('id-ID', { day: '2-digit', month: 'short' });
                 });
 
-                // ===== Today-only data for product & order charts =====
-                const todayKey = new Date().toISOString().slice(0, 10);
-                const todayOrders = orders.filter(o => (o.timestamp || '').startsWith(todayKey));
-                // If period filter excludes today, still fetch today's orders for carousel
-                let todayOrdersAll = todayOrders;
-                if (!todayOrdersAll.length) {
-                    try {
-                        const m = todayKey.slice(0, 7);
-                        const authToken = (typeof token !== 'undefined' && token) ? token : localStorage.getItem('staffToken');
-                        const resT = await fetch('/api/orders?month=' + encodeURIComponent(m), {
-                            headers: { 'Authorization': 'Bearer ' + authToken }
-                        });
-                        if (resT.ok) {
-                            const dt = await resT.json();
-                            todayOrdersAll = (dt.data || []).filter(o => (o.timestamp || '').startsWith(todayKey));
-                        }
-                    } catch (e) { /* ignore */ }
-                }
-
-                // Product qty ranking (completed preferred, else all)
-                const productSource = todayOrdersAll.filter(o => o.status === 'completed');
-                const srcItems = (productSource.length ? productSource : todayOrdersAll);
+                // Product qty ranking for selected period (completed preferred, else all)
+                const productSource = completed.length ? completed : orders;
                 const productMap = {};
-                srcItems.forEach(o => {
+                productSource.forEach(o => {
                     (o.items || []).forEach(it => {
                         const name = (it.name || 'Lainnya') + (it.variant ? ' (' + it.variant + ')' : '');
                         productMap[name] = (productMap[name] || 0) + (Number(it.quantity) || 0);
@@ -3932,7 +3912,7 @@ async function executeDeleteData() {
                 const productRank = Object.keys(productMap)
                     .map(k => ({ name: k, qty: productMap[k] }))
                     .sort((a, b) => b.qty - a.qty)
-                    .slice(0, 8);
+                    .slice(0, 10);
 
                 destroyChart(chartRevenue);
                 destroyChart(chartProducts);
