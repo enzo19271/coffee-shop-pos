@@ -1598,78 +1598,379 @@
     }
 
 
+    /* ── Premium Loyalty Panel ── */
     .loyalty-overlay {
       display: none;
       position: fixed;
       inset: 0;
-      background: rgba(10, 20, 16, 0.55);
+      background: rgba(8, 18, 14, 0.62);
       z-index: 1200;
-      backdrop-filter: blur(4px);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
     }
-    .loyalty-overlay.show { display: block; }
+    .loyalty-overlay.show { display: block; animation: loyFade 0.25s ease; }
+    @keyframes loyFade { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes loyUp {
+      from { opacity: 0; transform: translate(-50%, -46%) scale(0.96); }
+      to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+    }
     .loyalty-panel {
       display: none;
       position: fixed;
       left: 50%;
       top: 50%;
       transform: translate(-50%, -50%);
-      width: min(440px, 94vw);
-      max-height: min(88vh, 720px);
-      overflow-y: auto;
-      background: #fff;
-      border-radius: 20px;
+      width: min(400px, 92vw);
+      max-height: min(90vh, 760px);
+      overflow: hidden;
+      background: linear-gradient(180deg, #faf8f5 0%, #f3f0eb 100%);
+      border-radius: 24px;
       z-index: 1201;
-      box-shadow: 0 24px 60px rgba(0,0,0,0.28);
-      padding: 20px 18px 24px;
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,0.4) inset,
+        0 28px 80px rgba(11, 77, 58, 0.28),
+        0 8px 24px rgba(0,0,0,0.18);
+      padding: 0;
     }
-    .loyalty-panel.show { display: block; }
-    .loyalty-panel h3 {
-      font-family: var(--font-display, inherit);
-      color: #0B4D3A;
+    .loyalty-panel.show {
+      display: flex;
+      flex-direction: column;
+      animation: loyUp 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .loyalty-hero {
+      position: relative;
+      background: linear-gradient(145deg, #0B4D3A 0%, #0F5C45 40%, #1B7A54 100%);
+      color: #fff;
+      padding: 22px 20px 28px;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .loyalty-hero::before {
+      content: '';
+      position: absolute;
+      right: -30px; top: -40px;
+      width: 140px; height: 140px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.07);
+      pointer-events: none;
+    }
+    .loyalty-hero::after {
+      content: '';
+      position: absolute;
+      left: -20px; bottom: -50px;
+      width: 120px; height: 120px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.05);
+      pointer-events: none;
+    }
+    .loyalty-hero-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      position: relative;
+      z-index: 1;
+      margin-bottom: 18px;
+    }
+    .loyalty-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,0.14);
+      border: 1px solid rgba(255,255,255,0.18);
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .loyalty-close {
+      width: 36px; height: 36px;
+      border: none;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.16);
+      color: #fff;
+      font-size: 18px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .loyalty-hero h3 {
+      position: relative;
+      z-index: 1;
       margin: 0 0 6px;
-      font-size: 20px;
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: #fff !important;
+      font-family: var(--font-display, inherit);
     }
-    .loyalty-panel .sub {
-      font-size: 12.5px;
-      color: #6b736f;
+    .loyalty-hero .sub {
+      position: relative;
+      z-index: 1;
+      margin: 0;
+      font-size: 13px;
+      line-height: 1.45;
+      color: rgba(255,255,255,0.82) !important;
+      font-weight: 500;
+      max-width: 290px;
+    }
+    .loyalty-body {
+      padding: 18px 18px 22px;
+      overflow-y: auto;
+      flex: 1;
+      -webkit-overflow-scrolling: touch;
+    }
+    .loyalty-check-row {
+      display: flex;
+      gap: 8px;
+      align-items: stretch;
       margin-bottom: 14px;
-      font-weight: 600;
     }
+    .loyalty-check-row .loy-field { flex: 1; min-width: 0; }
     .loyalty-panel label {
       display: block;
-      font-size: 11px;
+      font-size: 10.5px;
       font-weight: 800;
-      letter-spacing: 0.04em;
+      letter-spacing: 0.07em;
       text-transform: uppercase;
-      color: #6b736f;
+      color: #7a847e;
       margin-bottom: 6px;
     }
-    .loyalty-panel input {
+    .loyalty-panel input[type="text"] {
       width: 100%;
-      padding: 12px 14px;
-      border-radius: 12px;
-      border: 1.5px solid #e2e8e4;
+      padding: 13px 14px;
+      border-radius: 14px;
+      border: 1.5px solid rgba(11,77,58,0.12);
+      background: #fff;
       font-size: 15px;
-      margin-bottom: 12px;
+      font-weight: 600;
+      color: #1a2e26;
       box-sizing: border-box;
+      margin-bottom: 0;
+      box-shadow: 0 2px 8px rgba(11,77,58,0.04);
     }
-    .loyalty-points {
+    .loyalty-panel input[type="text"]:focus {
+      outline: none;
+      border-color: #1B7A54;
+      box-shadow: 0 0 0 3px rgba(27,122,84,0.15);
+    }
+    .loy-btn-check {
+      align-self: flex-end;
+      height: 48px;
+      padding: 0 16px;
+      border: none;
+      border-radius: 14px;
       background: linear-gradient(135deg, #0B4D3A, #1B7A54);
       color: #fff;
+      font-weight: 800;
+      font-size: 13px;
+      cursor: pointer;
+      white-space: nowrap;
+      box-shadow: 0 6px 16px rgba(11,77,58,0.28);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .loyalty-points {
+      display: none;
+      position: relative;
+      background: linear-gradient(135deg, #0B4D3A 0%, #156B4A 50%, #1B7A54 100%);
+      color: #fff;
+      border-radius: 18px;
+      padding: 18px 16px;
+      margin-bottom: 16px;
+      overflow: hidden;
+      box-shadow: 0 12px 28px rgba(11,77,58,0.25);
+    }
+    .loyalty-points.show { display: block; }
+    .loyalty-points::before {
+      content: '';
+      position: absolute;
+      right: -20px; top: -20px;
+      width: 90px; height: 90px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.08);
+    }
+    .loyalty-points-inner {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .loyalty-points .label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      opacity: 0.85;
+      margin-bottom: 4px;
+    }
+    .loyalty-points .num {
+      font-size: 40px;
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: -0.03em;
+    }
+    .loyalty-points .unit {
+      font-size: 13px;
+      font-weight: 700;
+      opacity: 0.85;
+      margin-left: 4px;
+    }
+    .loyalty-points-icon {
+      width: 52px; height: 52px;
       border-radius: 16px;
-      padding: 16px;
-      text-align: center;
-      margin-bottom: 14px;
+      background: rgba(255,255,255,0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      flex-shrink: 0;
     }
-    .loyalty-points .num { font-size: 36px; font-weight: 800; line-height: 1; }
+    .loyalty-section-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 800;
+      color: #0B4D3A;
+      margin: 4px 0 12px;
+    }
+    .loyalty-section-title span {
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, rgba(11,77,58,0.15), transparent);
+    }
     .loyalty-voucher-card {
-      border: 1px solid #e2e8e4;
-      border-radius: 14px;
-      padding: 12px;
-      margin-bottom: 10px;
+      background: #fff;
+      border: 1px solid rgba(11,77,58,0.08);
+      border-radius: 16px;
+      padding: 0;
+      margin-bottom: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 16px rgba(11,77,58,0.06);
+      display: flex;
+      min-height: 88px;
     }
-    .loyalty-voucher-card strong { color: #0B4D3A; }
-    .loyalty-voucher-card .meta { font-size: 12.5px; color: #6b736f; margin: 4px 0 10px; }
+    .loyalty-voucher-stripe {
+      width: 6px;
+      flex-shrink: 0;
+      background: linear-gradient(180deg, #1B7A54, #0B4D3A);
+    }
+    .loyalty-voucher-body {
+      flex: 1;
+      padding: 14px 14px 12px;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .loyalty-voucher-card strong {
+      color: #0B4D3A;
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+    .loyalty-voucher-card .meta {
+      font-size: 12.5px;
+      color: #6b736f;
+      font-weight: 600;
+      margin: 0;
+      line-height: 1.35;
+    }
+    .loyalty-voucher-foot {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 4px;
+    }
+    .loy-cost {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: rgba(11,77,58,0.08);
+      color: #0B4D3A;
+      font-size: 12px;
+      font-weight: 800;
+      padding: 5px 10px;
+      border-radius: 999px;
+    }
+    .loy-btn-redeem {
+      border: none;
+      border-radius: 12px;
+      padding: 9px 14px;
+      font-size: 12.5px;
+      font-weight: 800;
+      cursor: pointer;
+      background: linear-gradient(135deg, #0B4D3A, #1B7A54);
+      color: #fff;
+      box-shadow: 0 4px 12px rgba(11,77,58,0.25);
+    }
+    .loy-btn-redeem:disabled {
+      background: #d5ddd8;
+      color: #8a948e;
+      box-shadow: none;
+      cursor: not-allowed;
+    }
+    .loyalty-redeem-result {
+      display: none;
+      margin-top: 4px;
+      padding: 16px;
+      border-radius: 18px;
+      background: linear-gradient(180deg, #e8f5e9, #f1f8f2);
+      border: 1.5px dashed #81c784;
+      text-align: center;
+    }
+    .loyalty-redeem-result.show { display: block; }
+    .loyalty-redeem-result .tag {
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #2e7d32;
+      margin-bottom: 6px;
+    }
+    .loyalty-redeem-result .code {
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      color: #0B4D3A;
+      margin: 4px 0 12px;
+      font-family: ui-monospace, monospace;
+    }
+    .loy-btn-copy {
+      width: 100%;
+      border: none;
+      border-radius: 14px;
+      padding: 13px;
+      background: #0B4D3A;
+      color: #fff;
+      font-weight: 800;
+      font-size: 14px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .loyalty-empty {
+      text-align: center;
+      padding: 20px 12px;
+      color: #6b736f;
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .loyalty-empty i {
+      display: block;
+      font-size: 28px;
+      color: #c5cdc8;
+      margin-bottom: 8px;
+    }
 
 </style>
 </head>
@@ -1694,25 +1995,41 @@
 
   <div class="loyalty-overlay" id="loyaltyOverlay"></div>
   <div class="loyalty-panel" id="loyaltyPanel" role="dialog" aria-modal="true" aria-labelledby="loyaltyTitle">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-      <h3 id="loyaltyTitle"><i class="fas fa-ticket"></i> Poin &amp; Voucher</h3>
-      <button type="button" id="loyaltyClose" aria-label="Tutup" style="border:none;background:#f1f5f3;width:36px;height:36px;border-radius:50%;font-size:18px;cursor:pointer;">×</button>
+    <div class="loyalty-hero">
+      <div class="loyalty-hero-top">
+        <span class="loyalty-badge"><i class="fas fa-crown"></i> Member Rewards</span>
+        <button type="button" class="loyalty-close" id="loyaltyClose" aria-label="Tutup">×</button>
+      </div>
+      <h3 id="loyaltyTitle">Poin &amp; Voucher</h3>
+      <p class="sub">Setiap pesanan selesai = 1 poin. Tukar jadi voucher, pakai kodenya saat checkout.</p>
     </div>
-    <p class="sub">1 pesanan selesai = 1 poin. Tukar poin dengan voucher, lalu pakai kode saat checkout.</p>
-    <label>Nama (sama seperti saat pesan)</label>
-    <input type="text" id="loyaltyName" placeholder="Masukkan nama Anda" />
-    <button type="button" class="add-btn" id="loyaltyCheckBtn" style="width:100%;margin-bottom:12px;">
-      <i class="fas fa-search"></i> Cek Poin
-    </button>
-    <div class="loyalty-points" id="loyaltyPointsBox" style="display:none;">
-      <div style="font-size:12px;opacity:0.9;font-weight:600;">Saldo poin</div>
-      <div class="num" id="loyaltyPointsNum">0</div>
-    </div>
-    <div id="loyaltyVoucherShop"></div>
-    <div id="loyaltyRedeemResult" style="display:none;margin-top:10px;padding:12px;border-radius:12px;background:#e8f5e9;border:1px solid #a5d6a7;">
-      <div style="font-size:12px;font-weight:700;color:#2e7d32;">Kode voucher kamu</div>
-      <div id="loyaltyCodeText" style="font-size:22px;font-weight:800;letter-spacing:0.06em;color:#0B4D3A;margin:4px 0;"></div>
-      <button type="button" class="add-btn" id="loyaltyCopyBtn" style="width:100%;background:#0B4D3A;">Salin kode</button>
+    <div class="loyalty-body">
+      <label>Nama (sama seperti saat pesan)</label>
+      <div class="loyalty-check-row">
+        <div class="loy-field">
+          <input type="text" id="loyaltyName" placeholder="Contoh: Enzo" autocomplete="name" />
+        </div>
+        <button type="button" class="loy-btn-check" id="loyaltyCheckBtn">
+          <i class="fas fa-search"></i> Cek
+        </button>
+      </div>
+      <div class="loyalty-points" id="loyaltyPointsBox">
+        <div class="loyalty-points-inner">
+          <div>
+            <div class="label">Saldo poin kamu</div>
+            <div><span class="num" id="loyaltyPointsNum">0</span><span class="unit">poin</span></div>
+          </div>
+          <div class="loyalty-points-icon"><i class="fas fa-star"></i></div>
+        </div>
+      </div>
+      <div id="loyaltyVoucherShop"></div>
+      <div class="loyalty-redeem-result" id="loyaltyRedeemResult">
+        <div class="tag"><i class="fas fa-circle-check"></i> Kode siap dipakai</div>
+        <div class="code" id="loyaltyCodeText"></div>
+        <button type="button" class="loy-btn-copy" id="loyaltyCopyBtn">
+          <i class="fas fa-copy"></i> Salin kode
+        </button>
+      </div>
     </div>
   </div>
 
@@ -2342,7 +2659,8 @@
         const res = await fetch('/api/loyalty/member?name=' + encodeURIComponent(name));
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || 'Gagal');
-        document.getElementById('loyaltyPointsBox').style.display = 'block';
+        const pbox = document.getElementById('loyaltyPointsBox');
+        if (pbox) pbox.classList.add('show');
         document.getElementById('loyaltyPointsNum').textContent = data.data?.points ?? 0;
         window.__loyaltyName = name;
         window.__loyaltyPoints = data.data?.points ?? 0;
@@ -2359,83 +2677,23 @@
         const data = await res.json();
         const list = (data.data || []).filter(v => v.active !== false);
         if (!list.length) {
-          box.innerHTML = '<p style="font-size:13px;color:#6b736f;font-weight:600;">Belum ada voucher tersedia.</p>';
+          box.innerHTML = '<div class="loyalty-empty"><i class="fas fa-ticket"></i>Belum ada voucher tersedia.<br>Cek lagi nanti ya.</div>';
           return;
         }
         const pts = window.__loyaltyPoints || 0;
-        box.innerHTML = '<div style="font-size:13px;font-weight:800;color:#0B4D3A;margin:8px 0;">Tukar voucher</div>' + list.map(v => {
+        box.innerHTML = '<div class="loyalty-section-title">Tukar voucher <span></span></div>' + list.map(v => {
           const benefit = v.type === 'discount_nominal'
-            ? ('Diskon Rp ' + Number(v.discountValue||0).toLocaleString('id-ID'))
+            ? ('Potongan Rp ' + Number(v.discountValue||0).toLocaleString('id-ID'))
             : ('Gratis ' + (v.freeItemName||''));
           const can = pts >= (v.pointsCost||0);
-          return '<div class="loyalty-voucher-card"><strong>' + v.title + '</strong>' +
-            '<div class="meta">' + benefit + ' · ' + v.pointsCost + ' poin</div>' +
-            '<button type="button" class="add-btn" style="width:100%;opacity:' + (can?1:0.5) + '" ' +
-            'onclick="redeemVoucher(\'' + v.id + '\')" ' + (can?'':'disabled') + '>Tukar</button></div>';
+          return '<div class="loyalty-voucher-card">' +
+            '<div class="loyalty-voucher-stripe"></div>' +
+            '<div class="loyalty-voucher-body">' +
+            '<strong>' + v.title + '</strong>' +
+            '<div class="meta">' + benefit + '</div>' +
+            '<div class="loyalty-voucher-foot">' +
+            '<span class="loy-cost"><i class="fas fa-star" style="font-size:10px"></i> ' + v.pointsCost + ' poin</span>' +
+            '<button type="button" class="loy-btn-redeem" onclick="redeemVoucher(\'' + v.id + '\')" ' + (can ? '' : 'disabled') + '>' +
+            (can ? 'Tukar' : 'Poin kurang') + '</button>' +
+            '</div></div></div>';
         }).join('');
-      } catch (e) {
-        box.innerHTML = '<p style="color:#c62828;font-size:13px;">Gagal memuat voucher</p>';
-      }
-    }
-    async function redeemVoucher(voucherId) {
-      const name = window.__loyaltyName || document.getElementById('loyaltyName')?.value?.trim();
-      if (!name) return showToast('Cek poin dulu dengan nama Anda', 'error');
-      try {
-        const res = await fetch('/api/loyalty/redeem', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name, voucherId })
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error || 'Gagal redeem');
-        document.getElementById('loyaltyRedeemResult').style.display = 'block';
-        document.getElementById('loyaltyCodeText').textContent = data.data.code;
-        document.getElementById('loyaltyPointsNum').textContent = data.data.pointsLeft;
-        window.__loyaltyPoints = data.data.pointsLeft;
-        showToast('Berhasil! Salin kode & pakai di checkout', 'success');
-        loadPublicVouchers();
-      } catch (e) {
-        showToast(e.message || 'Gagal tukar', 'error');
-      }
-    }
-    document.getElementById('openLoyaltyBtn')?.addEventListener('click', (e) => {
-      e.preventDefault();
-      openLoyaltyPanel();
-    });
-    document.getElementById('loyaltyClose')?.addEventListener('click', closeLoyaltyPanel);
-    document.getElementById('loyaltyOverlay')?.addEventListener('click', closeLoyaltyPanel);
-    document.getElementById('loyaltyCheckBtn')?.addEventListener('click', checkLoyaltyPoints);
-    document.getElementById('loyaltyCopyBtn')?.addEventListener('click', () => {
-      const c = document.getElementById('loyaltyCodeText')?.textContent;
-      if (!c) return;
-      navigator.clipboard?.writeText(c).then(() => showToast('Kode disalin', 'success')).catch(() => {
-        showToast(c, 'success');
-      });
-    });
-    // live validate voucher on blur
-    document.getElementById('voucherCode')?.addEventListener('blur', async () => {
-      const code = (document.getElementById('voucherCode')?.value || '').trim();
-      const hint = document.getElementById('voucherHint');
-      if (!hint) return;
-      if (!code) { hint.textContent = ''; return; }
-      try {
-        const res = await fetch('/api/loyalty/validate', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ code })
-        });
-        const data = await res.json();
-        if (!res.ok) { hint.style.color = '#c62828'; hint.textContent = data.error || 'Kode tidak valid'; return; }
-        hint.style.color = '#2e7d32';
-        const d = data.data;
-        hint.textContent = d.type === 'discount_nominal'
-          ? ('✓ Diskon Rp ' + Number(d.discountValue||0).toLocaleString('id-ID'))
-          : ('✓ Gratis: ' + (d.freeItemName||''));
-      } catch {
-        hint.textContent = '';
-      }
-    });
-
-</script>
-</body>
-</html>
