@@ -168,11 +168,11 @@
     "paymentMethod": "cash",
     "paymentProof": null,
     "notes": "",
-    "status": "confirmed",
+    "status": "completed",
     "source": "customer",
     "createdBy": null,
     "createdAt": "2026-08-31T04:13:33.375Z",
-    "updatedAt": "2026-08-31T04:14:13.760Z",
+    "updatedAt": "2026-08-31T04:14:30.939Z",
     "updatedBy": "reza"
   }
 ]
