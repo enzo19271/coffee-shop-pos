@@ -242,5 +242,34 @@
     "createdAt": "2026-08-31T05:10:40.874Z",
     "updatedAt": "2026-08-31T05:12:22.943Z",
     "updatedBy": "reza"
+  },
+  {
+    "id": "ORD-MTGSAH9S-TWAGB",
+    "timestamp": "2026-08-31T05:14:34.864Z",
+    "customer": {
+      "name": "Enzo",
+      "tableNo": "Kasir"
+    },
+    "items": [
+      {
+        "menuId": "3",
+        "name": "Butterschot",
+        "price": 13000,
+        "variant": "Medium",
+        "quantity": 5
+      }
+    ],
+    "totalPrice": 65000,
+    "paymentMethod": "cash",
+    "paymentProof": null,
+    "notes": "",
+    "status": "confirmed",
+    "source": "staff",
+    "createdBy": "reza",
+    "createdAt": "2026-08-31T05:14:34.864Z",
+    "voucherCode": null,
+    "voucherDiscount": 0,
+    "voucherFreeItem": "",
+    "pointsAwarded": false
   }
 ]
