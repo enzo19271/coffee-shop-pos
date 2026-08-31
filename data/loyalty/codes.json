@@ -8,8 +8,10 @@
     "freeItemName": "",
     "memberName": "Enzo",
     "nameKey": "enzo",
-    "status": "unused",
-    "createdAt": "2026-08-31T06:36:02.571Z"
+    "status": "used",
+    "createdAt": "2026-08-31T06:36:02.571Z",
+    "usedAt": "2026-08-31T06:36:40.506Z",
+    "usedOnOrderId": "ORD-MTGV816G-8QMG6"
   },
   {
     "code": "TC-4VRYTDOP",
