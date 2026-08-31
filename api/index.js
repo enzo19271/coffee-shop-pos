@@ -232,7 +232,7 @@ async function handleList(req, res) {
 async function handleCreate(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
   try {
-    const { customerName, tableNo, items, paymentMethod, paymentProof, notes, source } = req.body;
+    const { customerName, tableNo, items, paymentMethod, paymentProof, notes, source, voucherCode } = req.body;
     if (!customerName || !tableNo || !items || items.length === 0 || !paymentMethod)
       return res.status(400).json({ error: 'Missing required fields' });
 
@@ -251,6 +251,22 @@ async function handleCreate(req, res) {
 
     let totalPrice = 0;
     items.forEach(item => { totalPrice += item.price * item.quantity; });
+
+    // Optional voucher code
+    let appliedVoucher = null;
+    const codeRaw = voucherCode ? String(voucherCode).trim().toUpperCase() : '';
+    if (codeRaw) {
+      const codes = await readJsonFile('data/loyalty/codes.json', []);
+      const entry = codes.find(c => String(c.code).toUpperCase() === codeRaw);
+      if (!entry) return res.status(400).json({ error: 'Kode voucher tidak valid' });
+      if (entry.status === 'used') return res.status(400).json({ error: 'Kode voucher sudah dipakai' });
+      appliedVoucher = entry;
+      if (entry.type === 'discount_nominal') {
+        totalPrice = Math.max(0, totalPrice - (Number(entry.discountValue) || 0));
+      }
+      // free_item: informational — staff/kasir should add item free; discount not auto unless matched
+    }
+
     const orderId = generateOrderId();
     const orderFile = getCurrentOrderFile();
 
@@ -274,12 +290,19 @@ async function handleCreate(req, res) {
       status,
       source: isStaffOrder ? 'staff' : 'customer',
       createdBy: isStaffOrder ? payload.username : null,
-      createdAt: new Date().toISOString()
+      createdAt: new Date().toISOString(),
+      voucherCode: appliedVoucher ? appliedVoucher.code : null,
+      voucherDiscount: appliedVoucher && appliedVoucher.type === 'discount_nominal' ? (Number(appliedVoucher.discountValue) || 0) : 0,
+      voucherFreeItem: appliedVoucher && appliedVoucher.type === 'free_item' ? (appliedVoucher.freeItemName || '') : '',
+      pointsAwarded: false
     };
     let orders = [];
     try { orders = JSON.parse(await getGitHubFile(orderFile)); } catch { orders = []; }
     orders.push(newOrder);
     await updateGitHubFile(orderFile, JSON.stringify(orders, null, 2), `Add order ${orderId}${isStaffOrder ? ' (staff/kasir)' : ''}`);
+    if (appliedVoucher) {
+      try { await markVoucherCodeUsed(appliedVoucher.code, orderId); } catch (ve) { console.error(ve); }
+    }
     return res.status(201).json({ success: true, orderId, message: 'Order created successfully', order: newOrder });
   } catch (error) {
     console.error('Order creation error:', error);
@@ -351,11 +374,27 @@ async function handleUpdateStatus(req, res) {
     let orders = JSON.parse(await getGitHubFile(orderFile));
     const orderIndex = orders.findIndex(o => o.id === orderId);
     if (orderIndex === -1) return res.status(404).json({ error: 'Order not found' });
+    const prevStatus = orders[orderIndex].status;
     orders[orderIndex].status = status;
     orders[orderIndex].updatedAt = new Date().toISOString();
     orders[orderIndex].updatedBy = payload.username;
+
+    let pointsInfo = null;
+    if (status === 'completed' && prevStatus !== 'completed' && !orders[orderIndex].pointsAwarded) {
+      try {
+        const member = await awardPointForOrder(orders[orderIndex]);
+        if (member) {
+          orders[orderIndex].pointsAwarded = true;
+          orders[orderIndex].pointsAwardedTo = member.name;
+          pointsInfo = { name: member.name, points: member.points };
+        }
+      } catch (pe) {
+        console.error('Award point error:', pe);
+      }
+    }
+
     await updateGitHubFile(orderFile, JSON.stringify(orders, null, 2), `Update order ${orderId} status to ${status}`);
-    return res.status(200).json({ success: true, message: 'Order status updated', order: orders[orderIndex] });
+    return res.status(200).json({ success: true, message: 'Order status updated', order: orders[orderIndex], points: pointsInfo });
   } catch (error) {
     console.error('Update order status error:', error);
     return res.status(500).json({ error: 'Failed to update order' });
@@ -998,6 +1037,289 @@ async function handleUpdateStaff(req, res) {
 }
 
 
+
+// ─── LOYALTY / POINTS / VOUCHER ──────────────────────────────────────────────
+function normalizeMemberName(name) {
+  return String(name || '')
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, ' ');
+}
+
+function genVoucherId() {
+  return 'VCH-' + Date.now().toString(36).toUpperCase() + '-' + Math.random().toString(36).slice(2, 6).toUpperCase();
+}
+
+function genRedeemCode() {
+  const part = () => Math.random().toString(36).slice(2, 6).toUpperCase();
+  return 'TC-' + part() + part();
+}
+
+async function readJsonFile(path, fallback) {
+  try {
+    return JSON.parse(await getGitHubFile(path));
+  } catch {
+    return fallback;
+  }
+}
+
+async function writeJsonFile(path, data, message) {
+  await updateGitHubFile(path, JSON.stringify(data, null, 2), message);
+}
+
+async function awardPointForOrder(order) {
+  if (!order || order.pointsAwarded) return null;
+  const rawName = (order.customer && order.customer.name) || order.customerName || '';
+  const nameKey = normalizeMemberName(rawName);
+  if (!nameKey) return null;
+
+  const members = await readJsonFile('data/loyalty/members.json', []);
+  let member = members.find(m => m.nameKey === nameKey);
+  if (!member) {
+    member = {
+      name: String(rawName).trim(),
+      nameKey,
+      points: 0,
+      history: [],
+      createdAt: new Date().toISOString()
+    };
+    members.push(member);
+  }
+  member.points = (member.points || 0) + 1;
+  member.history = member.history || [];
+  member.history.unshift({
+    type: 'earn',
+    points: 1,
+    orderId: order.id,
+    at: new Date().toISOString()
+  });
+  if (member.history.length > 50) member.history = member.history.slice(0, 50);
+  member.updatedAt = new Date().toISOString();
+  await writeJsonFile('data/loyalty/members.json', members, `Award 1 point to ${member.name} for ${order.id}`);
+  return member;
+}
+
+async function handleLoyaltyMember(req, res) {
+  if (req.method !== 'GET') return res.status(405).json({ error: 'Method not allowed' });
+  try {
+    const name = req.query.name || '';
+    const nameKey = normalizeMemberName(name);
+    if (!nameKey) return res.status(400).json({ error: 'Nama diperlukan' });
+    const members = await readJsonFile('data/loyalty/members.json', []);
+    const member = members.find(m => m.nameKey === nameKey);
+    if (!member) {
+      return res.status(200).json({
+        success: true,
+        data: { name: String(name).trim(), nameKey, points: 0, history: [], isNew: true }
+      });
+    }
+    return res.status(200).json({ success: true, data: { ...member, isNew: false } });
+  } catch (e) {
+    console.error(e);
+    return res.status(500).json({ error: 'Gagal memuat data member' });
+  }
+}
+
+async function handleLoyaltyMembers(req, res) {
+  if (req.method !== 'GET') return res.status(405).json({ error: 'Method not allowed' });
+  try {
+    const payload = getAuthPayload(req);
+    if (!payload || payload.role !== 'admin') return res.status(403).json({ error: 'Admin only' });
+    const members = await readJsonFile('data/loyalty/members.json', []);
+    members.sort((a, b) => (b.points || 0) - (a.points || 0));
+    return res.status(200).json({ success: true, data: members, count: members.length });
+  } catch (e) {
+    console.error(e);
+    return res.status(500).json({ error: 'Gagal memuat members' });
+  }
+}
+
+async function handleLoyaltyVouchers(req, res) {
+  try {
+    if (req.method === 'GET') {
+      const vouchers = await readJsonFile('data/loyalty/vouchers.json', []);
+      const payload = getAuthPayload(req);
+      const isAdmin = payload && payload.role === 'admin';
+      const list = isAdmin ? vouchers : vouchers.filter(v => v.active !== false);
+      return res.status(200).json({ success: true, data: list });
+    }
+
+    if (req.method === 'POST') {
+      const payload = getAuthPayload(req);
+      if (!payload || payload.role !== 'admin') return res.status(403).json({ error: 'Admin only' });
+      const body = req.body || {};
+      const title = String(body.title || '').trim();
+      const type = body.type;
+      const pointsCost = Number(body.pointsCost);
+      if (!title || !['discount_nominal', 'free_item'].includes(type)) {
+        return res.status(400).json({ error: 'Judul dan tipe voucher wajib (discount_nominal / free_item)' });
+      }
+      if (!Number.isFinite(pointsCost) || pointsCost < 1) {
+        return res.status(400).json({ error: 'Biaya poin minimal 1' });
+      }
+      const voucher = {
+        id: genVoucherId(),
+        title,
+        type,
+        pointsCost,
+        discountValue: type === 'discount_nominal' ? Math.max(0, Number(body.discountValue) || 0) : 0,
+        freeItemName: type === 'free_item' ? String(body.freeItemName || '').trim() : '',
+        freeItemId: type === 'free_item' ? (body.freeItemId || null) : null,
+        active: body.active !== false,
+        stock: body.stock == null || body.stock === '' ? null : Number(body.stock),
+        createdAt: new Date().toISOString(),
+        createdBy: payload.username
+      };
+      if (type === 'discount_nominal' && voucher.discountValue <= 0) {
+        return res.status(400).json({ error: 'Nilai diskon harus > 0' });
+      }
+      if (type === 'free_item' && !voucher.freeItemName) {
+        return res.status(400).json({ error: 'Nama menu gratis wajib diisi' });
+      }
+      const vouchers = await readJsonFile('data/loyalty/vouchers.json', []);
+      vouchers.unshift(voucher);
+      await writeJsonFile('data/loyalty/vouchers.json', vouchers, `Add voucher ${voucher.id}`);
+      return res.status(201).json({ success: true, data: voucher });
+    }
+
+    if (req.method === 'PATCH') {
+      const payload = getAuthPayload(req);
+      if (!payload || payload.role !== 'admin') return res.status(403).json({ error: 'Admin only' });
+      const { id, active, title, pointsCost, discountValue, freeItemName, stock } = req.body || {};
+      if (!id) return res.status(400).json({ error: 'ID voucher wajib' });
+      const vouchers = await readJsonFile('data/loyalty/vouchers.json', []);
+      const idx = vouchers.findIndex(v => v.id === id);
+      if (idx === -1) return res.status(404).json({ error: 'Voucher tidak ditemukan' });
+      if (active !== undefined) vouchers[idx].active = !!active;
+      if (title) vouchers[idx].title = String(title).trim();
+      if (pointsCost != null && Number(pointsCost) >= 1) vouchers[idx].pointsCost = Number(pointsCost);
+      if (discountValue != null) vouchers[idx].discountValue = Number(discountValue);
+      if (freeItemName != null) vouchers[idx].freeItemName = String(freeItemName).trim();
+      if (stock !== undefined) vouchers[idx].stock = stock === null || stock === '' ? null : Number(stock);
+      vouchers[idx].updatedAt = new Date().toISOString();
+      await writeJsonFile('data/loyalty/vouchers.json', vouchers, `Update voucher ${id}`);
+      return res.status(200).json({ success: true, data: vouchers[idx] });
+    }
+
+    return res.status(405).json({ error: 'Method not allowed' });
+  } catch (e) {
+    console.error(e);
+    return res.status(500).json({ error: 'Gagal memproses voucher' });
+  }
+}
+
+async function handleLoyaltyRedeem(req, res) {
+  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
+  try {
+    const { name, voucherId } = req.body || {};
+    const nameKey = normalizeMemberName(name);
+    if (!nameKey || !voucherId) return res.status(400).json({ error: 'Nama dan voucherId wajib' });
+
+    const members = await readJsonFile('data/loyalty/members.json', []);
+    const member = members.find(m => m.nameKey === nameKey);
+    if (!member) return res.status(404).json({ error: 'Member belum punya poin. Selesaikan pesanan dulu.' });
+
+    const vouchers = await readJsonFile('data/loyalty/vouchers.json', []);
+    const voucher = vouchers.find(v => v.id === voucherId);
+    if (!voucher || voucher.active === false) return res.status(404).json({ error: 'Voucher tidak tersedia' });
+    if (voucher.stock != null && voucher.stock <= 0) return res.status(400).json({ error: 'Stok voucher habis' });
+    if ((member.points || 0) < voucher.pointsCost) {
+      return res.status(400).json({ error: `Poin tidak cukup. Butuh ${voucher.pointsCost}, punya ${member.points || 0}` });
+    }
+
+    member.points -= voucher.pointsCost;
+    member.history = member.history || [];
+    const code = genRedeemCode();
+    member.history.unshift({
+      type: 'redeem',
+      points: -voucher.pointsCost,
+      voucherId: voucher.id,
+      code,
+      at: new Date().toISOString()
+    });
+    if (member.history.length > 50) member.history = member.history.slice(0, 50);
+    member.updatedAt = new Date().toISOString();
+
+    if (voucher.stock != null) voucher.stock = Math.max(0, Number(voucher.stock) - 1);
+
+    const codes = await readJsonFile('data/loyalty/codes.json', []);
+    const entry = {
+      code,
+      voucherId: voucher.id,
+      voucherTitle: voucher.title,
+      type: voucher.type,
+      discountValue: voucher.discountValue || 0,
+      freeItemName: voucher.freeItemName || '',
+      memberName: member.name,
+      nameKey,
+      status: 'unused',
+      createdAt: new Date().toISOString()
+    };
+    codes.unshift(entry);
+
+    await writeJsonFile('data/loyalty/members.json', members, `Redeem ${code} by ${member.name}`);
+    await writeJsonFile('data/loyalty/vouchers.json', vouchers, `Stock update ${voucher.id}`);
+    await writeJsonFile('data/loyalty/codes.json', codes, `New code ${code}`);
+
+    return res.status(200).json({
+      success: true,
+      data: {
+        code,
+        pointsLeft: member.points,
+        voucher: {
+          title: voucher.title,
+          type: voucher.type,
+          discountValue: voucher.discountValue || 0,
+          freeItemName: voucher.freeItemName || ''
+        }
+      }
+    });
+  } catch (e) {
+    console.error(e);
+    return res.status(500).json({ error: 'Gagal redeem voucher' });
+  }
+}
+
+async function handleLoyaltyValidate(req, res) {
+  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
+  try {
+    const code = String((req.body || {}).code || '').trim().toUpperCase();
+    if (!code) return res.status(400).json({ error: 'Kode voucher wajib' });
+    const codes = await readJsonFile('data/loyalty/codes.json', []);
+    const entry = codes.find(c => String(c.code).toUpperCase() === code);
+    if (!entry) return res.status(404).json({ error: 'Kode tidak valid' });
+    if (entry.status === 'used') return res.status(400).json({ error: 'Kode sudah dipakai' });
+    return res.status(200).json({
+      success: true,
+      data: {
+        code: entry.code,
+        title: entry.voucherTitle,
+        type: entry.type,
+        discountValue: entry.discountValue || 0,
+        freeItemName: entry.freeItemName || '',
+        memberName: entry.memberName
+      }
+    });
+  } catch (e) {
+    console.error(e);
+    return res.status(500).json({ error: 'Gagal validasi kode' });
+  }
+}
+
+async function markVoucherCodeUsed(code, orderId) {
+  if (!code) return null;
+  const codes = await readJsonFile('data/loyalty/codes.json', []);
+  const idx = codes.findIndex(c => String(c.code).toUpperCase() === String(code).toUpperCase());
+  if (idx === -1) return null;
+  if (codes[idx].status === 'used') return null;
+  codes[idx].status = 'used';
+  codes[idx].usedAt = new Date().toISOString();
+  codes[idx].usedOnOrderId = orderId;
+  await writeJsonFile('data/loyalty/codes.json', codes, `Use code ${code} on ${orderId}`);
+  return codes[idx];
+}
+
+
 // ─── MAIN ROUTER ─────────────────────────────────────────────────────────────
 export default async function handler(req, res) {
   const url = new URL(req.url, `http://${req.headers.host}`);
@@ -1024,6 +1346,11 @@ export default async function handler(req, res) {
     case '/delete-orders': return handleDeleteOrders(req, res);
     case '/delete-data':   return handleDeleteData(req, res);
     case '/report':        return handleReport(req, res);
+    case '/loyalty/member':   return handleLoyaltyMember(req, res);
+    case '/loyalty/members':  return handleLoyaltyMembers(req, res);
+    case '/loyalty/vouchers': return handleLoyaltyVouchers(req, res);
+    case '/loyalty/redeem':   return handleLoyaltyRedeem(req, res);
+    case '/loyalty/validate': return handleLoyaltyValidate(req, res);
     default:               return res.status(404).json({ error: 'Not found' });
   }
 }
