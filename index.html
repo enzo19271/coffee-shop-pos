@@ -1507,35 +1507,143 @@
     }
 
 
-    /* Desktop layout fixes */
-    @media (min-width: 900px) {
+    .custom-select.open .custom-select-options {
+      display: block !important;
+    }
+
+    /* Page shell: footer di bawah tanpa ruang aneh */
+    html, body {
+      min-height: 100%;
+    }
+    body {
+      display: flex !important;
+      flex-direction: column !important;
+      min-height: 100dvh;
+    }
+    .container {
+      flex: 1 0 auto;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    .site-footer {
+      flex-shrink: 0;
+      margin-top: auto;
+      width: 100%;
+    }
+
+    .menu-item {
+      height: 100%;
+      min-width: 0;
+    }
+    .menu-emoji {
+      aspect-ratio: 4 / 3 !important;
+      max-height: none;
+    }
+
+    /* Tablet: 2 kolom, toolbar 1 baris */
+    @media (min-width: 640px) and (max-width: 899px) {
+      .toolbar {
+        max-width: 100%;
+        padding-left: 16px;
+        padding-right: 16px;
+      }
+      .toolbar-inner {
+        display: flex !important;
+        flex-wrap: nowrap !important;
+        align-items: center !important;
+        gap: 10px !important;
+        max-width: 100% !important;
+        padding: 0 !important;
+      }
+      .toolbar-inner .search-wrap {
+        flex: 1 1 auto !important;
+        min-width: 0 !important;
+      }
+      .toolbar-inner .custom-select {
+        flex: 0 0 180px !important;
+        max-width: 200px !important;
+        width: 180px !important;
+      }
       .container {
-        max-width: 1120px !important;
+        max-width: 100% !important;
         margin: 0 auto !important;
-        padding: 16px 24px 32px !important;
+        padding: 12px 16px 28px !important;
+      }
+      .menu-grid, .skeleton-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 14px !important;
+      }
+    }
+
+    /* Desktop */
+    @media (min-width: 900px) {
+      .app-header {
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+      }
+      .app-header .app-brand,
+      .toolbar,
+      .container,
+      .site-footer {
+        max-width: 1100px !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+      }
+      .app-header {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+      }
+      .app-header > * {
+        /* keep internal header layout */
+      }
+      /* constrain header content width via padding */
+      header.app-header {
+        padding-left: max(24px, calc((100% - 1100px) / 2)) !important;
+        padding-right: max(24px, calc((100% - 1100px) / 2)) !important;
       }
       .toolbar {
-        max-width: 1120px;
-        margin-left: auto;
-        margin-right: auto;
+        width: 100%;
+        box-sizing: border-box;
+        padding-left: 24px !important;
+        padding-right: 24px !important;
+        margin-top: 8px;
+        margin-bottom: 4px;
       }
       .toolbar-inner {
         display: flex !important;
         flex-wrap: nowrap !important;
         align-items: center !important;
         gap: 14px !important;
+        max-width: 1100px !important;
+        margin: 0 auto !important;
+        padding: 0 !important;
+        width: 100%;
       }
       .toolbar-inner .search-wrap {
         flex: 1 1 auto !important;
-        min-width: 280px !important;
+        min-width: 200px !important;
       }
       .toolbar-inner .custom-select {
-        flex: 0 0 260px !important;
-        max-width: 280px !important;
+        flex: 0 0 240px !important;
+        width: 240px !important;
+        max-width: 260px !important;
       }
-      .menu-grid {
+      .container {
+        max-width: 1100px !important;
+        padding: 12px 24px 40px !important;
+      }
+      .menu-grid, .skeleton-grid {
         grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-        gap: 18px !important;
+        gap: 20px !important;
+        align-items: stretch !important;
+      }
+      .menu-item {
+        padding: 16px !important;
+        border-radius: 18px !important;
+      }
+      .menu-item:hover {
+        transform: translateY(-4px);
       }
       .custom-select {
         position: relative !important;
@@ -1553,47 +1661,26 @@
         box-shadow: 0 12px 32px rgba(11,77,58,0.18) !important;
       }
       .site-footer {
-        max-width: 1120px;
-        margin-left: auto;
-        margin-right: auto;
+        padding-left: 24px !important;
+        padding-right: 24px !important;
+        padding-bottom: 28px !important;
       }
-    }
-    .custom-select.open .custom-select-options {
-      display: block !important;
     }
 
-  
-    /* tablet layout */
-    @media (min-width: 769px) and (max-width: 1100px) {
-      .menu-grid, .skeleton-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-        gap: 16px !important;
-      }
-      .menu-card {
-        min-width: 0;
-      }
-      .menu-card img,
-      .menu-card .menu-thumb {
-        width: 100%;
-        height: auto;
-        aspect-ratio: 4/3;
-        object-fit: cover;
-      }
-      header .header-inner,
-      .toolbar-inner,
-      .app-shell {
-        max-width: 100%;
-        padding-left: 20px;
-        padding-right: 20px;
-      }
-      .site-footer {
-        padding-left: 20px;
-        padding-right: 20px;
-      }
-    }
-    @media (min-width: 1101px) {
+    /* Desktop lebar */
+    @media (min-width: 1280px) {
       .menu-grid, .skeleton-grid {
         grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+        gap: 22px !important;
+      }
+      .container,
+      .toolbar-inner,
+      .site-footer {
+        max-width: 1180px !important;
+      }
+      header.app-header {
+        padding-left: max(24px, calc((100% - 1180px) / 2)) !important;
+        padding-right: max(24px, calc((100% - 1180px) / 2)) !important;
       }
     }
 
