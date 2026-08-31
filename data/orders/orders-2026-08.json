@@ -133,5 +133,44 @@
     "createdAt": "2026-08-30T13:35:24.999Z",
     "updatedAt": "2026-08-30T13:36:06.294Z",
     "updatedBy": "reza"
+  },
+  {
+    "id": "ORD-MTGQ401R-KOZ0F",
+    "timestamp": "2026-08-31T04:13:33.375Z",
+    "customer": {
+      "name": "Dea",
+      "tableNo": "Kasir"
+    },
+    "items": [
+      {
+        "menuId": "1",
+        "name": "Cappucino",
+        "price": 10000,
+        "variant": "Besar",
+        "quantity": 4
+      },
+      {
+        "menuId": "2",
+        "name": "Matcha Latte",
+        "price": 12000,
+        "variant": "Medium",
+        "quantity": 3
+      },
+      {
+        "menuId": "3",
+        "name": "Butterschot",
+        "price": 13000,
+        "variant": "Medium",
+        "quantity": 2
+      }
+    ],
+    "totalPrice": 102000,
+    "paymentMethod": "cash",
+    "paymentProof": null,
+    "notes": "",
+    "status": "pending",
+    "source": "customer",
+    "createdBy": null,
+    "createdAt": "2026-08-31T04:13:33.375Z"
   }
 ]
