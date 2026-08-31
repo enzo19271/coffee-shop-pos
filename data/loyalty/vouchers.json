@@ -1,5 +1,18 @@
 [
   {
+    "id": "VCH-MTGV6S4M-I820",
+    "title": "Diskon Rp 10.000",
+    "type": "discount_nominal",
+    "pointsCost": 15,
+    "discountValue": 5000,
+    "freeItemName": "",
+    "freeItemId": null,
+    "active": true,
+    "stock": 2,
+    "createdAt": "2026-08-31T06:35:41.158Z",
+    "createdBy": "admin"
+  },
+  {
     "id": "VCH-MTGS9TBH-57CK",
     "title": "Diskon Rp 5.000",
     "type": "discount_nominal",
