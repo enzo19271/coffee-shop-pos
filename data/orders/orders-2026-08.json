@@ -215,5 +215,30 @@
     "createdAt": "2026-08-31T04:38:26.649Z",
     "updatedAt": "2026-08-31T04:45:53.136Z",
     "updatedBy": "reza"
+  },
+  {
+    "id": "ORD-MTGS5GQ2-S2N4H",
+    "timestamp": "2026-08-31T05:10:40.874Z",
+    "customer": {
+      "name": "Enzo",
+      "tableNo": "A1"
+    },
+    "items": [
+      {
+        "menuId": "1",
+        "name": "Cappucino",
+        "price": 10000,
+        "variant": "Medium",
+        "quantity": 2
+      }
+    ],
+    "totalPrice": 20000,
+    "paymentMethod": "cash",
+    "paymentProof": null,
+    "notes": "",
+    "status": "pending",
+    "source": "customer",
+    "createdBy": null,
+    "createdAt": "2026-08-31T05:10:40.874Z"
   }
 ]
