@@ -1,1 +1,14 @@
-[]
+[
+  {
+    "code": "TC-4VRYTDOP",
+    "voucherId": "VCH-MTGS9TBH-57CK",
+    "voucherTitle": "Diskon Rp 5.000",
+    "type": "discount_nominal",
+    "discountValue": 5000,
+    "freeItemName": "",
+    "memberName": "Enzo",
+    "nameKey": "enzo",
+    "status": "unused",
+    "createdAt": "2026-08-31T06:15:56.414Z"
+  }
+]
