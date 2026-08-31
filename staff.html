@@ -698,10 +698,10 @@
     /* ── Global Toast Overlay ── */
     #toastContainer {
       position: fixed;
-      top: 16px;
+      top: 12px;
       left: 50%;
       transform: translateX(-50%);
-      z-index: 99999;
+      z-index: 2147483646;
       display: flex;
       flex-direction: column;
       gap: 10px;
@@ -761,19 +761,22 @@
       height: 20px;
       padding: 0 6px;
       border-radius: 999px;
-      background: #e53935;
-      color: #fff;
+      background: #e53935 !important;
+      color: #fff !important;
       font-size: 11px;
       font-weight: 800;
       align-items: center;
       justify-content: center;
       line-height: 1;
-      box-shadow: 0 2px 6px rgba(229,57,53,0.4);
+      box-shadow: 0 2px 6px rgba(229,57,53,0.45);
+      margin-left: 4px;
+      flex-shrink: 0;
     }
-    .tab-badge.show { display: inline-flex; }
+    .tab-badge.show { display: inline-flex !important; }
     .tab-btn.active .tab-badge {
-      background: #fff;
-      color: #c62828;
+      background: #fff !important;
+      color: #c62828 !important;
+      box-shadow: 0 0 0 1px rgba(198,40,40,0.25);
     }
 
     /* ── Order sections & accordion ── */
@@ -2010,7 +2013,7 @@
       const sorted = [...cachedPendingOrders].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
       const incoming = sorted.filter(o => o.status === 'pending' || o.status === 'pending_verification');
       const preparing = sorted.filter(o => o.status === 'confirmed');
-      updateOrdersBadge(incoming.length);
+      updateOrdersBadge(incoming.length + preparing.length);
       const cIn = document.getElementById('countIncoming');
       const cPr = document.getElementById('countPreparing');
       if (cIn) cIn.textContent = String(incoming.length);
@@ -2052,7 +2055,7 @@
 
         if (!response.ok) throw new Error('Failed to update order');
 
-        showToast('✓ Status pesanan berhasil diperbarui', 'success');
+        showToast('Status pesanan berhasil diperbarui', 'success');
         loadPendingOrders();
         const salesTab = document.getElementById('tab-sales');
         if (salesTab && salesTab.classList.contains('active')) loadSalesData();
@@ -2179,7 +2182,7 @@
 
         if (!response.ok) throw new Error('Failed to add expense');
 
-        showToast('✓ Pengeluaran berhasil dicatat', 'success');
+        showToast('Pengeluaran berhasil dicatat', 'success');
         event.target.reset();
         setTimeout(() => { loadExpenses(); }, 600);
       } catch (error) {
@@ -2236,11 +2239,22 @@
       type = type || 'info';
       const container = document.getElementById('toastContainer');
       if (!container) return;
+      // Strip HTML tags and leading check symbols to avoid double icons
+      let text = String(msg == null ? '' : msg)
+        .replace(/<[^>]*>/g, ' ')
+        .replace(/[✓✔✅]/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+      if (!text) text = type === 'success' ? 'Berhasil' : (type === 'error' ? 'Terjadi kesalahan' : 'Info');
       const icons = { success: 'fa-circle-check', error: 'fa-circle-exclamation', info: 'fa-circle-info' };
+      // Limit stacked toasts
+      while (container.children.length >= 3) container.firstElementChild.remove();
       const item = document.createElement('div');
       item.className = 'toast-item ' + type;
-      item.innerHTML = '<i class="fas ' + (icons[type] || icons.info) + '"></i><div class="toast-body">' + msg + '</div><button type="button" class="toast-close" aria-label="Tutup">×</button>';
+      item.innerHTML = '<i class="fas ' + (icons[type] || icons.info) + '" aria-hidden="true"></i><div class="toast-body"></div><button type="button" class="toast-close" aria-label="Tutup">×</button>';
+      item.querySelector('.toast-body').textContent = text;
       const close = () => {
+        if (!item.parentNode) return;
         item.classList.add('hiding');
         setTimeout(() => item.remove(), 250);
       };
@@ -2268,11 +2282,12 @@
           .then(r => r.ok ? r.json() : null)
           .then(d => {
             if (!d) return;
-            const incoming = (d.data || []).filter(o => o.status === 'pending' || o.status === 'pending_verification');
-            updateOrdersBadge(incoming.length);
+            const list = d.data || [];
+            const n = list.filter(o => ['pending','pending_verification','confirmed'].includes(o.status)).length;
+            updateOrdersBadge(n);
           }).catch(() => {});
       }
-    }, 20000);
+    }, 12000);
 
         // ─── KASIR (professional list + overlay, no native prompt) ───
     let kasirCart = [];
@@ -2497,7 +2512,7 @@
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || 'Gagal membuat pesanan');
 
-        showToast('<i class="fas fa-circle-check"></i> Pesanan ' + data.orderId + ' berhasil dibuat & otomatis terverifikasi!', 'success');
+        showToast('Pesanan ' + data.orderId + ' berhasil dibuat & otomatis terverifikasi!', 'success');
         kasirCart = [];
         renderKasirCart();
         document.getElementById('kasirForm').reset();
