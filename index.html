@@ -2697,3 +2697,69 @@
             (can ? 'Tukar' : 'Poin kurang') + '</button>' +
             '</div></div></div>';
         }).join('');
+
+      } catch (e) {
+        box.innerHTML = '<div class="loyalty-empty"><i class="fas fa-triangle-exclamation"></i>Gagal memuat voucher</div>';
+      }
+    }
+    async function redeemVoucher(voucherId) {
+      const name = window.__loyaltyName || document.getElementById('loyaltyName')?.value?.trim();
+      if (!name) return showToast('Cek poin dulu dengan nama Anda', 'error');
+      try {
+        const res = await fetch('/api/loyalty/redeem', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, voucherId })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Gagal redeem');
+        const rr = document.getElementById('loyaltyRedeemResult');
+        if (rr) rr.classList.add('show');
+        document.getElementById('loyaltyCodeText').textContent = data.data.code;
+        document.getElementById('loyaltyPointsNum').textContent = data.data.pointsLeft;
+        window.__loyaltyPoints = data.data.pointsLeft;
+        showToast('Berhasil! Salin kode & pakai di checkout', 'success');
+        loadPublicVouchers();
+      } catch (e) {
+        showToast(e.message || 'Gagal tukar', 'error');
+      }
+    }
+    document.getElementById('openLoyaltyBtn')?.addEventListener('click', (e) => {
+      e.preventDefault();
+      openLoyaltyPanel();
+    });
+    document.getElementById('loyaltyClose')?.addEventListener('click', closeLoyaltyPanel);
+    document.getElementById('loyaltyOverlay')?.addEventListener('click', closeLoyaltyPanel);
+    document.getElementById('loyaltyCheckBtn')?.addEventListener('click', checkLoyaltyPoints);
+    document.getElementById('loyaltyCopyBtn')?.addEventListener('click', () => {
+      const c = document.getElementById('loyaltyCodeText')?.textContent;
+      if (!c) return;
+      navigator.clipboard?.writeText(c).then(() => showToast('Kode disalin', 'success')).catch(() => {
+        showToast(c, 'success');
+      });
+    });
+    document.getElementById('voucherCode')?.addEventListener('blur', async () => {
+      const code = (document.getElementById('voucherCode')?.value || '').trim();
+      const hint = document.getElementById('voucherHint');
+      if (!hint) return;
+      if (!code) { hint.textContent = ''; return; }
+      try {
+        const res = await fetch('/api/loyalty/validate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ code })
+        });
+        const data = await res.json();
+        if (!res.ok) { hint.style.color = '#c62828'; hint.textContent = data.error || 'Kode tidak valid'; return; }
+        hint.style.color = '#2e7d32';
+        const d = data.data;
+        hint.textContent = d.type === 'discount_nominal'
+          ? ('✓ Diskon Rp ' + Number(d.discountValue||0).toLocaleString('id-ID'))
+          : ('✓ Gratis: ' + (d.freeItemName||''));
+      } catch {
+        hint.textContent = '';
+      }
+    });
+  </script>
+</body>
+</html>
