@@ -236,9 +236,11 @@
     "paymentMethod": "cash",
     "paymentProof": null,
     "notes": "",
-    "status": "pending",
+    "status": "confirmed",
     "source": "customer",
     "createdBy": null,
-    "createdAt": "2026-08-31T05:10:40.874Z"
+    "createdAt": "2026-08-31T05:10:40.874Z",
+    "updatedAt": "2026-08-31T05:12:15.809Z",
+    "updatedBy": "reza"
   }
 ]
