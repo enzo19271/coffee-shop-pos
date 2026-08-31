@@ -2133,6 +2133,11 @@
                 </a>
             </li>
             <li>
+                <a data-tab="loyalty">
+                    <i class="fas fa-ticket"></i> Poin & Voucher
+                </a>
+            </li>
+            <li>
                 <a data-tab="staff">
                     <i class="fas fa-users"></i> Staff
                 </a>
@@ -2404,6 +2409,64 @@
                     </div>
                 </div>
                 <p id="statsStatusMsg" style="font-size:12.5px;color:var(--text-muted);font-weight:600;"></p>
+            </div>
+
+            <!-- ─── TAB: LOYALTY ─── -->
+            <div id="tab-loyalty" class="tab-content">
+                <div class="form-card" style="margin-bottom:18px;">
+                    <div class="form-header" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
+                        <h3 style="margin:0;"><i class="fas fa-ticket"></i> Buat Voucher</h3>
+                        <span style="font-size:12px;color:var(--text-muted);font-weight:600;">1 order selesai = 1 poin</span>
+                    </div>
+                    <div style="padding:16px 18px 20px;display:grid;gap:12px;">
+                        <div class="filter-group">
+                            <label>Judul voucher</label>
+                            <input type="text" id="voucherTitle" placeholder="Contoh: Diskon Rp 5.000" />
+                        </div>
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                            <div class="filter-group">
+                                <label>Tipe</label>
+                                <select id="voucherType" onchange="toggleVoucherTypeFields()">
+                                    <option value="discount_nominal">Diskon nominal (Rp)</option>
+                                    <option value="free_item">Gratis menu tertentu</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <label>Biaya poin</label>
+                                <input type="number" id="voucherPointsCost" min="1" value="5" />
+                            </div>
+                        </div>
+                        <div class="filter-group" id="voucherDiscountWrap">
+                            <label>Nilai diskon (Rp)</label>
+                            <input type="number" id="voucherDiscountValue" min="1000" step="500" value="5000" />
+                        </div>
+                        <div class="filter-group" id="voucherFreeItemWrap" style="display:none;">
+                            <label>Nama menu gratis</label>
+                            <input type="text" id="voucherFreeItemName" placeholder="Contoh: Cappucino" list="menuNameList" />
+                            <datalist id="menuNameList"></datalist>
+                        </div>
+                        <div class="filter-group">
+                            <label>Stok (kosongkan = unlimited)</label>
+                            <input type="number" id="voucherStock" min="1" placeholder="Unlimited" />
+                        </div>
+                        <button type="button" class="btn btn-primary" onclick="createLoyaltyVoucher()">
+                            <i class="fas fa-plus"></i> Simpan Voucher
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-card" style="margin-bottom:18px;">
+                    <div class="form-header"><h3 style="margin:0;"><i class="fas fa-list"></i> Daftar Voucher</h3></div>
+                    <div id="loyaltyVoucherList" style="padding:12px 16px 18px;"></div>
+                </div>
+
+                <div class="form-card">
+                    <div class="form-header" style="display:flex;justify-content:space-between;align-items:center;">
+                        <h3 style="margin:0;"><i class="fas fa-users"></i> Member & Poin</h3>
+                        <button type="button" class="btn btn-sm" onclick="loadLoyaltyMembers()"><i class="fas fa-rotate"></i></button>
+                    </div>
+                    <div id="loyaltyMemberList" style="padding:12px 16px 18px;"></div>
+                </div>
             </div>
 
             <!-- ─── TAB: STAFF ─── -->
@@ -2734,6 +2797,7 @@
             else if (tabName === 'menu') loadMenu();
             else if (tabName === 'transactions') loadTransactions();
             else if (tabName === 'stats') loadSalesStats();
+            else if (tabName === 'loyalty') { loadLoyaltyVouchers(); loadLoyaltyMembers(); fillMenuNameList(); }
             else if (tabName === 'staff') loadStaff();
             else if (tabName === 'finance') loadFinance();
         }
@@ -4006,6 +4070,119 @@ async function executeDeleteData() {
                 console.error(err);
                 if (msg) msg.textContent = err.message || 'Gagal memuat statistik';
                 if (kpi) kpi.innerHTML = '<div class="stat-card"><div class="stat-value">—</div><div class="stat-label">Error</div></div>';
+            }
+        }
+
+
+
+        function toggleVoucherTypeFields() {
+            const t = document.getElementById('voucherType')?.value;
+            const d = document.getElementById('voucherDiscountWrap');
+            const f = document.getElementById('voucherFreeItemWrap');
+            if (d) d.style.display = t === 'discount_nominal' ? '' : 'none';
+            if (f) f.style.display = t === 'free_item' ? '' : 'none';
+        }
+
+        async function fillMenuNameList() {
+            try {
+                const res = await fetch('/api/list');
+                const data = await res.json();
+                const list = document.getElementById('menuNameList');
+                if (!list) return;
+                const items = data.data || [];
+                list.innerHTML = items.map(i => '<option value="' + String(i.name || '').replace(/"/g, '&quot;') + '"></option>').join('');
+            } catch (e) {}
+        }
+
+        async function createLoyaltyVoucher() {
+            const title = document.getElementById('voucherTitle')?.value?.trim();
+            const type = document.getElementById('voucherType')?.value;
+            const pointsCost = Number(document.getElementById('voucherPointsCost')?.value);
+            const discountValue = Number(document.getElementById('voucherDiscountValue')?.value);
+            const freeItemName = document.getElementById('voucherFreeItemName')?.value?.trim();
+            const stockRaw = document.getElementById('voucherStock')?.value;
+            const stock = stockRaw === '' || stockRaw == null ? null : Number(stockRaw);
+            if (!title) return showToast('Judul voucher wajib', 'error');
+            try {
+                const res = await fetch('/api/loyalty/vouchers', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+                    body: JSON.stringify({ title, type, pointsCost, discountValue, freeItemName, stock })
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || 'Gagal');
+                showToast('Voucher berhasil dibuat', 'success');
+                document.getElementById('voucherTitle').value = '';
+                loadLoyaltyVouchers();
+            } catch (e) {
+                showToast(e.message || 'Gagal membuat voucher', 'error');
+            }
+        }
+
+        async function loadLoyaltyVouchers() {
+            const box = document.getElementById('loyaltyVoucherList');
+            if (!box) return;
+            box.innerHTML = '<p style="color:var(--text-muted);font-weight:600;">Memuat...</p>';
+            try {
+                const res = await fetch('/api/loyalty/vouchers', { headers: { 'Authorization': 'Bearer ' + token } });
+                const data = await res.json();
+                const list = data.data || [];
+                if (!list.length) {
+                    box.innerHTML = '<p style="color:var(--text-muted);font-weight:600;">Belum ada voucher. Buat di form atas.</p>';
+                    return;
+                }
+                box.innerHTML = list.map(v => {
+                    const benefit = v.type === 'discount_nominal'
+                        ? ('Diskon Rp ' + Number(v.discountValue || 0).toLocaleString('id-ID'))
+                        : ('Gratis: ' + (v.freeItemName || '-'));
+                    const stock = v.stock == null ? '∞' : v.stock;
+                    const active = v.active !== false;
+                    return '<div style="border:1px solid var(--border-color);border-radius:14px;padding:12px 14px;margin-bottom:10px;display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap;opacity:' + (active ? '1' : '0.55') + ';">' +
+                        '<div style="min-width:0;flex:1;"><strong style="color:var(--brand-primary);">' + v.title + '</strong>' +
+                        '<div style="font-size:12.5px;color:var(--text-muted);margin-top:4px;">' + benefit + ' · ' + v.pointsCost + ' poin · stok ' + stock + '</div></div>' +
+                        '<button type="button" class="btn btn-sm" style="background:' + (active ? '#c62828' : '#2e7d32') + ';color:#fff;" onclick="toggleVoucherActive(\'' + v.id + '\',' + (!active) + ')">' +
+                        (active ? 'Nonaktifkan' : 'Aktifkan') + '</button></div>';
+                }).join('');
+            } catch (e) {
+                box.innerHTML = '<p style="color:var(--danger);">Gagal memuat voucher</p>';
+            }
+        }
+
+        async function toggleVoucherActive(id, active) {
+            try {
+                const res = await fetch('/api/loyalty/vouchers', {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+                    body: JSON.stringify({ id, active })
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || 'Gagal');
+                showToast(active ? 'Voucher diaktifkan' : 'Voucher dinonaktifkan', 'success');
+                loadLoyaltyVouchers();
+            } catch (e) {
+                showToast(e.message || 'Gagal', 'error');
+            }
+        }
+
+        async function loadLoyaltyMembers() {
+            const box = document.getElementById('loyaltyMemberList');
+            if (!box) return;
+            box.innerHTML = '<p style="color:var(--text-muted);font-weight:600;">Memuat...</p>';
+            try {
+                const res = await fetch('/api/loyalty/members', { headers: { 'Authorization': 'Bearer ' + token } });
+                const data = await res.json();
+                const list = data.data || [];
+                if (!list.length) {
+                    box.innerHTML = '<p style="color:var(--text-muted);font-weight:600;">Belum ada member. Poin muncul setelah pesanan status <em>selesai</em>.</p>';
+                    return;
+                }
+                box.innerHTML = list.map(m =>
+                    '<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border-color);">' +
+                    '<div><strong>' + (m.name || '-') + '</strong><div style="font-size:12px;color:var(--text-muted);">' + (m.history?.length || 0) + ' riwayat</div></div>' +
+                    '<span style="font-weight:800;color:var(--brand-primary);font-size:18px;">' + (m.points || 0) + ' <small style="font-size:11px;font-weight:700;">poin</small></span></div>'
+                ).join('');
+            } catch (e) {
+                box.innerHTML = '<p style="color:var(--danger);">Gagal memuat member (admin only)</p>';
             }
         }
 

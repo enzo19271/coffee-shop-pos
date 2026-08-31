@@ -1729,6 +1729,11 @@
               <input type="text" id="kasirTableNo" value="Kasir" placeholder="Kasir / Takeaway / No meja" required>
             </div>
             <div class="form-group">
+              <label>Kode Voucher (opsional)</label>
+              <input type="text" id="kasirVoucherCode" placeholder="TC-XXXX" style="text-transform:uppercase;">
+              <small id="kasirVoucherHint" style="display:block;margin-top:6px;font-size:12px;color:var(--text-muted);font-weight:600;"></small>
+            </div>
+            <div class="form-group">
               <label>Metode Bayar</label>
               <div class="payment-methods" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;">
                 <label class="payment-option"><input type="radio" name="kasirPay" value="cash" checked> <span><i class="fas fa-money-bill-wave"></i> Cash</span></label>
@@ -2506,7 +2511,8 @@
             items: kasirCart,
             paymentMethod: paymentMethod,
             notes: notes,
-            source: 'staff'
+            source: 'staff',
+            voucherCode: (document.getElementById('kasirVoucherCode')?.value || '').trim()
           })
         });
         const data = await res.json();
@@ -2562,7 +2568,29 @@
     })();
 
 
-  </script>
+  
+    document.getElementById('kasirVoucherCode')?.addEventListener('blur', async () => {
+      const code = (document.getElementById('kasirVoucherCode')?.value || '').trim();
+      const hint = document.getElementById('kasirVoucherHint');
+      if (!hint) return;
+      if (!code) { hint.textContent = ''; return; }
+      try {
+        const res = await fetch('/api/loyalty/validate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ code })
+        });
+        const data = await res.json();
+        if (!res.ok) { hint.style.color = 'var(--danger)'; hint.textContent = data.error || 'Kode tidak valid'; return; }
+        hint.style.color = 'var(--success, #2e7d32)';
+        const d = data.data;
+        hint.textContent = d.type === 'discount_nominal'
+          ? ('✓ Diskon Rp ' + Number(d.discountValue||0).toLocaleString('id-ID'))
+          : ('✓ Gratis: ' + (d.freeItemName||''));
+      } catch { hint.textContent = ''; }
+    });
+
+</script>
 
   <footer class="site-footer">
     <div class="footer-inner">

@@ -1597,6 +1597,80 @@
       }
     }
 
+
+    .loyalty-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 20, 16, 0.55);
+      z-index: 1200;
+      backdrop-filter: blur(4px);
+    }
+    .loyalty-overlay.show { display: block; }
+    .loyalty-panel {
+      display: none;
+      position: fixed;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: min(440px, 94vw);
+      max-height: min(88vh, 720px);
+      overflow-y: auto;
+      background: #fff;
+      border-radius: 20px;
+      z-index: 1201;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.28);
+      padding: 20px 18px 24px;
+    }
+    .loyalty-panel.show { display: block; }
+    .loyalty-panel h3 {
+      font-family: var(--font-display, inherit);
+      color: #0B4D3A;
+      margin: 0 0 6px;
+      font-size: 20px;
+    }
+    .loyalty-panel .sub {
+      font-size: 12.5px;
+      color: #6b736f;
+      margin-bottom: 14px;
+      font-weight: 600;
+    }
+    .loyalty-panel label {
+      display: block;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: #6b736f;
+      margin-bottom: 6px;
+    }
+    .loyalty-panel input {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1.5px solid #e2e8e4;
+      font-size: 15px;
+      margin-bottom: 12px;
+      box-sizing: border-box;
+    }
+    .loyalty-points {
+      background: linear-gradient(135deg, #0B4D3A, #1B7A54);
+      color: #fff;
+      border-radius: 16px;
+      padding: 16px;
+      text-align: center;
+      margin-bottom: 14px;
+    }
+    .loyalty-points .num { font-size: 36px; font-weight: 800; line-height: 1; }
+    .loyalty-voucher-card {
+      border: 1px solid #e2e8e4;
+      border-radius: 14px;
+      padding: 12px;
+      margin-bottom: 10px;
+    }
+    .loyalty-voucher-card strong { color: #0B4D3A; }
+    .loyalty-voucher-card .meta { font-size: 12.5px; color: #6b736f; margin: 4px 0 10px; }
+
 </style>
 </head>
 <body>
@@ -1608,6 +1682,7 @@
       <button type="button" class="side-menu-close" id="sideMenuClose" aria-label="Tutup menu"><i class="fas fa-xmark"></i></button>
     </div>
     <ul class="side-menu-list">
+      <li><a href="#" id="openLoyaltyBtn"><i class="fas fa-ticket"></i> Poin &amp; Voucher</a></li>
       <li><a href="/staff-login.html"><i class="fas fa-user-tie"></i> Staff</a></li>
       <li><a href="/staff-login.html"><i class="fas fa-user-shield"></i> Admin</a></li>
       <li><a href="https://wa.me/6283161695044?text=Laporan%20kendala%20TAN%20COFFEE" target="_blank" rel="noopener"><i class="fas fa-triangle-exclamation"></i> Laporan Kendala</a></li>
@@ -1616,6 +1691,30 @@
       <small>Ilmu Ketak Community</small>
     </div>
   </nav>
+
+  <div class="loyalty-overlay" id="loyaltyOverlay"></div>
+  <div class="loyalty-panel" id="loyaltyPanel" role="dialog" aria-modal="true" aria-labelledby="loyaltyTitle">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+      <h3 id="loyaltyTitle"><i class="fas fa-ticket"></i> Poin &amp; Voucher</h3>
+      <button type="button" id="loyaltyClose" aria-label="Tutup" style="border:none;background:#f1f5f3;width:36px;height:36px;border-radius:50%;font-size:18px;cursor:pointer;">×</button>
+    </div>
+    <p class="sub">1 pesanan selesai = 1 poin. Tukar poin dengan voucher, lalu pakai kode saat checkout.</p>
+    <label>Nama (sama seperti saat pesan)</label>
+    <input type="text" id="loyaltyName" placeholder="Masukkan nama Anda" />
+    <button type="button" class="add-btn" id="loyaltyCheckBtn" style="width:100%;margin-bottom:12px;">
+      <i class="fas fa-search"></i> Cek Poin
+    </button>
+    <div class="loyalty-points" id="loyaltyPointsBox" style="display:none;">
+      <div style="font-size:12px;opacity:0.9;font-weight:600;">Saldo poin</div>
+      <div class="num" id="loyaltyPointsNum">0</div>
+    </div>
+    <div id="loyaltyVoucherShop"></div>
+    <div id="loyaltyRedeemResult" style="display:none;margin-top:10px;padding:12px;border-radius:12px;background:#e8f5e9;border:1px solid #a5d6a7;">
+      <div style="font-size:12px;font-weight:700;color:#2e7d32;">Kode voucher kamu</div>
+      <div id="loyaltyCodeText" style="font-size:22px;font-weight:800;letter-spacing:0.06em;color:#0B4D3A;margin:4px 0;"></div>
+      <button type="button" class="add-btn" id="loyaltyCopyBtn" style="width:100%;background:#0B4D3A;">Salin kode</button>
+    </div>
+  </div>
 
   <!-- App bar: hamburger | logo+title | cart -->
   <header class="app-header">
@@ -1710,6 +1809,12 @@
         <div class="form-group">
           <label>Nomor Meja *</label>
           <input type="text" id="tableNo" placeholder="Contoh: 5, A3" required>
+        </div>
+
+        <div class="form-group">
+          <label>Kode Voucher (opsional)</label>
+          <input type="text" id="voucherCode" placeholder="TC-XXXX" style="text-transform:uppercase;">
+          <small id="voucherHint" style="display:block;margin-top:6px;font-size:12px;color:#6b736f;font-weight:600;"></small>
         </div>
 
         <div class="form-group">
@@ -2112,7 +2217,8 @@
             items: cart,
             paymentMethod: paymentMethod,
             paymentProof: paymentProof,
-            notes: notes
+            notes: notes,
+            voucherCode: (document.getElementById('voucherCode')?.value || '').trim()
           })
         });
 
@@ -2214,6 +2320,122 @@
         closeCart();
       }
     });
-  </script>
+  
+    // ── Loyalty / Poin & Voucher ──
+    function openLoyaltyPanel() {
+      closeSideMenu();
+      document.getElementById('loyaltyOverlay')?.classList.add('show');
+      document.getElementById('loyaltyPanel')?.classList.add('show');
+      const saved = localStorage.getItem('loyaltyName');
+      if (saved && document.getElementById('loyaltyName')) document.getElementById('loyaltyName').value = saved;
+      loadPublicVouchers();
+    }
+    function closeLoyaltyPanel() {
+      document.getElementById('loyaltyOverlay')?.classList.remove('show');
+      document.getElementById('loyaltyPanel')?.classList.remove('show');
+    }
+    async function checkLoyaltyPoints() {
+      const name = document.getElementById('loyaltyName')?.value?.trim();
+      if (!name) return showToast('Masukkan nama', 'error');
+      localStorage.setItem('loyaltyName', name);
+      try {
+        const res = await fetch('/api/loyalty/member?name=' + encodeURIComponent(name));
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Gagal');
+        document.getElementById('loyaltyPointsBox').style.display = 'block';
+        document.getElementById('loyaltyPointsNum').textContent = data.data?.points ?? 0;
+        window.__loyaltyName = name;
+        window.__loyaltyPoints = data.data?.points ?? 0;
+        loadPublicVouchers();
+      } catch (e) {
+        showToast(e.message || 'Gagal cek poin', 'error');
+      }
+    }
+    async function loadPublicVouchers() {
+      const box = document.getElementById('loyaltyVoucherShop');
+      if (!box) return;
+      try {
+        const res = await fetch('/api/loyalty/vouchers');
+        const data = await res.json();
+        const list = (data.data || []).filter(v => v.active !== false);
+        if (!list.length) {
+          box.innerHTML = '<p style="font-size:13px;color:#6b736f;font-weight:600;">Belum ada voucher tersedia.</p>';
+          return;
+        }
+        const pts = window.__loyaltyPoints || 0;
+        box.innerHTML = '<div style="font-size:13px;font-weight:800;color:#0B4D3A;margin:8px 0;">Tukar voucher</div>' + list.map(v => {
+          const benefit = v.type === 'discount_nominal'
+            ? ('Diskon Rp ' + Number(v.discountValue||0).toLocaleString('id-ID'))
+            : ('Gratis ' + (v.freeItemName||''));
+          const can = pts >= (v.pointsCost||0);
+          return '<div class="loyalty-voucher-card"><strong>' + v.title + '</strong>' +
+            '<div class="meta">' + benefit + ' · ' + v.pointsCost + ' poin</div>' +
+            '<button type="button" class="add-btn" style="width:100%;opacity:' + (can?1:0.5) + '" ' +
+            'onclick="redeemVoucher(\'' + v.id + '\')" ' + (can?'':'disabled') + '>Tukar</button></div>';
+        }).join('');
+      } catch (e) {
+        box.innerHTML = '<p style="color:#c62828;font-size:13px;">Gagal memuat voucher</p>';
+      }
+    }
+    async function redeemVoucher(voucherId) {
+      const name = window.__loyaltyName || document.getElementById('loyaltyName')?.value?.trim();
+      if (!name) return showToast('Cek poin dulu dengan nama Anda', 'error');
+      try {
+        const res = await fetch('/api/loyalty/redeem', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, voucherId })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Gagal redeem');
+        document.getElementById('loyaltyRedeemResult').style.display = 'block';
+        document.getElementById('loyaltyCodeText').textContent = data.data.code;
+        document.getElementById('loyaltyPointsNum').textContent = data.data.pointsLeft;
+        window.__loyaltyPoints = data.data.pointsLeft;
+        showToast('Berhasil! Salin kode & pakai di checkout', 'success');
+        loadPublicVouchers();
+      } catch (e) {
+        showToast(e.message || 'Gagal tukar', 'error');
+      }
+    }
+    document.getElementById('openLoyaltyBtn')?.addEventListener('click', (e) => {
+      e.preventDefault();
+      openLoyaltyPanel();
+    });
+    document.getElementById('loyaltyClose')?.addEventListener('click', closeLoyaltyPanel);
+    document.getElementById('loyaltyOverlay')?.addEventListener('click', closeLoyaltyPanel);
+    document.getElementById('loyaltyCheckBtn')?.addEventListener('click', checkLoyaltyPoints);
+    document.getElementById('loyaltyCopyBtn')?.addEventListener('click', () => {
+      const c = document.getElementById('loyaltyCodeText')?.textContent;
+      if (!c) return;
+      navigator.clipboard?.writeText(c).then(() => showToast('Kode disalin', 'success')).catch(() => {
+        showToast(c, 'success');
+      });
+    });
+    // live validate voucher on blur
+    document.getElementById('voucherCode')?.addEventListener('blur', async () => {
+      const code = (document.getElementById('voucherCode')?.value || '').trim();
+      const hint = document.getElementById('voucherHint');
+      if (!hint) return;
+      if (!code) { hint.textContent = ''; return; }
+      try {
+        const res = await fetch('/api/loyalty/validate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ code })
+        });
+        const data = await res.json();
+        if (!res.ok) { hint.style.color = '#c62828'; hint.textContent = data.error || 'Kode tidak valid'; return; }
+        hint.style.color = '#2e7d32';
+        const d = data.data;
+        hint.textContent = d.type === 'discount_nominal'
+          ? ('✓ Diskon Rp ' + Number(d.discountValue||0).toLocaleString('id-ID'))
+          : ('✓ Gratis: ' + (d.freeItemName||''));
+      } catch {
+        hint.textContent = '';
+      }
+    });
+
+</script>
 </body>
 </html>
