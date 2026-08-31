@@ -7,9 +7,10 @@
     "discountValue": 5000,
     "freeItemName": "",
     "freeItemId": null,
-    "active": true,
+    "active": false,
     "stock": null,
     "createdAt": "2026-08-31T05:14:03.821Z",
-    "createdBy": "admin"
+    "createdBy": "admin",
+    "updatedAt": "2026-08-31T06:14:41.004Z"
   }
 ]
