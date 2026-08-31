@@ -2615,6 +2615,7 @@
                             <option value="orders">Pesanan (Orders)</option>
                             <option value="expenses">Pengeluaran (Expenses)</option>
                             <option value="staff">Akun Staff</option>
+                            <option value="loyalty">Poin &amp; Voucher (Loyalty)</option>
                         </select>
                     </div>
                     <div id="deleteType-orders">
@@ -2668,6 +2669,18 @@
                       </div>
                       <div class="form-group"><label>Username</label><input type="text" id="deleteStaffUsername" placeholder="username staff" /></div>
                       <p style="color:var(--text-muted);font-size:12.5px;margin-top:8px;">Akun admin terakhir tidak bisa dihapus.</p>
+                    </div>
+                    <div id="deleteType-loyalty" style="display:none;">
+                      <div class="form-group" style="margin-bottom:14px;">
+                        <label>Mode Reset Loyalty</label>
+                        <select id="deleteLoyaltyMode">
+                            <option value="all">Reset semua (poin + voucher + kode)</option>
+                            <option value="members">Hapus semua member &amp; poin</option>
+                            <option value="vouchers">Hapus semua template voucher</option>
+                            <option value="codes">Hapus semua kode redeem</option>
+                        </select>
+                      </div>
+                      <p style="color:var(--danger);font-weight:700;font-size:13px;">Tindakan ini menghapus data loyalty secara permanen.</p>
                     </div>
                     <button type="button" class="btn" onclick="executeDeleteData()" style="min-height:48px;background:var(--danger);color:#fff;border:none;margin-top:16px;width:100%;max-width:280px;">
                         <i class="fas fa-trash"></i> Hapus Data
@@ -3490,11 +3503,12 @@
 <script>
 
 function toggleDeleteTypeFields() {
-  const type = document.getElementById('deleteType').value;
-  ['orders','expenses','staff'].forEach(t => {
-    const el = document.getElementById('deleteType-' + t);
-    if (el) el.style.display = t === type ? 'block' : 'none';
-  });
+            const type = document.getElementById('deleteType')?.value;
+            ['orders', 'expenses', 'staff', 'loyalty'].forEach(t => {
+                const el = document.getElementById('deleteType-' + t);
+                if (el) el.style.display = t === type ? '' : 'none';
+            });
+        });
 }
 function toggleDeleteFields() {
   const mode = document.getElementById('deleteMode').value;
@@ -3533,6 +3547,8 @@ async function executeDeleteData() {
       body.username = document.getElementById('deleteStaffUsername').value.trim();
       if (!body.username) { resultEl.innerHTML = '<span style="color:var(--danger)">Username wajib</span>'; return; }
     }
+  } else if (type === 'loyalty') {
+    body.mode = document.getElementById('deleteLoyaltyMode')?.value || 'all';
   }
   if (!confirm('Yakin hapus data ' + type + '? Tindakan tidak bisa dibatalkan.')) return;
   resultEl.textContent = 'Menghapus...';
@@ -4177,15 +4193,63 @@ async function executeDeleteData() {
                     return;
                 }
                 box.innerHTML = list.map(m =>
-                    '<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border-color);">' +
-                    '<div><strong>' + (m.name || '-') + '</strong><div style="font-size:12px;color:var(--text-muted);">' + (m.history?.length || 0) + ' riwayat</div></div>' +
-                    '<span style="font-weight:800;color:var(--brand-primary);font-size:18px;">' + (m.points || 0) + ' <small style="font-size:11px;font-weight:700;">poin</small></span></div>'
+                    '<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border-color);gap:10px;flex-wrap:wrap;">' +
+                    '<div style="min-width:0;flex:1;"><strong>' + (m.name || '-') + '</strong><div style="font-size:12px;color:var(--text-muted);">' + (m.history?.length || 0) + ' riwayat</div></div>' +
+                    '<span style="font-weight:800;color:var(--brand-primary);font-size:18px;">' + (m.points || 0) + ' <small style="font-size:11px;font-weight:700;">poin</small></span>' +
+                    '<div style="display:flex;gap:6px;">' +
+                    '<button type="button" class="btn btn-sm" style="background:#ef6c00;color:#fff;" onclick="resetMemberPoints('' + String(m.name||'').replace(/'/g, "\\'") + '')">Reset poin</button>' +
+                    '<button type="button" class="btn btn-sm" style="background:#c62828;color:#fff;" onclick="deleteMember('' + String(m.name||'').replace(/'/g, "\\'") + '')">Hapus</button>' +
+                    '</div></div>'
                 ).join('');
             } catch (e) {
                 box.innerHTML = '<p style="color:var(--danger);">Gagal memuat member (admin only)</p>';
             }
         }
 
+
+
+        async function deleteLoyaltyVoucher(id) {
+            if (!confirm('Hapus voucher ini permanen?')) return;
+            try {
+                const res = await fetch('/api/loyalty/vouchers', {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+                    body: JSON.stringify({ id, delete: true })
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || 'Gagal');
+                showToast('Voucher dihapus', 'success');
+                loadLoyaltyVouchers();
+            } catch (e) { showToast(e.message || 'Gagal', 'error'); }
+        }
+        async function resetMemberPoints(name) {
+            if (!confirm('Reset poin member "' + name + '" ke 0?')) return;
+            try {
+                const res = await fetch('/api/delete-data', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+                    body: JSON.stringify({ type: 'loyalty', mode: 'reset_points_one', username: name, name })
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || 'Gagal');
+                showToast('Poin direset', 'success');
+                loadLoyaltyMembers();
+            } catch (e) { showToast(e.message || 'Gagal', 'error'); }
+        }
+        async function deleteMember(name) {
+            if (!confirm('Hapus member "' + name + '" beserta poinnya?')) return;
+            try {
+                const res = await fetch('/api/delete-data', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+                    body: JSON.stringify({ type: 'loyalty', mode: 'member_one', username: name, name })
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || 'Gagal');
+                showToast('Member dihapus', 'success');
+                loadLoyaltyMembers();
+            } catch (e) { showToast(e.message || 'Gagal', 'error'); }
+        }
 
 async function executeDeleteOrders() { return executeDeleteData(); }
 

@@ -1972,6 +1972,9 @@
       margin-bottom: 8px;
     }
 
+
+    .summary-total #total { font-weight: 800; color: var(--brand-primary, #0B4D3A); }
+    .summary-row#discountRow span:last-child { color: #2e7d32; }
 </style>
 </head>
 <body>
@@ -2107,13 +2110,13 @@
           <span>Subtotal:</span>
           <span id="subtotal">Rp 0</span>
         </div>
-        <div class="summary-row">
-          <span>Pajak (10%):</span>
-          <span id="tax">Rp 0</span>
+        <div class="summary-row" id="discountRow" style="display:none;">
+          <span>Diskon voucher</span>
+          <span id="discountAmount" style="color:#2e7d32;font-weight:700;">- Rp 0</span>
         </div>
         <div class="summary-row summary-total">
           <span>Total:</span>
-          <span id="total">Rp 0</span>
+          <span id="totalWrap"><span id="totalOriginal" style="display:none;text-decoration:line-through;color:#9aa39e;font-weight:600;font-size:0.85em;margin-right:8px;"></span><span id="total">Rp 0</span></span>
         </div>
       </div>
 
@@ -2465,12 +2468,28 @@
         `;
       }).join('');
 
-      const tax = Math.round(subtotal * 0.1);
-      const total = subtotal + tax;
+      window.__cartSubtotal = subtotal;
+      const disc = Math.max(0, Number(window.__voucherDiscount) || 0);
+      const total = Math.max(0, subtotal - disc);
 
       document.querySelector('#subtotal').textContent = `Rp ${subtotal.toLocaleString('id-ID')}`;
-      document.querySelector('#tax').textContent = `Rp ${tax.toLocaleString('id-ID')}`;
-      document.querySelector('#total').textContent = `Rp ${total.toLocaleString('id-ID')}`;
+      const dRow = document.getElementById('discountRow');
+      const dAmt = document.getElementById('discountAmount');
+      const tOrig = document.getElementById('totalOriginal');
+      const tEl = document.getElementById('total');
+      if (disc > 0) {
+        if (dRow) dRow.style.display = 'flex';
+        if (dAmt) dAmt.textContent = '- Rp ' + disc.toLocaleString('id-ID');
+        if (tOrig) {
+          tOrig.style.display = 'inline';
+          tOrig.textContent = 'Rp ' + subtotal.toLocaleString('id-ID');
+        }
+        if (tEl) tEl.textContent = 'Rp ' + total.toLocaleString('id-ID');
+      } else {
+        if (dRow) dRow.style.display = 'none';
+        if (tOrig) { tOrig.style.display = 'none'; tOrig.textContent = ''; }
+        if (tEl) tEl.textContent = 'Rp ' + subtotal.toLocaleString('id-ID');
+      }
     }
 
     function removeFromCart(index) {
@@ -2551,6 +2570,7 @@
         // Clear cart
         cart = [];
         localStorage.removeItem('cart');
+        window.__voucherDiscount = 0;
         updateCartBadge();
         displayCart();
 
@@ -2738,11 +2758,19 @@
         showToast(c, 'success');
       });
     });
+    document.getElementById('voucherCode')?.addEventListener('input', () => {
+      // clear discount while typing until validated
+    });
     document.getElementById('voucherCode')?.addEventListener('blur', async () => {
       const code = (document.getElementById('voucherCode')?.value || '').trim();
       const hint = document.getElementById('voucherHint');
       if (!hint) return;
-      if (!code) { hint.textContent = ''; return; }
+      if (!code) {
+        hint.textContent = '';
+        window.__voucherDiscount = 0;
+        displayCart();
+        return;
+      }
       try {
         const res = await fetch('/api/loyalty/validate', {
           method: 'POST',
@@ -2750,14 +2778,27 @@
           body: JSON.stringify({ code })
         });
         const data = await res.json();
-        if (!res.ok) { hint.style.color = '#c62828'; hint.textContent = data.error || 'Kode tidak valid'; return; }
+        if (!res.ok) {
+          hint.style.color = '#c62828';
+          hint.textContent = data.error || 'Kode tidak valid / sudah dipakai';
+          window.__voucherDiscount = 0;
+          displayCart();
+          return;
+        }
         hint.style.color = '#2e7d32';
         const d = data.data;
-        hint.textContent = d.type === 'discount_nominal'
-          ? ('✓ Diskon Rp ' + Number(d.discountValue||0).toLocaleString('id-ID'))
-          : ('✓ Gratis: ' + (d.freeItemName||''));
+        if (d.type === 'discount_nominal') {
+          window.__voucherDiscount = Number(d.discountValue) || 0;
+          hint.textContent = '✓ Diskon Rp ' + window.__voucherDiscount.toLocaleString('id-ID') + ' (sekali pakai)';
+        } else {
+          window.__voucherDiscount = 0;
+          hint.textContent = '✓ Gratis: ' + (d.freeItemName || '') + ' (sekali pakai)';
+        }
+        displayCart();
       } catch {
         hint.textContent = '';
+        window.__voucherDiscount = 0;
+        displayCart();
       }
     });
   </script>
