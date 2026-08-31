@@ -2,8 +2,15 @@
   {
     "name": "Enzo",
     "nameKey": "enzo",
-    "points": 17,
+    "points": 2,
     "history": [
+      {
+        "type": "redeem",
+        "points": -15,
+        "voucherId": "VCH-MTGV6S4M-I820",
+        "code": "TC-GQRR7FIP",
+        "at": "2026-08-31T06:36:02.430Z"
+      },
       {
         "type": "earn",
         "points": 2,
@@ -37,7 +44,7 @@
       }
     ],
     "createdAt": "2026-08-31T05:14:55.270Z",
-    "updatedAt": "2026-08-31T06:29:54.558Z"
+    "updatedAt": "2026-08-31T06:36:02.430Z"
   },
   {
     "name": "Dea",
