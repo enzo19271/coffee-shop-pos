@@ -125,5 +125,34 @@
     "voucherDiscount": 0,
     "voucherFreeItem": "",
     "pointsAwarded": false
+  },
+  {
+    "id": "ORD-MTK47RZ5-ZRODF",
+    "timestamp": "2026-09-02T13:11:42.689Z",
+    "customer": {
+      "name": "Dimas",
+      "tableNo": "1"
+    },
+    "items": [
+      {
+        "menuId": "1",
+        "name": "Cappucino",
+        "price": 10000,
+        "variant": "Medium",
+        "quantity": 1
+      }
+    ],
+    "totalPrice": 10000,
+    "paymentMethod": "cash",
+    "paymentProof": null,
+    "notes": "",
+    "status": "pending",
+    "source": "customer",
+    "createdBy": null,
+    "createdAt": "2026-09-02T13:11:42.689Z",
+    "voucherCode": null,
+    "voucherDiscount": 0,
+    "voucherFreeItem": "",
+    "pointsAwarded": false
   }
 ]
