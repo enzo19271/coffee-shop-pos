@@ -154,15 +154,17 @@
     "paymentMethod": "cash",
     "paymentProof": null,
     "notes": "",
-    "status": "confirmed",
+    "status": "completed",
     "source": "customer",
     "createdBy": null,
     "createdAt": "2026-09-02T13:11:42.689Z",
     "voucherCode": null,
     "voucherDiscount": 0,
     "voucherFreeItem": "",
-    "pointsAwarded": false,
-    "updatedAt": "2026-09-02T13:17:44.757Z",
-    "updatedBy": "staff"
+    "pointsAwarded": true,
+    "updatedAt": "2026-09-02T13:21:59.686Z",
+    "updatedBy": "frengki",
+    "pointsAwardedTo": "Dimas",
+    "pointsEarned": 1
   }
 ]
