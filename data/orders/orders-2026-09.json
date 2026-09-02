@@ -63,5 +63,34 @@
     "voucherDiscount": 0,
     "voucherFreeItem": "",
     "pointsAwarded": false
+  },
+  {
+    "id": "ORD-MTK3GNJF-TLKON",
+    "timestamp": "2026-09-02T12:50:37.227Z",
+    "customer": {
+      "name": "zila",
+      "tableNo": "Kasir07"
+    },
+    "items": [
+      {
+        "menuId": "3",
+        "name": "Butterschot",
+        "price": 13000,
+        "variant": "Medium",
+        "quantity": 1
+      }
+    ],
+    "totalPrice": 13000,
+    "paymentMethod": "cash",
+    "paymentProof": null,
+    "notes": "gulanya sedikit",
+    "status": "confirmed",
+    "source": "staff",
+    "createdBy": "staff",
+    "createdAt": "2026-09-02T12:50:37.227Z",
+    "voucherCode": null,
+    "voucherDiscount": 0,
+    "voucherFreeItem": "",
+    "pointsAwarded": false
   }
 ]
