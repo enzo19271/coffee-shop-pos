@@ -88,14 +88,18 @@
     "paymentMethod": "cash",
     "paymentProof": null,
     "notes": "gulanya sedikit",
-    "status": "confirmed",
+    "status": "completed",
     "source": "staff",
     "createdBy": "staff",
     "createdAt": "2026-09-02T12:50:37.227Z",
     "voucherCode": null,
     "voucherDiscount": 0,
     "voucherFreeItem": "",
-    "pointsAwarded": false
+    "pointsAwarded": true,
+    "updatedAt": "2026-09-02T13:17:37.190Z",
+    "updatedBy": "staff",
+    "pointsAwardedTo": "zila",
+    "pointsEarned": 1
   },
   {
     "id": "ORD-MTK47R64-MJRT5",
