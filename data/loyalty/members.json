@@ -1,1 +1,17 @@
-[]
+[
+  {
+    "name": "zila",
+    "nameKey": "zila",
+    "points": 1,
+    "history": [
+      {
+        "type": "earn",
+        "points": 1,
+        "orderId": "ORD-MTK3GNJF-TLKON",
+        "at": "2026-09-02T13:17:37.349Z"
+      }
+    ],
+    "createdAt": "2026-09-02T13:17:37.349Z",
+    "updatedAt": "2026-09-02T13:17:37.349Z"
+  }
+]
