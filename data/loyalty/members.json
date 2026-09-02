@@ -19,5 +19,20 @@
     ],
     "createdAt": "2026-09-02T13:17:37.349Z",
     "updatedAt": "2026-09-02T13:17:59.289Z"
+  },
+  {
+    "name": "Dimas",
+    "nameKey": "dimas",
+    "points": 1,
+    "history": [
+      {
+        "type": "earn",
+        "points": 1,
+        "orderId": "ORD-MTK47RZ5-ZRODF",
+        "at": "2026-09-02T13:21:59.810Z"
+      }
+    ],
+    "createdAt": "2026-09-02T13:21:59.810Z",
+    "updatedAt": "2026-09-02T13:21:59.810Z"
   }
 ]
