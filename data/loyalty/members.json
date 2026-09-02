@@ -23,8 +23,14 @@
   {
     "name": "Dimas",
     "nameKey": "dimas",
-    "points": 1,
+    "points": 2,
     "history": [
+      {
+        "type": "earn",
+        "points": 1,
+        "orderId": "ORD-MTK47R64-MJRT5",
+        "at": "2026-09-02T13:22:10.427Z"
+      },
       {
         "type": "earn",
         "points": 1,
@@ -33,7 +39,7 @@
       }
     ],
     "createdAt": "2026-09-02T13:21:59.810Z",
-    "updatedAt": "2026-09-02T13:21:59.810Z"
+    "updatedAt": "2026-09-02T13:22:10.427Z"
   },
   {
     "name": "Deva",
