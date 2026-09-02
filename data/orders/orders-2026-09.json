@@ -1,0 +1,38 @@
+[
+  {
+    "id": "ORD-MTK38LRV-QVWH6",
+    "timestamp": "2026-09-02T12:44:21.691Z",
+    "customer": {
+      "name": "Deva",
+      "tableNo": "A1"
+    },
+    "items": [
+      {
+        "menuId": "2",
+        "name": "Matcha Latte",
+        "price": 12000,
+        "variant": "Medium",
+        "quantity": 2
+      },
+      {
+        "menuId": "1",
+        "name": "Cappucino",
+        "price": 10000,
+        "variant": "Medium",
+        "quantity": 2
+      }
+    ],
+    "totalPrice": 44000,
+    "paymentMethod": "cash",
+    "paymentProof": null,
+    "notes": "Tes test",
+    "status": "pending",
+    "source": "customer",
+    "createdBy": null,
+    "createdAt": "2026-09-02T12:44:21.691Z",
+    "voucherCode": null,
+    "voucherDiscount": 0,
+    "voucherFreeItem": "",
+    "pointsAwarded": false
+  }
+]
