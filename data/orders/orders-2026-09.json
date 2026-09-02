@@ -57,16 +57,18 @@
     "paymentMethod": "cash",
     "paymentProof": null,
     "notes": "gulanya di kurangi",
-    "status": "confirmed",
+    "status": "completed",
     "source": "customer",
     "createdBy": null,
     "createdAt": "2026-09-02T12:46:02.663Z",
     "voucherCode": null,
     "voucherDiscount": 0,
     "voucherFreeItem": "",
-    "pointsAwarded": false,
-    "updatedAt": "2026-09-02T12:59:51.789Z",
-    "updatedBy": "staff"
+    "pointsAwarded": true,
+    "updatedAt": "2026-09-02T13:17:59.171Z",
+    "updatedBy": "staff",
+    "pointsAwardedTo": "zila",
+    "pointsEarned": 1
   },
   {
     "id": "ORD-MTK3GNJF-TLKON",
