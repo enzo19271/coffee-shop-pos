@@ -26,16 +26,18 @@
     "paymentMethod": "cash",
     "paymentProof": null,
     "notes": "Tes test",
-    "status": "confirmed",
+    "status": "completed",
     "source": "customer",
     "createdBy": null,
     "createdAt": "2026-09-02T12:44:21.691Z",
     "voucherCode": null,
     "voucherDiscount": 0,
     "voucherFreeItem": "",
-    "pointsAwarded": false,
-    "updatedAt": "2026-09-02T13:03:59.284Z",
-    "updatedBy": "staff"
+    "pointsAwarded": true,
+    "updatedAt": "2026-09-02T13:22:05.312Z",
+    "updatedBy": "frengki",
+    "pointsAwardedTo": "Deva",
+    "pointsEarned": 4
   },
   {
     "id": "ORD-MTK3ARON-6WT3Y",
