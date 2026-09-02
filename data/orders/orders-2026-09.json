@@ -34,5 +34,34 @@
     "voucherDiscount": 0,
     "voucherFreeItem": "",
     "pointsAwarded": false
+  },
+  {
+    "id": "ORD-MTK3ARON-6WT3Y",
+    "timestamp": "2026-09-02T12:46:02.663Z",
+    "customer": {
+      "name": "zila",
+      "tableNo": "07"
+    },
+    "items": [
+      {
+        "menuId": "3",
+        "name": "Butterschot",
+        "price": 13000,
+        "variant": "Medium",
+        "quantity": 1
+      }
+    ],
+    "totalPrice": 13000,
+    "paymentMethod": "cash",
+    "paymentProof": null,
+    "notes": "gulanya di kurangi",
+    "status": "pending",
+    "source": "customer",
+    "createdBy": null,
+    "createdAt": "2026-09-02T12:46:02.663Z",
+    "voucherCode": null,
+    "voucherDiscount": 0,
+    "voucherFreeItem": "",
+    "pointsAwarded": false
   }
 ]
