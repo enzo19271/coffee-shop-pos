@@ -20,5 +20,15 @@
     "role": "staff",
     "status": "active",
     "createdAt": "2026-08-31T06:41:36.287Z"
+  },
+  {
+    "id": 3,
+    "name": "Staff",
+    "username": "staff",
+    "passwordHash": "4c860d3240dcde78cf9c466be916e3d245a87ab600025f15b6fb6a8fdcd16691",
+    "avatar": null,
+    "role": "staff",
+    "status": "active",
+    "createdAt": "2026-09-02T12:45:56.013Z"
   }
 ]
