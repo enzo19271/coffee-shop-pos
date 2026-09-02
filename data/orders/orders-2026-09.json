@@ -150,13 +150,15 @@
     "paymentMethod": "cash",
     "paymentProof": null,
     "notes": "",
-    "status": "pending",
+    "status": "confirmed",
     "source": "customer",
     "createdBy": null,
     "createdAt": "2026-09-02T13:11:42.689Z",
     "voucherCode": null,
     "voucherDiscount": 0,
     "voucherFreeItem": "",
-    "pointsAwarded": false
+    "pointsAwarded": false,
+    "updatedAt": "2026-09-02T13:17:44.757Z",
+    "updatedBy": "staff"
   }
 ]
