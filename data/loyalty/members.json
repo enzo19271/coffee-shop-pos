@@ -65,8 +65,14 @@
   {
     "name": "Aria",
     "nameKey": "aria",
-    "points": 3,
+    "points": 6,
     "history": [
+      {
+        "type": "earn",
+        "points": 3,
+        "orderId": "ORD-MTLMU1YT-HNF93",
+        "at": "2026-09-03T14:51:55.652Z"
+      },
       {
         "type": "earn",
         "points": 3,
@@ -75,6 +81,6 @@
       }
     ],
     "createdAt": "2026-09-03T14:03:39.390Z",
-    "updatedAt": "2026-09-03T14:03:39.390Z"
+    "updatedAt": "2026-09-03T14:51:55.652Z"
   }
 ]
