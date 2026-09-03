@@ -61,5 +61,20 @@
     ],
     "createdAt": "2026-09-02T13:22:05.439Z",
     "updatedAt": "2026-09-02T13:22:05.439Z"
+  },
+  {
+    "name": "Aria",
+    "nameKey": "aria",
+    "points": 3,
+    "history": [
+      {
+        "type": "earn",
+        "points": 3,
+        "orderId": "ORD-MTLLI99K-U8879",
+        "at": "2026-09-03T14:03:39.390Z"
+      }
+    ],
+    "createdAt": "2026-09-03T14:03:39.390Z",
+    "updatedAt": "2026-09-03T14:03:39.390Z"
   }
 ]
