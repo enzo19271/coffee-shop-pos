@@ -297,13 +297,17 @@
     "paymentMethod": "cash",
     "paymentProof": null,
     "notes": "",
-    "status": "confirmed",
+    "status": "completed",
     "source": "staff",
     "createdBy": "frengki",
     "createdAt": "2026-09-03T14:58:05.548Z",
     "voucherCode": null,
     "voucherDiscount": 0,
     "voucherFreeItem": "",
-    "pointsAwarded": false
+    "pointsAwarded": true,
+    "updatedAt": "2026-09-03T14:59:19.214Z",
+    "updatedBy": "frengki",
+    "pointsAwardedTo": "Dea",
+    "pointsEarned": 2
   }
 ]
