@@ -243,5 +243,34 @@
     "updatedBy": "frengki",
     "pointsAwardedTo": "Aria",
     "pointsEarned": 3
+  },
+  {
+    "id": "ORD-MTLMU1YT-HNF93",
+    "timestamp": "2026-09-03T14:40:41.333Z",
+    "customer": {
+      "name": "Aria",
+      "tableNo": "Kasir"
+    },
+    "items": [
+      {
+        "menuId": "1",
+        "name": "Cappucino",
+        "price": 10000,
+        "variant": "Medium",
+        "quantity": 3
+      }
+    ],
+    "totalPrice": 30000,
+    "paymentMethod": "cash",
+    "paymentProof": null,
+    "notes": "",
+    "status": "confirmed",
+    "source": "staff",
+    "createdBy": "frengki",
+    "createdAt": "2026-09-03T14:40:41.333Z",
+    "voucherCode": null,
+    "voucherDiscount": 0,
+    "voucherFreeItem": "",
+    "pointsAwarded": false
   }
 ]
