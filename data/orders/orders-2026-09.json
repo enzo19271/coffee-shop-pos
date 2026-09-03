@@ -231,13 +231,17 @@
     "paymentMethod": "cash",
     "paymentProof": null,
     "notes": "",
-    "status": "confirmed",
+    "status": "completed",
     "source": "staff",
     "createdBy": "frengki",
     "createdAt": "2026-09-03T14:03:31.304Z",
     "voucherCode": null,
     "voucherDiscount": 0,
     "voucherFreeItem": "",
-    "pointsAwarded": false
+    "pointsAwarded": true,
+    "updatedAt": "2026-09-03T14:03:39.256Z",
+    "updatedBy": "frengki",
+    "pointsAwardedTo": "Aria",
+    "pointsEarned": 3
   }
 ]
