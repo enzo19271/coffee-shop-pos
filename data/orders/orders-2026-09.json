@@ -170,5 +170,41 @@
     "updatedBy": "frengki",
     "pointsAwardedTo": "Dimas",
     "pointsEarned": 1
+  },
+  {
+    "id": "ORD-MTLLFX92-BDU72",
+    "timestamp": "2026-09-03T14:01:42.422Z",
+    "customer": {
+      "name": "Dimas",
+      "tableNo": "A1"
+    },
+    "items": [
+      {
+        "menuId": "4",
+        "name": "Mocchi",
+        "price": 12000,
+        "variant": "Medium",
+        "quantity": 2
+      },
+      {
+        "menuId": "3",
+        "name": "Butterschot",
+        "price": 13000,
+        "variant": "Medium",
+        "quantity": 4
+      }
+    ],
+    "totalPrice": 76000,
+    "paymentMethod": "cash",
+    "paymentProof": null,
+    "notes": "",
+    "status": "pending",
+    "source": "customer",
+    "createdBy": null,
+    "createdAt": "2026-09-03T14:01:42.422Z",
+    "voucherCode": null,
+    "voucherDiscount": 0,
+    "voucherFreeItem": "",
+    "pointsAwarded": false
   }
 ]
