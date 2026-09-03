@@ -210,5 +210,34 @@
     "updatedBy": "frengki",
     "pointsAwardedTo": "Dimas",
     "pointsEarned": 6
+  },
+  {
+    "id": "ORD-MTLLI99K-U8879",
+    "timestamp": "2026-09-03T14:03:31.304Z",
+    "customer": {
+      "name": "Aria",
+      "tableNo": "Kasir"
+    },
+    "items": [
+      {
+        "menuId": "3",
+        "name": "Butterschot",
+        "price": 13000,
+        "variant": "Medium",
+        "quantity": 3
+      }
+    ],
+    "totalPrice": 39000,
+    "paymentMethod": "cash",
+    "paymentProof": null,
+    "notes": "",
+    "status": "confirmed",
+    "source": "staff",
+    "createdBy": "frengki",
+    "createdAt": "2026-09-03T14:03:31.304Z",
+    "voucherCode": null,
+    "voucherDiscount": 0,
+    "voucherFreeItem": "",
+    "pointsAwarded": false
   }
 ]
