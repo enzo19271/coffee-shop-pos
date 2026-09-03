@@ -276,5 +276,34 @@
     "updatedBy": "frengki",
     "pointsAwardedTo": "Aria",
     "pointsEarned": 3
+  },
+  {
+    "id": "ORD-MTLNGFOS-HP64G",
+    "timestamp": "2026-09-03T14:58:05.548Z",
+    "customer": {
+      "name": "Dea",
+      "tableNo": "Kasir"
+    },
+    "items": [
+      {
+        "menuId": "3",
+        "name": "Butterschot",
+        "price": 13000,
+        "variant": "Medium",
+        "quantity": 2
+      }
+    ],
+    "totalPrice": 26000,
+    "paymentMethod": "cash",
+    "paymentProof": null,
+    "notes": "",
+    "status": "confirmed",
+    "source": "staff",
+    "createdBy": "frengki",
+    "createdAt": "2026-09-03T14:58:05.548Z",
+    "voucherCode": null,
+    "voucherDiscount": 0,
+    "voucherFreeItem": "",
+    "pointsAwarded": false
   }
 ]
