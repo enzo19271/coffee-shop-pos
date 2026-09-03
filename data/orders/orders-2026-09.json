@@ -198,13 +198,15 @@
     "paymentMethod": "cash",
     "paymentProof": null,
     "notes": "",
-    "status": "pending",
+    "status": "confirmed",
     "source": "customer",
     "createdBy": null,
     "createdAt": "2026-09-03T14:01:42.422Z",
     "voucherCode": null,
     "voucherDiscount": 0,
     "voucherFreeItem": "",
-    "pointsAwarded": false
+    "pointsAwarded": false,
+    "updatedAt": "2026-09-03T14:02:27.253Z",
+    "updatedBy": "frengki"
   }
 ]
