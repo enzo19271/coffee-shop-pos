@@ -429,13 +429,17 @@
     "paymentMethod": "barcode",
     "paymentProof": null,
     "notes": "",
-    "status": "confirmed",
+    "status": "completed",
     "source": "staff",
     "createdBy": "frengki",
     "createdAt": "2026-09-04T06:39:48.130Z",
     "voucherCode": null,
     "voucherDiscount": 0,
     "voucherFreeItem": "",
-    "pointsAwarded": false
+    "pointsAwarded": true,
+    "updatedAt": "2026-09-04T06:40:12.478Z",
+    "updatedBy": "frengki",
+    "pointsAwardedTo": "Enzo",
+    "pointsEarned": 3
   }
 ]
