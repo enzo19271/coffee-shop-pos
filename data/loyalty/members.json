@@ -116,8 +116,14 @@
   {
     "name": "Enzo",
     "nameKey": "enzo",
-    "points": 3,
+    "points": 6,
     "history": [
+      {
+        "type": "earn",
+        "points": 3,
+        "orderId": "ORD-MTML3HCY-YKSQ3",
+        "at": "2026-09-04T06:40:12.607Z"
+      },
       {
         "type": "earn",
         "points": 3,
@@ -126,7 +132,7 @@
       }
     ],
     "createdAt": "2026-09-04T04:30:00.794Z",
-    "updatedAt": "2026-09-04T04:30:00.794Z"
+    "updatedAt": "2026-09-04T06:40:12.607Z"
   },
   {
     "name": "Rio",
