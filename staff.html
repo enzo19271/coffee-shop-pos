@@ -1084,6 +1084,7 @@
       padding-right: 4px;
     }
     .kasir-menu-row {
+      cursor: default;
       display: flex;
       align-items: center;
       gap: 12px;
@@ -1138,18 +1139,39 @@
       color: var(--brand-accent);
       flex-shrink: 0;
     }
-    .kasir-menu-row .add-hint {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      background: var(--brand-accent-subtle);
-      color: var(--brand-accent);
+    .kasir-menu-row .row-qty {
       display: flex;
       align-items: center;
-      justify-content: center;
+      gap: 0;
+      background: var(--bg-main);
+      border: 1.5px solid var(--border-color);
+      border-radius: 10px;
+      overflow: hidden;
       flex-shrink: 0;
-      font-size: 14px;
     }
+    .kasir-menu-row .row-qty button {
+      width: 36px;
+      height: 36px;
+      border: none;
+      background: transparent;
+      font-weight: 800;
+      font-size: 16px;
+      color: var(--brand-primary);
+      cursor: pointer;
+      font-family: inherit;
+      line-height: 1;
+    }
+    .kasir-menu-row .row-qty button:hover { background: var(--brand-accent-subtle); }
+    .kasir-menu-row .row-qty span {
+      min-width: 28px;
+      text-align: center;
+      font-weight: 800;
+      font-size: 14px;
+      color: var(--brand-primary);
+    }
+    .kasir-menu-row .row-qty span.zero { color: var(--text-light); font-weight: 600; }
+    .kasir-shortcut i { margin-right: 4px; font-size: 13px; }
+    .kasir-cart-item .ci-var { display: none; }
     .kasir-cart-panel {
       background: var(--bg-card);
       border: 1px solid var(--border-color);
@@ -1745,32 +1767,6 @@
       </div>
     </div>
 
-    <!-- Professional variant picker overlay -->
-    <div class="kasir-overlay" id="kasirOverlay" role="dialog" aria-modal="true" aria-labelledby="kasirSheetTitle">
-      <div class="kasir-sheet" id="kasirSheet">
-        <div class="kasir-sheet-head">
-          <div id="kasirSheetThumb"></div>
-          <div>
-            <h3 id="kasirSheetTitle">Menu</h3>
-            <div class="price" id="kasirSheetPrice">Rp 0</div>
-          </div>
-        </div>
-        <div class="label">Pilih Varian</div>
-        <div class="variant-btns" id="kasirVariantBtns"></div>
-        <div class="sheet-qty-row">
-          <div class="label" style="margin:0;">Jumlah</div>
-          <div class="sheet-qty">
-            <button type="button" id="kasirSheetMinus" aria-label="Kurangi">−</button>
-            <span id="kasirSheetQty">1</span>
-            <button type="button" id="kasirSheetPlus" aria-label="Tambah">+</button>
-          </div>
-        </div>
-        <div class="sheet-actions">
-          <button type="button" class="sheet-cancel" id="kasirSheetCancel">Batal</button>
-          <button type="button" class="sheet-add" id="kasirSheetAdd"><i class="fas fa-cart-plus"></i> Tambah</button>
-        </div>
-      </div>
-    </div>
 
     <!-- Tab: Sales -->
     <div id="tab-sales" class="tab-content">
@@ -1910,10 +1906,13 @@
       const timeStr = new Date(order.timestamp).toLocaleString('id-ID');
       const itemsHtml = (order.items || []).map(item => `
               <div class="order-item">
-                <span>• ${item.name} (${item.variant}) ×${item.quantity}</span>
+                <span>• ${item.name} ×${item.quantity}</span>
                 <span>Rp ${(item.price * item.quantity).toLocaleString('id-ID')}</span>
               </div>
             `).join('');
+      const itemsPreview = (order.items || []).map(item =>
+        `${item.name} ×${item.quantity}`
+      ).join(' · ');
       const proofHtml = order.paymentProof ? `
             <div class="payment-proof">
               <strong style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;"><i class="fas fa-image"></i> BUKTI PEMBAYARAN:</strong>
@@ -1939,12 +1938,16 @@
       }
 
       return `
-        <div class="order-card ${order.status}" data-order-id="${order.id}">
+        <div class="order-card ${order.status} open" data-order-id="${order.id}">
           <div class="order-summary" onclick="toggleOrderCard(this)">
             <div class="sum-main">
-              <div class="sum-name">${(order.customer && order.customer.name) || '-'}</div>
-              <div class="sum-meta">
-                <span><i class="far fa-clock"></i> ${timeStr}</span>
+              <div class="sum-name" style="font-size:18px;font-weight:800;">${(order.customer && order.customer.name) || '-'}</div>
+              <div class="sum-meta" style="margin-top:4px;">
+                <span style="font-size:11px;color:var(--text-light);font-weight:600;"><i class="fas fa-hashtag"></i> ${order.id}</span>
+                <span style="font-size:11px;"><i class="far fa-clock"></i> ${timeStr}</span>
+              </div>
+              <div style="margin-top:8px;font-size:13.5px;font-weight:700;color:var(--text-main);line-height:1.4;">
+                <i class="fas fa-utensils" style="color:var(--brand-accent);margin-right:4px;"></i>${itemsPreview || '-'}
               </div>
             </div>
             <div class="sum-total">Rp ${(order.totalPrice || 0).toLocaleString('id-ID')}</div>
@@ -1953,16 +1956,11 @@
           <div class="order-detail">
             <div class="order-header">
               <div>
-                <div class="order-id"><i class="fas fa-hashtag" style="color:var(--brand-accent);"></i> ${order.id}</div>
-                <small style="color: var(--text-muted);"><i class="far fa-clock"></i> ${timeStr}</small>
+                <small style="color: var(--text-muted); font-size:11px;"><i class="fas fa-hashtag"></i> ${order.id}</small>
               </div>
               <div class="order-status ${statusClass}">${statusLabel}</div>
             </div>
             <div class="order-info">
-              <div class="info-item">
-                <div class="info-label"><i class="fas fa-user"></i> Pemesan</div>
-                <div class="info-value">${(order.customer && order.customer.name) || '-'}</div>
-              </div>
               <div class="info-item">
                 <div class="info-label"><i class="fas fa-credit-card"></i> Metode Bayar</div>
                 <div class="info-value">${(order.paymentMethod || '').toUpperCase()}</div>
@@ -1973,7 +1971,7 @@
               </div>
             </div>
             <div class="order-items">
-              <strong style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;"><i class="fas fa-utensils"></i> PESANAN:</strong>
+              <strong style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;"><i class="fas fa-utensils"></i> DETAIL PESANAN:</strong>
               ${itemsHtml}
               <div class="order-total">Total: Rp ${(order.totalPrice || 0).toLocaleString('id-ID')}</div>
             </div>
@@ -2092,7 +2090,7 @@
                 <strong style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;"><i class="fas fa-utensils"></i> PESANAN:</strong>
                 ${(order.items || []).map(item => `
                   <div class="order-item">
-                    <span>• ${item.name} (${item.variant}) ×${item.quantity}</span>
+                    <span>• ${item.name} ×${item.quantity}</span>
                     <span>Rp ${(item.price * item.quantity).toLocaleString('id-ID')}</span>
                   </div>
                 `).join('')}
@@ -2266,8 +2264,6 @@
     let kasirCatFilter = 'all';
     let kasirSearchQ = '';
     let kasirPendingItem = null;
-    let kasirSheetQty = 1;
-    let kasirSheetVariant = '';
 
     async function loadKasirMenu() {
       const list = document.getElementById('kasirMenuList');
@@ -2286,12 +2282,28 @@
       }
     }
 
+    function categoryIcon(cat) {
+      const c = String(cat || '').toLowerCase();
+      if (c === 'all' || c === 'semua') return 'fa-border-all';
+      if (/coffee|kopi|espresso|latte|cappu/.test(c)) return 'fa-mug-hot';
+      if (/cold|ice|dingin|es |smoothie|frappe/.test(c)) return 'fa-snowflake';
+      if (/tea|teh|matcha/.test(c)) return 'fa-mug-saucer';
+      if (/food|makan|snack|pastry|roti|cake|dessert/.test(c)) return 'fa-utensils';
+      if (/drink|minum|beverage/.test(c)) return 'fa-glass-water';
+      return 'fa-tag';
+    }
+
     function buildKasirCategories() {
       const cats = [...new Set(kasirMenuCache.map(i => i.category).filter(Boolean))].sort();
       const wrap = document.getElementById('kasirCatShortcuts');
       if (!wrap) return;
-      wrap.innerHTML = '<button type="button" class="kasir-shortcut active" data-cat="all">Semua</button>' +
-        cats.map(c => '<button type="button" class="kasir-shortcut" data-cat="' + c + '">' + c + '</button>').join('');
+      wrap.innerHTML =
+        '<button type="button" class="kasir-shortcut active" data-cat="all"><i class="fas fa-border-all"></i> Semua</button>' +
+        cats.map(c =>
+          '<button type="button" class="kasir-shortcut" data-cat="' + escapeHtml(c) + '">' +
+          '<i class="fas ' + categoryIcon(c) + '"></i> ' + escapeHtml(c) +
+          '</button>'
+        ).join('');
       wrap.querySelectorAll('.kasir-shortcut').forEach(btn => {
         btn.addEventListener('click', () => {
           wrap.querySelectorAll('.kasir-shortcut').forEach(b => b.classList.remove('active'));
@@ -2318,6 +2330,34 @@
       return items;
     }
 
+    function getCartQtyForMenu(menuId) {
+      const found = kasirCart.find(c => String(c.menuId) === String(menuId));
+      return found ? found.quantity : 0;
+    }
+
+    function adjustMenuQty(menuId, delta) {
+      const item = kasirMenuCache.find(i => String(i.id) === String(menuId));
+      if (!item) return;
+      let entry = kasirCart.find(c => String(c.menuId) === String(menuId));
+      if (!entry) {
+        if (delta <= 0) return;
+        kasirCart.push({
+          menuId: String(item.id),
+          name: item.name,
+          price: item.price,
+          variant: '-',
+          quantity: delta
+        });
+      } else {
+        entry.quantity += delta;
+        if (entry.quantity < 1) {
+          kasirCart = kasirCart.filter(c => String(c.menuId) !== String(menuId));
+        }
+      }
+      renderKasirCart();
+      renderKasirMenuList();
+    }
+
     function renderKasirMenuList() {
       const list = document.getElementById('kasirMenuList');
       if (!list) return;
@@ -2326,25 +2366,31 @@
         list.innerHTML = '<div class="kasir-empty"><i class="fas fa-search" style="font-size:24px;opacity:.5;display:block;margin-bottom:8px;"></i>Menu tidak ditemukan</div>';
         return;
       }
-      list.innerHTML = items.map((item, idx) => {
+      list.innerHTML = items.map((item) => {
         const hasImg = item.image && (String(item.image).startsWith('data:') || String(item.image).startsWith('http'));
         const thumb = hasImg
           ? '<img src="' + item.image + '" alt="" loading="lazy">'
           : '<div class="kasir-thumb-placeholder"><i class="fas fa-mug-saucer"></i></div>';
-        return '<button type="button" class="kasir-menu-row" data-idx="' + kasirMenuCache.indexOf(item) + '">' +
+        const qty = getCartQtyForMenu(item.id);
+        return '<div class="kasir-menu-row" data-menu-id="' + escapeHtml(String(item.id)) + '">' +
           thumb +
           '<div class="info"><div class="name">' + escapeHtml(item.name) + '</div>' +
-          '<div class="meta">' + escapeHtml(item.category || '') +
-          ((item.variants && item.variants.length) ? ' · ' + item.variants.length + ' varian' : '') +
-          '</div></div>' +
+          '<div class="meta">' + escapeHtml(item.category || '') + '</div></div>' +
           '<div class="price">Rp ' + Number(item.price).toLocaleString('id-ID') + '</div>' +
-          '<div class="add-hint"><i class="fas fa-plus"></i></div>' +
-          '</button>';
+          '<div class="row-qty">' +
+          '<button type="button" data-act="minus" aria-label="Kurangi">−</button>' +
+          '<span class="' + (qty === 0 ? 'zero' : '') + '">' + qty + '</span>' +
+          '<button type="button" data-act="plus" aria-label="Tambah">+</button>' +
+          '</div>' +
+          '</div>';
       }).join('');
       list.querySelectorAll('.kasir-menu-row').forEach(row => {
-        row.addEventListener('click', () => {
-          const item = kasirMenuCache[parseInt(row.dataset.idx, 10)];
-          if (item) openKasirSheet(item);
+        const mid = row.dataset.menuId;
+        row.querySelectorAll('button[data-act]').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            adjustMenuQty(mid, btn.dataset.act === 'plus' ? 1 : -1);
+          });
         });
       });
     }
@@ -2353,72 +2399,18 @@
       return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
     }
 
-    function openKasirSheet(item) {
-      kasirPendingItem = item;
-      kasirSheetQty = 1;
-      const variants = (item.variants && item.variants.length) ? item.variants : ['Regular'];
-      kasirSheetVariant = variants[0];
-
-      const thumb = document.getElementById('kasirSheetThumb');
-      const hasImg = item.image && (String(item.image).startsWith('data:') || String(item.image).startsWith('http'));
-      thumb.innerHTML = hasImg
-        ? '<img src="' + item.image + '" alt="">'
-        : '<div class="ph"><i class="fas fa-mug-saucer"></i></div>';
-
-      document.getElementById('kasirSheetTitle').textContent = item.name;
-      document.getElementById('kasirSheetPrice').textContent = 'Rp ' + Number(item.price).toLocaleString('id-ID');
-      document.getElementById('kasirSheetQty').textContent = '1';
-
-      const vWrap = document.getElementById('kasirVariantBtns');
-      vWrap.innerHTML = variants.map((v, i) =>
-        '<button type="button" class="variant-btn' + (i === 0 ? ' active' : '') + '" data-v="' + escapeHtml(v) + '">' + escapeHtml(v) + '</button>'
-      ).join('');
-      vWrap.querySelectorAll('.variant-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          vWrap.querySelectorAll('.variant-btn').forEach(b => b.classList.remove('active'));
-          btn.classList.add('active');
-          kasirSheetVariant = btn.dataset.v;
-        });
-      });
-
-      document.getElementById('kasirOverlay').classList.add('show');
-      document.body.style.overflow = 'hidden';
-    }
-
-    function closeKasirSheet() {
-      document.getElementById('kasirOverlay').classList.remove('show');
-      document.body.style.overflow = '';
-      kasirPendingItem = null;
-    }
-
-    function confirmKasirSheet() {
-      if (!kasirPendingItem) return;
-      const item = kasirPendingItem;
-      const variant = kasirSheetVariant || 'Regular';
-      const qty = kasirSheetQty;
-      const existing = kasirCart.find(c => String(c.menuId) === String(item.id) && c.variant === variant);
-      if (existing) existing.quantity += qty;
-      else kasirCart.push({
-        menuId: String(item.id),
-        name: item.name,
-        price: item.price,
-        variant: variant,
-        quantity: qty
-      });
-      renderKasirCart();
-      closeKasirSheet();
-    }
-
     function changeKasirQty(idx, delta) {
       if (!kasirCart[idx]) return;
       kasirCart[idx].quantity += delta;
       if (kasirCart[idx].quantity < 1) kasirCart.splice(idx, 1);
       renderKasirCart();
+      renderKasirMenuList();
     }
 
     function removeKasirItem(idx) {
       kasirCart.splice(idx, 1);
       renderKasirCart();
+      renderKasirMenuList();
     }
 
     function renderKasirCart() {
@@ -2429,8 +2421,7 @@
       } else {
         el.innerHTML = kasirCart.map((c, i) =>
           '<div class="kasir-cart-item">' +
-          '<div class="ci-info"><div class="ci-name">' + escapeHtml(c.name) + '</div>' +
-          '<div class="ci-var">' + escapeHtml(c.variant) + '</div></div>' +
+          '<div class="ci-info"><div class="ci-name">' + escapeHtml(c.name) + '</div></div>' +
           '<div class="kasir-qty">' +
           '<button type="button" onclick="changeKasirQty(' + i + ',-1)" aria-label="Kurangi">−</button>' +
           '<span>' + c.quantity + '</span>' +
@@ -2486,6 +2477,7 @@
         showToast('Pesanan ' + data.orderId + ' berhasil dibuat & otomatis terverifikasi!', 'success');
         kasirCart = [];
         renderKasirCart();
+        renderKasirMenuList();
         document.getElementById('kasirForm').reset();
         if (typeof loadPendingOrders === 'function') loadPendingOrders();
       } catch (err) {
@@ -2493,7 +2485,7 @@
       }
     }
 
-    // Wire overlay controls once DOM ready
+    // Wire search once DOM ready
     (function initKasirUI() {
       const search = document.getElementById('kasirSearch');
       if (search) {
@@ -2502,36 +2494,7 @@
           renderKasirMenuList();
         });
       }
-      const overlay = document.getElementById('kasirOverlay');
-      if (overlay) {
-        overlay.addEventListener('click', (e) => {
-          if (e.target === overlay) closeKasirSheet();
-        });
-      }
-      const minus = document.getElementById('kasirSheetMinus');
-      const plus = document.getElementById('kasirSheetPlus');
-      const cancel = document.getElementById('kasirSheetCancel');
-      const add = document.getElementById('kasirSheetAdd');
-      if (minus) minus.addEventListener('click', () => {
-        if (kasirSheetQty > 1) {
-          kasirSheetQty--;
-          document.getElementById('kasirSheetQty').textContent = String(kasirSheetQty);
-        }
-      });
-      if (plus) plus.addEventListener('click', () => {
-        kasirSheetQty++;
-        document.getElementById('kasirSheetQty').textContent = String(kasirSheetQty);
-      });
-      if (cancel) cancel.addEventListener('click', closeKasirSheet);
-      if (add) add.addEventListener('click', confirmKasirSheet);
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && document.getElementById('kasirOverlay')?.classList.contains('show')) {
-          closeKasirSheet();
-        }
-      });
     })();
-
-
   
     document.getElementById('kasirVoucherCode')?.addEventListener('blur', async () => {
       const code = (document.getElementById('kasirVoucherCode')?.value || '').trim();
