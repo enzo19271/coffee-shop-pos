@@ -233,8 +233,9 @@ async function handleCreate(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
   try {
     const { customerName, tableNo, items, paymentMethod, paymentProof, notes, source, voucherCode } = req.body;
-    if (!customerName || !tableNo || !items || items.length === 0 || !paymentMethod)
+    if (!customerName || !items || items.length === 0 || !paymentMethod)
       return res.status(400).json({ error: 'Missing required fields' });
+    const resolvedTableNo = (tableNo && String(tableNo).trim()) ? String(tableNo).trim() : '-';
 
     // Staff/admin creating order (kasir) → auto-verified, no proof required for cash
     const payload = getAuthPayload(req);
@@ -281,7 +282,7 @@ async function handleCreate(req, res) {
     const newOrder = {
       id: orderId,
       timestamp: new Date().toISOString(),
-      customer: { name: customerName, tableNo },
+      customer: { name: customerName, tableNo: resolvedTableNo },
       items,
       totalPrice,
       paymentMethod,
