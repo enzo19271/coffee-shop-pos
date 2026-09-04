@@ -363,13 +363,17 @@
     "paymentMethod": "cash",
     "paymentProof": null,
     "notes": "",
-    "status": "confirmed",
+    "status": "completed",
     "source": "staff",
     "createdBy": "frengki",
     "createdAt": "2026-09-04T04:29:46.123Z",
     "voucherCode": null,
     "voucherDiscount": 0,
     "voucherFreeItem": "",
-    "pointsAwarded": false
+    "pointsAwarded": true,
+    "updatedAt": "2026-09-04T04:30:00.603Z",
+    "updatedBy": "frengki",
+    "pointsAwardedTo": "Enzo",
+    "pointsEarned": 3
   }
 ]
