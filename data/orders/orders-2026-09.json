@@ -375,5 +375,34 @@
     "updatedBy": "frengki",
     "pointsAwardedTo": "Enzo",
     "pointsEarned": 3
+  },
+  {
+    "id": "ORD-MTMGOBQH-K59FC",
+    "timestamp": "2026-09-04T04:36:02.537Z",
+    "customer": {
+      "name": "Rio",
+      "tableNo": "-"
+    },
+    "items": [
+      {
+        "menuId": "2",
+        "name": "Matcha Latte",
+        "price": 12000,
+        "variant": "-",
+        "quantity": 2
+      }
+    ],
+    "totalPrice": 24000,
+    "paymentMethod": "cash",
+    "paymentProof": null,
+    "notes": "",
+    "status": "confirmed",
+    "source": "staff",
+    "createdBy": "frengki",
+    "createdAt": "2026-09-04T04:36:02.537Z",
+    "voucherCode": null,
+    "voucherDiscount": 0,
+    "voucherFreeItem": "",
+    "pointsAwarded": false
   }
 ]
