@@ -342,5 +342,34 @@
     "updatedBy": "staff",
     "pointsAwardedTo": "Sea",
     "pointsEarned": 4
+  },
+  {
+    "id": "ORD-MTMGG9AJ-X2YX2",
+    "timestamp": "2026-09-04T04:29:46.123Z",
+    "customer": {
+      "name": "Enzo",
+      "tableNo": "-"
+    },
+    "items": [
+      {
+        "menuId": "1",
+        "name": "Cappucino",
+        "price": 10000,
+        "variant": "Medium",
+        "quantity": 3
+      }
+    ],
+    "totalPrice": 30000,
+    "paymentMethod": "cash",
+    "paymentProof": null,
+    "notes": "",
+    "status": "confirmed",
+    "source": "staff",
+    "createdBy": "frengki",
+    "createdAt": "2026-09-04T04:29:46.123Z",
+    "voucherCode": null,
+    "voucherDiscount": 0,
+    "voucherFreeItem": "",
+    "pointsAwarded": false
   }
 ]
