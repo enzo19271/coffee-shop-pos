@@ -396,13 +396,17 @@
     "paymentMethod": "cash",
     "paymentProof": null,
     "notes": "",
-    "status": "confirmed",
+    "status": "completed",
     "source": "staff",
     "createdBy": "frengki",
     "createdAt": "2026-09-04T04:36:02.537Z",
     "voucherCode": null,
     "voucherDiscount": 0,
     "voucherFreeItem": "",
-    "pointsAwarded": false
+    "pointsAwarded": true,
+    "updatedAt": "2026-09-04T06:36:05.481Z",
+    "updatedBy": "frengki",
+    "pointsAwardedTo": "Rio",
+    "pointsEarned": 2
   }
 ]
