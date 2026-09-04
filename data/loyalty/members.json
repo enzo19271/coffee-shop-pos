@@ -112,5 +112,20 @@
     ],
     "createdAt": "2026-09-04T04:18:48.599Z",
     "updatedAt": "2026-09-04T04:18:48.599Z"
+  },
+  {
+    "name": "Enzo",
+    "nameKey": "enzo",
+    "points": 3,
+    "history": [
+      {
+        "type": "earn",
+        "points": 3,
+        "orderId": "ORD-MTMGG9AJ-X2YX2",
+        "at": "2026-09-04T04:30:00.794Z"
+      }
+    ],
+    "createdAt": "2026-09-04T04:30:00.794Z",
+    "updatedAt": "2026-09-04T04:30:00.794Z"
   }
 ]
