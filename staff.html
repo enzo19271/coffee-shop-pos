@@ -1681,12 +1681,8 @@
     <div id="tab-orders" class="tab-content active">
       <div id="successMessage" class="success-message"></div>
       <div id="errorMessage" class="error-message"></div>
-      <div class="order-subtabs" role="tablist" aria-label="Filter pesanan">
-        <button type="button" class="order-subtab active" id="subtabIncoming" onclick="setOrderSubTab('incoming')" role="tab" aria-selected="true">
-          <i class="fas fa-bell"></i> Baru Masuk
-          <span class="sub-count" id="countIncoming">0</span>
-        </button>
-        <button type="button" class="order-subtab prep" id="subtabPreparing" onclick="setOrderSubTab('preparing')" role="tab" aria-selected="false">
+      <div class="order-subtabs" role="tablist" aria-label="Filter pesanan" style="justify-content:flex-start;">
+        <button type="button" class="order-subtab prep active" id="subtabPreparing" role="tab" aria-selected="true" style="pointer-events:none;cursor:default;">
           <i class="fas fa-fire-burner"></i> Siap Disiapkan
           <span class="sub-count" id="countPreparing">0</span>
         </button>
@@ -1723,10 +1719,6 @@
             <div class="form-group">
               <label>Nama Pelanggan</label>
               <input type="text" id="kasirCustomerName" placeholder="Nama / Walk-in" required>
-            </div>
-            <div class="form-group">
-              <label>No. Meja / Ambil</label>
-              <input type="text" id="kasirTableNo" value="Kasir" placeholder="Kasir / Takeaway / No meja" required>
             </div>
             <div class="form-group">
               <label>Kode Voucher (opsional)</label>
@@ -1952,7 +1944,6 @@
             <div class="sum-main">
               <div class="sum-name">${(order.customer && order.customer.name) || '-'}</div>
               <div class="sum-meta">
-                <span><i class="fas fa-chair"></i> ${(order.customer && order.customer.tableNo) || '-'}</span>
                 <span><i class="far fa-clock"></i> ${timeStr}</span>
               </div>
             </div>
@@ -1971,10 +1962,6 @@
               <div class="info-item">
                 <div class="info-label"><i class="fas fa-user"></i> Pemesan</div>
                 <div class="info-value">${(order.customer && order.customer.name) || '-'}</div>
-              </div>
-              <div class="info-item">
-                <div class="info-label"><i class="fas fa-chair"></i> Nomor Meja</div>
-                <div class="info-value">${(order.customer && order.customer.tableNo) || '-'}</div>
               </div>
               <div class="info-item">
                 <div class="info-label"><i class="fas fa-credit-card"></i> Metode Bayar</div>
@@ -1997,31 +1984,15 @@
         </div>`;
     }
 
-    let currentOrderSubTab = 'incoming';
     let cachedPendingOrders = [];
-
-    function setOrderSubTab(which) {
-      currentOrderSubTab = which === 'preparing' ? 'preparing' : 'incoming';
-      const btnIn = document.getElementById('subtabIncoming');
-      const btnPr = document.getElementById('subtabPreparing');
-      if (btnIn && btnPr) {
-        btnIn.classList.toggle('active', currentOrderSubTab === 'incoming');
-        btnPr.classList.toggle('active', currentOrderSubTab === 'preparing');
-        btnIn.setAttribute('aria-selected', currentOrderSubTab === 'incoming' ? 'true' : 'false');
-        btnPr.setAttribute('aria-selected', currentOrderSubTab === 'preparing' ? 'true' : 'false');
-      }
-      renderOrdersBySubTab();
-    }
 
     function displayPendingOrders(orders) {
       cachedPendingOrders = Array.isArray(orders) ? orders : [];
       const sorted = [...cachedPendingOrders].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-      const incoming = sorted.filter(o => o.status === 'pending' || o.status === 'pending_verification');
+      // Hanya tampilkan pesanan yang siap disiapkan (confirmed) — kasir yang buat order
       const preparing = sorted.filter(o => o.status === 'confirmed');
-      updateOrdersBadge(incoming.length + preparing.length);
-      const cIn = document.getElementById('countIncoming');
+      updateOrdersBadge(preparing.length);
       const cPr = document.getElementById('countPreparing');
-      if (cIn) cIn.textContent = String(incoming.length);
       if (cPr) cPr.textContent = String(preparing.length);
       renderOrdersBySubTab();
     }
@@ -2030,12 +2001,8 @@
       const container = document.querySelector('#ordersList');
       if (!container) return;
       const sorted = [...cachedPendingOrders].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-      const incoming = sorted.filter(o => o.status === 'pending' || o.status === 'pending_verification');
-      const preparing = sorted.filter(o => o.status === 'confirmed');
-      const list = currentOrderSubTab === 'preparing' ? preparing : incoming;
-      const emptyMsg = currentOrderSubTab === 'preparing'
-        ? 'Belum ada pesanan untuk disiapkan'
-        : 'Tidak ada pesanan baru masuk';
+      const list = sorted.filter(o => o.status === 'confirmed');
+      const emptyMsg = 'Belum ada pesanan untuk disiapkan';
 
       if (!list.length) {
         container.innerHTML = '<div class="empty-state"><div class="empty-state-icon"><i class="fas fa-inbox"></i></div><p>' + emptyMsg + '</p></div>';
@@ -2114,7 +2081,6 @@
               <div class="sum-main">
                 <div class="sum-name">${(order.customer && order.customer.name) || '-'}</div>
                 <div class="sum-meta">
-                  <span><i class="fas fa-chair"></i> ${(order.customer && order.customer.tableNo) || '-'}</span>
                   <span><i class="far fa-clock"></i> ${new Date(order.timestamp).toLocaleString('id-ID')}</span>
                   <span class="order-status status-completed" style="display:inline-flex;padding:2px 8px;font-size:10px;">SELESAI</span>
                 </div>
@@ -2288,7 +2254,7 @@
           .then(d => {
             if (!d) return;
             const list = d.data || [];
-            const n = list.filter(o => ['pending','pending_verification','confirmed'].includes(o.status)).length;
+            const n = list.filter(o => o.status === 'confirmed').length;
             updateOrdersBadge(n);
           }).catch(() => {});
       }
@@ -2493,7 +2459,6 @@
       }
 
       const customerName = document.getElementById('kasirCustomerName').value.trim();
-      const tableNo = document.getElementById('kasirTableNo').value.trim();
       const paymentMethod = (document.querySelector('input[name="kasirPay"]:checked') || {}).value || 'cash';
       const notes = document.getElementById('kasirNotes').value.trim();
       const token = localStorage.getItem('staffToken');
@@ -2507,7 +2472,7 @@
           },
           body: JSON.stringify({
             customerName: customerName,
-            tableNo: tableNo,
+            tableNo: '-',
             items: kasirCart,
             paymentMethod: paymentMethod,
             notes: notes,
@@ -2522,7 +2487,6 @@
         kasirCart = [];
         renderKasirCart();
         document.getElementById('kasirForm').reset();
-        document.getElementById('kasirTableNo').value = 'Kasir';
         if (typeof loadPendingOrders === 'function') loadPendingOrders();
       } catch (err) {
         showToast(err.message || 'Terjadi kesalahan', 'error');
