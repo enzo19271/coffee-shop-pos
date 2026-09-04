@@ -127,5 +127,20 @@
     ],
     "createdAt": "2026-09-04T04:30:00.794Z",
     "updatedAt": "2026-09-04T04:30:00.794Z"
+  },
+  {
+    "name": "Rio",
+    "nameKey": "rio",
+    "points": 2,
+    "history": [
+      {
+        "type": "earn",
+        "points": 2,
+        "orderId": "ORD-MTMGOBQH-K59FC",
+        "at": "2026-09-04T06:36:05.610Z"
+      }
+    ],
+    "createdAt": "2026-09-04T06:36:05.610Z",
+    "updatedAt": "2026-09-04T06:36:05.610Z"
   }
 ]
