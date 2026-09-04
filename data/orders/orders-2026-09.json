@@ -330,13 +330,17 @@
     "paymentMethod": "cash",
     "paymentProof": null,
     "notes": "",
-    "status": "confirmed",
+    "status": "completed",
     "source": "staff",
     "createdBy": "frengki",
     "createdAt": "2026-09-03T15:07:05.828Z",
     "voucherCode": null,
     "voucherDiscount": 0,
     "voucherFreeItem": "",
-    "pointsAwarded": false
+    "pointsAwarded": true,
+    "updatedAt": "2026-09-04T04:18:48.475Z",
+    "updatedBy": "staff",
+    "pointsAwardedTo": "Sea",
+    "pointsEarned": 4
   }
 ]
