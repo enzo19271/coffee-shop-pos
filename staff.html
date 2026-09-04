@@ -1275,6 +1275,17 @@
     }
     .kasir-cart-item .ci-info { flex: 1; min-width: 0; }
     .kasir-cart-item .ci-name { font-weight: 800; color: var(--brand-primary); }
+    .kasir-cart-item .ci-qty-label {
+      display: inline-block;
+      margin-left: 6px;
+      font-size: 12px;
+      font-weight: 800;
+      color: #fff;
+      background: var(--brand-accent);
+      padding: 2px 8px;
+      border-radius: 6px;
+      vertical-align: middle;
+    }
     .kasir-cart-item .ci-var { font-size: 11px; color: var(--brand-accent); font-weight: 600; }
     .kasir-qty {
       display: flex;
@@ -2473,12 +2484,8 @@
       } else {
         el.innerHTML = kasirCart.map((c, i) =>
           '<div class="kasir-cart-item">' +
-          '<div class="ci-info"><div class="ci-name">' + escapeHtml(c.name) + '</div></div>' +
-          '<div class="kasir-qty">' +
-          '<button type="button" onclick="changeKasirQty(' + i + ',-1)" aria-label="Kurangi">−</button>' +
-          '<span>' + c.quantity + '</span>' +
-          '<button type="button" onclick="changeKasirQty(' + i + ',1)" aria-label="Tambah">+</button>' +
-          '</div>' +
+          '<div class="ci-info"><div class="ci-name">' + escapeHtml(c.name) +
+          ' <span class="ci-qty-label">×' + c.quantity + '</span></div></div>' +
           '<div class="ci-price">Rp ' + (c.price * c.quantity).toLocaleString('id-ID') + '</div>' +
           '<button type="button" class="rm" onclick="removeKasirItem(' + i + ')" aria-label="Hapus">×</button>' +
           '</div>'
