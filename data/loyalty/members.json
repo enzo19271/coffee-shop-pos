@@ -97,5 +97,20 @@
     ],
     "createdAt": "2026-09-03T14:59:19.350Z",
     "updatedAt": "2026-09-03T14:59:19.350Z"
+  },
+  {
+    "name": "Sea",
+    "nameKey": "sea",
+    "points": 4,
+    "history": [
+      {
+        "type": "earn",
+        "points": 4,
+        "orderId": "ORD-MTLNS0KK-RZIRV",
+        "at": "2026-09-04T04:18:48.599Z"
+      }
+    ],
+    "createdAt": "2026-09-04T04:18:48.599Z",
+    "updatedAt": "2026-09-04T04:18:48.599Z"
   }
 ]
