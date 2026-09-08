@@ -33,13 +33,17 @@
     "paymentMethod": "cash",
     "paymentProof": null,
     "notes": "rezaaa",
-    "status": "confirmed",
+    "status": "completed",
     "source": "staff",
     "createdBy": "widia",
     "createdAt": "2026-09-08T07:55:02.014Z",
     "voucherCode": null,
     "voucherDiscount": 0,
     "voucherFreeItem": "",
-    "pointsAwarded": false
+    "pointsAwarded": true,
+    "updatedAt": "2026-09-08T07:55:18.307Z",
+    "updatedBy": "widia",
+    "pointsAwardedTo": "Reza",
+    "pointsEarned": 3
   }
 ]
