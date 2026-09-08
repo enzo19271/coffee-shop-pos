@@ -15,10 +15,12 @@
     "id": 2,
     "name": "Widia",
     "username": "widia",
-    "passwordHash": "e73ec547c8fe9658bfa3d9102fde9f72d9982cc0c06c8e7941282096ba6bc5ad",
+    "passwordHash": "4c860d3240dcde78cf9c466be916e3d245a87ab600025f15b6fb6a8fdcd16691",
     "avatar": null,
     "role": "staff",
     "status": "active",
-    "createdAt": "2026-09-04T06:43:12.944Z"
+    "createdAt": "2026-09-04T06:43:12.944Z",
+    "updatedAt": "2026-09-08T07:54:04.918Z",
+    "updatedBy": "admin"
   }
 ]
