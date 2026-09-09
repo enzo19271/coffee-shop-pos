@@ -2,8 +2,19 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Staff Dashboard - TAN COFFEE</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="description" content="Tan Coffee POS System - Point of Sale untuk kedai kopi">
+  <meta name="theme-color" content="#0B4D3A">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Tan Coffee">
+  <meta name="mobile-web-app-capable" content="yes">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16.png">
+  <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+
+  <title>Tan Coffee App - Staff</title>
   
   <!-- Google Fonts: Fraunces (display) + DM Sans (UI) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -2585,5 +2596,16 @@
       <p class="footer-cta">Ingin dibuatkan aplikasi seperti ini gratis? hubungi admin ilmu ketak</p>
     </div>
   </footer>
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+          .then(reg => console.log('[Tan Coffee] SW registered', reg.scope))
+          .catch(err => console.warn('[Tan Coffee] SW failed', err));
+      });
+    }
+  </script>
+
 </body>
 </html>

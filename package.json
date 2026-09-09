@@ -1,7 +1,7 @@
 {
-  "name": "coffee-shop-pos",
+  "name": "tan-coffee-app",
   "version": "1.0.0",
-  "description": "Coffee Shop Online POS System",
+  "description": "Tan Coffee App - PWA POS System untuk kedai kopi",
   "scripts": {
     "dev": "vercel dev",
     "build": "echo 'Build complete'"
