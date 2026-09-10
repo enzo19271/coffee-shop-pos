@@ -1203,6 +1203,7 @@
       object-fit: cover;
       flex-shrink: 0;
       background: linear-gradient(135deg, #eef5f1, #e0ebe5);
+      align-self: center;
     }
     .kasir-thumb-placeholder {
       display: flex;
@@ -1211,14 +1212,22 @@
       font-size: 22px;
       color: var(--brand-accent);
     }
-    .kasir-menu-row .info { flex: 1; min-width: 0; }
+    .kasir-menu-row .info {
+      flex: 1 1 0;
+      min-width: 0;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
     .kasir-menu-row .name {
       font-weight: 800;
       font-size: 14px;
       color: var(--brand-primary);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      line-height: 1.3;
+      white-space: normal;
+      overflow: visible;
+      text-overflow: unset;
+      overflow-wrap: anywhere;
+      word-break: break-word;
     }
     .kasir-menu-row .meta {
       font-size: 11px;
@@ -1231,6 +1240,8 @@
       font-size: 14px;
       color: var(--brand-accent);
       flex-shrink: 0;
+      white-space: nowrap;
+      align-self: center;
     }
     .kasir-menu-row .row-qty {
       display: flex;
@@ -1241,6 +1252,7 @@
       border-radius: 10px;
       overflow: hidden;
       flex-shrink: 0;
+      align-self: center;
     }
     .kasir-menu-row .row-qty button {
       width: 36px;
