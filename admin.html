@@ -3702,18 +3702,7 @@ async function executeDeleteData() {
                         '<tr><td colspan="8" align="right"><b>GRAND TOTAL</b></td><td><b>' + formatRp(totalSum) + '</b></td></tr>' +
                         '</tbody></table>' +
                         '<p style="margin-top:24px;font-size:11px;color:#666;">(c) TAN COFFEE - Ilmu Ketak Community</p>' +
-                        '
-  <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js')
-          .then(reg => console.log('[Tan Coffee] SW registered', reg.scope))
-          .catch(err => console.warn('[Tan Coffee] SW failed', err));
-      });
-    }
-  </script>
-
-</body></html>';
+                        '</body></html>';
                     const blob = new Blob(['\ufeff', html], { type: 'application/msword' });
                     const a = document.createElement('a');
                     a.href = URL.createObjectURL(blob);
