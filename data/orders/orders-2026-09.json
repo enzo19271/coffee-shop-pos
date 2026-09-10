@@ -45,5 +45,41 @@
     "updatedBy": "widia",
     "pointsAwardedTo": "Reza",
     "pointsEarned": 3
+  },
+  {
+    "id": "ORD-MTUS9B8C-22GK5",
+    "timestamp": "2026-09-10T00:22:26.844Z",
+    "customer": {
+      "name": "Arzila",
+      "tableNo": "-"
+    },
+    "items": [
+      {
+        "menuId": "2",
+        "name": "Matcha Latte",
+        "price": 12000,
+        "variant": "-",
+        "quantity": 2
+      },
+      {
+        "menuId": "1",
+        "name": "Cappucino",
+        "price": 10000,
+        "variant": "-",
+        "quantity": 1
+      }
+    ],
+    "totalPrice": 34000,
+    "paymentMethod": "cash",
+    "paymentProof": null,
+    "notes": "Tambahin gula sikit",
+    "status": "confirmed",
+    "source": "staff",
+    "createdBy": "widia",
+    "createdAt": "2026-09-10T00:22:26.844Z",
+    "voucherCode": null,
+    "voucherDiscount": 0,
+    "voucherFreeItem": "",
+    "pointsAwarded": false
   }
 ]
