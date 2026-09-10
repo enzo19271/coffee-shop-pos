@@ -3625,24 +3625,41 @@ async function executeDeleteData() {
             return 'Rp ' + Number(n || 0).toLocaleString('id-ID');
         }
 
+        function getCustomerName(o) {
+            if (o.customerName && typeof o.customerName === 'string') return o.customerName;
+            if (o.customer) {
+                if (typeof o.customer === 'string') return o.customer;
+                if (typeof o.customer === 'object' && o.customer.name) return String(o.customer.name);
+            }
+            if (o.customer_name) return String(o.customer_name);
+            return '-';
+        }
+
+        function getOrderTotal(o) {
+            const n = o.totalPrice ?? o.total ?? o.grandTotal ?? o.amount ?? 0;
+            return Number(n) || 0;
+        }
+
+        function formatItemsLines(items) {
+            if (!Array.isArray(items) || !items.length) return ['-'];
+            return items.map(it => {
+                const name = it.name || it.menuName || 'Item';
+                const q = it.quantity || it.qty || 1;
+                const v = it.variant ? ' ' + it.variant : '';
+                return name + v + ' (' + q + 'x)';
+            });
+        }
+
         function buildReportRows(orders) {
             return orders.map((o, i) => {
-                const items = Array.isArray(o.items) ? o.items : [];
-                const itemsText = items.map(it => {
-                    const q = it.quantity || it.qty || 1;
-                    const v = it.variant ? ' (' + it.variant + ')' : '';
-                    return (it.name || it.menuName || 'Item') + v + ' x' + q;
-                }).join('; ');
+                const itemLines = formatItemsLines(o.items);
                 return {
                     no: i + 1,
-                    id: o.id || o.orderId || '-',
-                    tanggal: (o.createdAt || o.date || '-').toString().replace('T', ' ').slice(0, 19),
-                    pelanggan: o.customerName || o.customer || '-',
-                    meja: o.tableNo || o.table || '-',
-                    items: itemsText || '-',
-                    metode: (o.paymentMethod || '-').toString().toUpperCase(),
-                    status: o.status || '-',
-                    total: Number(o.total || o.grandTotal || 0)
+                    pelanggan: getCustomerName(o),
+                    items: itemLines.join('\n'),
+                    itemsExcel: itemLines.join('; '),
+                    metode: (o.paymentMethod || o.payment || '-').toString().toUpperCase(),
+                    total: getOrderTotal(o)
                 };
             });
         }
@@ -3670,15 +3687,15 @@ async function executeDeleteData() {
                         ['Jumlah transaksi', rows.length],
                         ['Total penjualan', totalSum],
                         [],
-                        ['No', 'ID Pesanan', 'Tanggal', 'Pelanggan', 'Meja', 'Item', 'Pembayaran', 'Status', 'Total']
+                        ['No', 'Nama Pelanggan', 'Item', 'Metode', 'Harga']
                     ];
                     rows.forEach(r => {
-                        sheetData.push([r.no, r.id, r.tanggal, r.pelanggan, r.meja, r.items, r.metode, r.status, r.total]);
+                        sheetData.push([r.no, r.pelanggan, r.itemsExcel, r.metode, r.total]);
                     });
                     sheetData.push([]);
-                    sheetData.push(['', '', '', '', '', '', '', 'GRAND TOTAL', totalSum]);
+                    sheetData.push(['', '', '', 'GRAND TOTAL', totalSum]);
                     const ws = XLSX.utils.aoa_to_sheet(sheetData);
-                    ws['!cols'] = [{wch:5},{wch:16},{wch:20},{wch:16},{wch:8},{wch:40},{wch:12},{wch:16},{wch:14}];
+                    ws['!cols'] = [{wch:5},{wch:18},{wch:42},{wch:12},{wch:14}];
                     const wb = XLSX.utils.book_new();
                     XLSX.utils.book_append_sheet(wb, ws, 'Penjualan');
                     XLSX.writeFile(wb, 'Laporan_TAN_COFFEE_' + stamp + '.xlsx');
@@ -3686,9 +3703,11 @@ async function executeDeleteData() {
                 } else if (format === 'word') {
                     let tableRows = rows.map(r =>
                         '<tr>' +
-                        '<td>' + r.no + '</td><td>' + r.id + '</td><td>' + r.tanggal + '</td>' +
-                        '<td>' + r.pelanggan + '</td><td>' + r.meja + '</td><td>' + r.items + '</td>' +
-                        '<td>' + r.metode + '</td><td>' + r.status + '</td><td>' + formatRp(r.total) + '</td>' +
+                        '<td style="vertical-align:top;">' + r.no + '</td>' +
+                        '<td style="vertical-align:top;">' + r.pelanggan + '</td>' +
+                        '<td style="vertical-align:top;white-space:pre-line;">' + r.items.replace(/\n/g, '<br>') + '</td>' +
+                        '<td style="vertical-align:top;">' + r.metode + '</td>' +
+                        '<td style="vertical-align:top;text-align:right;">' + formatRp(r.total) + '</td>' +
                         '</tr>'
                     ).join('');
                     const html = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word"><head><meta charset="utf-8"><title>' + title + '</title></head><body>' +
@@ -3697,9 +3716,9 @@ async function executeDeleteData() {
                         '<p>Jumlah transaksi: <b>' + rows.length + '</b> · Total: <b>' + formatRp(totalSum) + '</b></p>' +
                         '<table border="1" cellspacing="0" cellpadding="6" style="border-collapse:collapse;width:100%;font-size:12px;">' +
                         '<thead><tr style="background:#0B4D3A;color:#fff;">' +
-                        '<th>No</th><th>ID</th><th>Tanggal</th><th>Pelanggan</th><th>Meja</th><th>Item</th><th>Bayar</th><th>Status</th><th>Total</th>' +
+                        '<th>No</th><th>Nama Pelanggan</th><th>Item</th><th>Metode</th><th>Harga</th>' +
                         '</tr></thead><tbody>' + tableRows +
-                        '<tr><td colspan="8" align="right"><b>GRAND TOTAL</b></td><td><b>' + formatRp(totalSum) + '</b></td></tr>' +
+                        '<tr><td colspan="4" align="right"><b>GRAND TOTAL</b></td><td align="right"><b>' + formatRp(totalSum) + '</b></td></tr>' +
                         '</tbody></table>' +
                         '<p style="margin-top:24px;font-size:11px;color:#666;">(c) TAN COFFEE - Ilmu Ketak Community</p>' +
                         '</body></html>';
@@ -3714,94 +3733,136 @@ async function executeDeleteData() {
                 } else if (format === 'pdf') {
                     if (!window.jspdf || !window.jspdf.jsPDF) throw new Error('Library PDF belum termuat. Refresh halaman.');
                     const { jsPDF } = window.jspdf;
-                    const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+                    const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
                     doc.setFontSize(16);
                     doc.text(title, 14, 16);
                     doc.setFontSize(10);
                     doc.text('Tanggal unduh: ' + new Date().toLocaleString('id-ID') + '  |  Transaksi: ' + rows.length + '  |  Total: ' + formatRp(totalSum), 14, 24);
-                    const body = rows.map(r => [r.no, r.id, r.tanggal, r.pelanggan, r.meja, r.items, r.metode, r.status, formatRp(r.total)]);
+                    const body = rows.map(r => [r.no, r.pelanggan, r.items, r.metode, formatRp(r.total)]);
                     if (typeof doc.autoTable === 'function') {
                         doc.autoTable({
                             startY: 28,
-                            head: [['No', 'ID', 'Tanggal', 'Pelanggan', 'Meja', 'Item', 'Bayar', 'Status', 'Total']],
+                            head: [['No', 'Nama Pelanggan', 'Item', 'Metode', 'Harga']],
                             body: body,
-                            styles: { fontSize: 8, cellPadding: 2 },
+                            styles: { fontSize: 9, cellPadding: 3, valign: 'top' },
+                            columnStyles: {
+                                0: { cellWidth: 12 },
+                                1: { cellWidth: 40 },
+                                2: { cellWidth: 70 },
+                                3: { cellWidth: 28 },
+                                4: { cellWidth: 30, halign: 'right' }
+                            },
                             headStyles: { fillColor: [11, 77, 58] },
-                            foot: [['', '', '', '', '', '', '', 'TOTAL', formatRp(totalSum)]],
-                            footStyles: { fillColor: [15, 92, 69], textColor: 255 }
+                            foot: [['', '', '', 'GRAND TOTAL', formatRp(totalSum)]],
+                            footStyles: { fillColor: [15, 92, 69], textColor: 255, fontStyle: 'bold' }
                         });
                     } else {
                         let y = 30;
                         body.forEach(row => {
-                            doc.text(row.join(' | ').slice(0, 120), 14, y);
+                            doc.text(row.join(' | ').slice(0, 100), 14, y);
                             y += 6;
-                            if (y > 190) { doc.addPage(); y = 20; }
+                            if (y > 280) { doc.addPage(); y = 20; }
                         });
                     }
                     doc.save('Laporan_TAN_COFFEE_' + stamp + '.pdf');
                     if (msg) msg.textContent = 'PDF berhasil diunduh (' + rows.length + ' baris).';
                 } else if (format === 'png') {
-                    // Build visual report on canvas
-                    const pad = 32;
-                    const rowH = 28;
-                    const headerH = 120;
-                    const colW = [40, 130, 120, 110, 70, 220, 80, 90, 100];
+                    const pad = 28;
+                    const lineH = 16;
+                    const headerH = 100;
+                    const colW = [44, 160, 280, 100, 120];
                     const tableW = colW.reduce((a, b) => a + b, 0);
-                    const width = Math.max(1000, tableW + pad * 2);
-                    const height = headerH + (rows.length + 2) * rowH + pad * 2 + 40;
+                    const width = Math.max(780, tableW + pad * 2);
+
+                    // Pre-calc row heights (multi-line items)
+                    const rowHeights = rows.map(r => {
+                        const lines = (r.items || '-').split('\n').length;
+                        return Math.max(32, 12 + lines * lineH);
+                    });
+                    const bodyH = rowHeights.reduce((a, b) => a + b, 0);
+                    const height = headerH + 32 + bodyH + 36 + pad * 2 + 30;
+
                     const canvas = document.createElement('canvas');
                     canvas.width = width;
                     canvas.height = height;
                     const ctx = canvas.getContext('2d');
-                    // bg
+
                     ctx.fillStyle = '#f8f6f3';
                     ctx.fillRect(0, 0, width, height);
+
                     // header bar
                     ctx.fillStyle = '#0B4D3A';
-                    ctx.fillRect(0, 0, width, 72);
+                    ctx.fillRect(0, 0, width, 64);
                     ctx.fillStyle = '#ffffff';
-                    ctx.font = 'bold 26px DM Sans, Arial, sans-serif';
-                    ctx.fillText(title, pad, 46);
-                    ctx.font = '14px DM Sans, Arial, sans-serif';
-                    ctx.fillStyle = 'rgba(255,255,255,0.85)';
-                    ctx.fillText('Tanggal unduh: ' + new Date().toLocaleString('id-ID'), pad, 100);
-                    ctx.fillText('Transaksi: ' + rows.length + '  ·  Total: ' + formatRp(totalSum), pad + 360, 100);
+                    ctx.font = 'bold 24px DM Sans, Arial, sans-serif';
+                    ctx.fillText(title, pad, 42);
+                    ctx.font = '13px DM Sans, Arial, sans-serif';
+                    ctx.fillStyle = '#1e1915';
+                    ctx.fillText('Tanggal unduh: ' + new Date().toLocaleString('id-ID'), pad, 86);
+                    ctx.fillText('Transaksi: ' + rows.length + '  ·  Total: ' + formatRp(totalSum), pad + 320, 86);
+
                     // table header
                     let y = headerH;
-                    let x = pad;
-                    const headers = ['No', 'ID', 'Tanggal', 'Pelanggan', 'Meja', 'Item', 'Bayar', 'Status', 'Total'];
+                    const headers = ['No', 'Nama Pelanggan', 'Item', 'Metode', 'Harga'];
                     ctx.fillStyle = '#0F5C45';
-                    ctx.fillRect(pad, y, tableW, rowH);
+                    ctx.fillRect(pad, y, tableW, 30);
                     ctx.fillStyle = '#fff';
                     ctx.font = 'bold 12px DM Sans, Arial, sans-serif';
+                    let x = pad;
                     headers.forEach((h, i) => {
-                        ctx.fillText(h, x + 6, y + 18);
+                        const alignRight = i === 4;
+                        if (alignRight) {
+                            const tw = ctx.measureText(h).width;
+                            ctx.fillText(h, x + colW[i] - tw - 8, y + 20);
+                        } else {
+                            ctx.fillText(h, x + 8, y + 20);
+                        }
                         x += colW[i];
                     });
-                    y += rowH;
+                    y += 30;
+
                     ctx.font = '12px DM Sans, Arial, sans-serif';
                     rows.forEach((r, idx) => {
+                        const rh = rowHeights[idx];
                         ctx.fillStyle = idx % 2 === 0 ? '#ffffff' : '#eef7f2';
-                        ctx.fillRect(pad, y, tableW, rowH);
+                        ctx.fillRect(pad, y, tableW, rh);
                         ctx.fillStyle = '#1e1915';
-                        const vals = [String(r.no), String(r.id), String(r.tanggal), String(r.pelanggan), String(r.meja), String(r.items), String(r.metode), String(r.status), formatRp(r.total)];
+
+                        const itemLines = (r.items || '-').split('\n');
+                        const vals = [
+                            String(r.no),
+                            String(r.pelanggan),
+                            itemLines,
+                            String(r.metode),
+                            formatRp(r.total)
+                        ];
                         x = pad;
                         vals.forEach((v, i) => {
-                            const maxLen = Math.floor(colW[i] / 7);
-                            const t = v.length > maxLen ? v.slice(0, maxLen - 1) + '…' : v;
-                            ctx.fillText(t, x + 6, y + 18);
+                            if (i === 2 && Array.isArray(v)) {
+                                v.forEach((line, li) => {
+                                    ctx.fillText(line, x + 8, y + 16 + li * lineH);
+                                });
+                            } else if (i === 4) {
+                                const tw = ctx.measureText(String(v)).width;
+                                ctx.fillText(String(v), x + colW[i] - tw - 8, y + 16);
+                            } else {
+                                ctx.fillText(String(v), x + 8, y + 16);
+                            }
                             x += colW[i];
                         });
-                        y += rowH;
+                        y += rh;
                     });
+
                     // footer total
                     ctx.fillStyle = '#0B4D3A';
-                    ctx.fillRect(pad, y, tableW, rowH);
+                    ctx.fillRect(pad, y, tableW, 32);
                     ctx.fillStyle = '#fff';
                     ctx.font = 'bold 13px DM Sans, Arial, sans-serif';
-                    ctx.fillText('GRAND TOTAL', pad + tableW - colW[8] - 120, y + 18);
-                    ctx.fillText(formatRp(totalSum), pad + tableW - colW[8] + 6, y + 18);
-                    y += rowH + 24;
+                    ctx.fillText('GRAND TOTAL', pad + colW[0] + colW[1] + colW[2] + 8, y + 21);
+                    const totalText = formatRp(totalSum);
+                    const tw = ctx.measureText(totalText).width;
+                    ctx.fillText(totalText, pad + tableW - tw - 8, y + 21);
+                    y += 32 + 20;
                     ctx.fillStyle = '#786f66';
                     ctx.font = '11px DM Sans, Arial, sans-serif';
                     ctx.fillText('© TAN COFFEE · Ilmu Ketak Community', pad, y);
