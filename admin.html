@@ -2271,10 +2271,11 @@
                                 <label>Kategori <span class="required">*</span></label>
                                 <select id="menuCategory" required>
                                     <option value="">Pilih...</option>
-                                    <option value="Coffee">Coffee</option>
-                                    <option value="Cold Drinks">Cold Drinks</option>
-                                    <option value="Pastry">Pastry</option>
-                                    <option value="Food">Food</option>
+                                    <option value="Kopi">Kopi</option>
+                                    <option value="Bukan Kopi">Bukan Kopi</option>
+                                    <option value="Minuman Dingin">Minuman Dingin</option>
+                                    <option value="Makanan Ringan">Makanan Ringan</option>
+                                    <option value="Makanan">Makanan</option>
                                 </select>
                             </div>
                             <div class="form-group">
@@ -2319,10 +2320,11 @@
                         <label><i class="fas fa-filter"></i> Kategori</label>
                         <select id="menuFilterCat" onchange="applyMenuFilter()">
                             <option value="">Semua kategori</option>
-                            <option value="Coffee">Coffee</option>
-                            <option value="Cold Drinks">Cold Drinks</option>
-                            <option value="Pastry">Pastry</option>
-                            <option value="Food">Food</option>
+                            <option value="Kopi">Kopi</option>
+                            <option value="Bukan Kopi">Bukan Kopi</option>
+                            <option value="Minuman Dingin">Minuman Dingin</option>
+                            <option value="Makanan Ringan">Makanan Ringan</option>
+                            <option value="Makanan">Makanan</option>
                         </select>
                     </div>
                 </div>
@@ -3657,7 +3659,7 @@ async function executeDeleteData() {
                     no: i + 1,
                     pelanggan: getCustomerName(o),
                     items: itemLines.join('\n'),
-                    itemsExcel: itemLines.join('; '),
+                    itemLines: itemLines,
                     metode: (o.paymentMethod || o.payment || '-').toString().toUpperCase(),
                     total: getOrderTotal(o)
                 };
@@ -3690,12 +3692,21 @@ async function executeDeleteData() {
                         ['No', 'Nama Pelanggan', 'Item', 'Metode', 'Harga']
                     ];
                     rows.forEach(r => {
-                        sheetData.push([r.no, r.pelanggan, r.itemsExcel, r.metode, r.total]);
+                        sheetData.push([r.no, r.pelanggan, r.items, r.metode, r.total]);
                     });
                     sheetData.push([]);
                     sheetData.push(['', '', '', 'GRAND TOTAL', totalSum]);
                     const ws = XLSX.utils.aoa_to_sheet(sheetData);
                     ws['!cols'] = [{wch:5},{wch:18},{wch:42},{wch:12},{wch:14}];
+                    // Wrap text di kolom Item agar multi-line tampil kebawah
+                    const range = XLSX.utils.decode_range(ws['!ref'] || 'A1');
+                    for (let R = range.s.r; R <= range.e.r; R++) {
+                        const addr = XLSX.utils.encode_cell({ r: R, c: 2 });
+                        if (ws[addr]) {
+                            ws[addr].s = ws[addr].s || {};
+                            ws[addr].s.alignment = { wrapText: true, vertical: 'top' };
+                        }
+                    }
                     const wb = XLSX.utils.book_new();
                     XLSX.utils.book_append_sheet(wb, ws, 'Penjualan');
                     XLSX.writeFile(wb, 'Laporan_TAN_COFFEE_' + stamp + '.xlsx');
@@ -3738,17 +3749,17 @@ async function executeDeleteData() {
                     doc.text(title, 14, 16);
                     doc.setFontSize(10);
                     doc.text('Tanggal unduh: ' + new Date().toLocaleString('id-ID') + '  |  Transaksi: ' + rows.length + '  |  Total: ' + formatRp(totalSum), 14, 24);
-                    const body = rows.map(r => [r.no, r.pelanggan, r.items, r.metode, formatRp(r.total)]);
+                    const body = rows.map(r => [String(r.no), r.pelanggan, r.items, r.metode, formatRp(r.total)]);
                     if (typeof doc.autoTable === 'function') {
                         doc.autoTable({
                             startY: 28,
                             head: [['No', 'Nama Pelanggan', 'Item', 'Metode', 'Harga']],
                             body: body,
-                            styles: { fontSize: 9, cellPadding: 3, valign: 'top' },
+                            styles: { fontSize: 9, cellPadding: 3, valign: 'top', overflow: 'linebreak' },
                             columnStyles: {
                                 0: { cellWidth: 12 },
                                 1: { cellWidth: 40 },
-                                2: { cellWidth: 70 },
+                                2: { cellWidth: 70, overflow: 'linebreak' },
                                 3: { cellWidth: 28 },
                                 4: { cellWidth: 30, halign: 'right' }
                             },
