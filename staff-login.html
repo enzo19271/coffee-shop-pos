@@ -180,7 +180,7 @@
       position: relative;
     }
 
-    .input-wrap i {
+    .input-wrap > i.input-icon {
       position: absolute;
       left: 14px;
       top: 50%;
@@ -188,6 +188,7 @@
       color: var(--text-light);
       font-size: 14px;
       pointer-events: none;
+      z-index: 1;
     }
 
     input[type="text"],
@@ -204,14 +205,53 @@
       min-height: 48px;
     }
 
+    /* Password field needs extra right padding for eye button */
+    input#password {
+      padding-right: 48px;
+    }
+
     input:focus {
       outline: none;
       border-color: var(--brand-accent);
       box-shadow: 0 0 0 4px var(--brand-accent-subtle);
     }
 
-    input:focus + i,
-    .input-wrap:focus-within i {
+    .input-wrap:focus-within > i.input-icon {
+      color: var(--brand-accent);
+    }
+
+    /* Show / hide password toggle */
+    .toggle-password {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      padding: 8px;
+      cursor: pointer;
+      color: var(--text-light);
+      font-size: 15px;
+      line-height: 1;
+      border-radius: 8px;
+      transition: var(--transition);
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .toggle-password:hover {
+      color: var(--brand-accent);
+      background: var(--brand-accent-subtle);
+    }
+
+    .toggle-password:focus {
+      outline: none;
+      color: var(--brand-accent);
+    }
+
+    .toggle-password[aria-pressed="true"] {
       color: var(--brand-accent);
     }
 
@@ -341,26 +381,7 @@
       to { transform: rotate(360deg); }
     }
 
-    .back-to-menu {
-      text-align: center;
-      margin-top: 24px;
-    }
 
-    .back-to-menu a {
-      color: var(--brand-accent);
-      text-decoration: none;
-      font-size: 13.5px;
-      font-weight: 700;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      transition: var(--transition);
-    }
-
-    .back-to-menu a:hover {
-      color: var(--brand-primary);
-      gap: 10px;
-    }
 
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after {
@@ -423,7 +444,7 @@
           <label for="loginName">Nama</label>
           <div class="input-wrap">
             <input type="text" id="loginName" name="name" required autofocus autocomplete="name" placeholder="Masukkan nama akun" aria-required="true">
-            <i class="fas fa-user" aria-hidden="true"></i>
+            <i class="fas fa-user input-icon" aria-hidden="true"></i>
           </div>
         </div>
 
@@ -431,7 +452,10 @@
           <label for="password">Password</label>
           <div class="input-wrap">
             <input type="password" id="password" name="password" required autocomplete="current-password" placeholder="Masukkan password" aria-required="true">
-            <i class="fas fa-lock" aria-hidden="true"></i>
+            <i class="fas fa-lock input-icon" aria-hidden="true"></i>
+            <button type="button" class="toggle-password" id="togglePassword" aria-label="Tampilkan password" aria-pressed="false" title="Tampilkan password">
+              <i class="fas fa-eye" aria-hidden="true"></i>
+            </button>
           </div>
         </div>
 
@@ -445,10 +469,6 @@
           Sedang login...
         </div>
       </form>
-
-      <div class="back-to-menu">
-        <a href="/"><i class="fas fa-arrow-left" aria-hidden="true"></i> Kembali ke Menu Pelanggan</a>
-      </div>
     </div>
   </div>
 
@@ -462,6 +482,25 @@
         localStorage.removeItem('currentStaff');
       }
     }
+
+    // Toggle show / hide password
+    (function () {
+      const btn = document.getElementById('togglePassword');
+      const input = document.getElementById('password');
+      if (!btn || !input) return;
+      btn.addEventListener('click', function () {
+        const isHidden = input.type === 'password';
+        input.type = isHidden ? 'text' : 'password';
+        btn.setAttribute('aria-pressed', isHidden ? 'true' : 'false');
+        btn.setAttribute('aria-label', isHidden ? 'Sembunyikan password' : 'Tampilkan password');
+        btn.title = isHidden ? 'Sembunyikan password' : 'Tampilkan password';
+        const icon = btn.querySelector('i');
+        if (icon) {
+          icon.classList.toggle('fa-eye', !isHidden);
+          icon.classList.toggle('fa-eye-slash', isHidden);
+        }
+      });
+    })();
 
     async function handleLogin(event) {
       event.preventDefault();
