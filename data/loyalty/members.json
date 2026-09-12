@@ -1,1 +1,17 @@
-[]
+[
+  {
+    "name": "Aril",
+    "nameKey": "aril",
+    "points": 2,
+    "history": [
+      {
+        "type": "earn",
+        "points": 2,
+        "orderId": "ORD-MTY6N2ZV-NW12B",
+        "at": "2026-09-12T09:28:56.767Z"
+      }
+    ],
+    "createdAt": "2026-09-12T09:28:56.767Z",
+    "updatedAt": "2026-09-12T09:28:56.767Z"
+  }
+]
