@@ -1,1 +1,31 @@
-[]
+[
+  {
+    "id": "ORD-MTY6N2ZV-NW12B",
+    "timestamp": "2026-09-12T09:28:22.507Z",
+    "customer": {
+      "name": "Aril",
+      "tableNo": "-"
+    },
+    "items": [
+      {
+        "menuId": "23",
+        "name": "Americano",
+        "price": 10000,
+        "variant": "-",
+        "quantity": 2
+      }
+    ],
+    "totalPrice": 20000,
+    "paymentMethod": "cash",
+    "paymentProof": null,
+    "notes": "",
+    "status": "confirmed",
+    "source": "staff",
+    "createdBy": "widia",
+    "createdAt": "2026-09-12T09:28:22.507Z",
+    "voucherCode": null,
+    "voucherDiscount": 0,
+    "voucherFreeItem": "",
+    "pointsAwarded": false
+  }
+]
