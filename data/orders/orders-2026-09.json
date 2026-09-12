@@ -19,13 +19,17 @@
     "paymentMethod": "cash",
     "paymentProof": null,
     "notes": "",
-    "status": "confirmed",
+    "status": "completed",
     "source": "staff",
     "createdBy": "widia",
     "createdAt": "2026-09-12T09:28:22.507Z",
     "voucherCode": null,
     "voucherDiscount": 0,
     "voucherFreeItem": "",
-    "pointsAwarded": false
+    "pointsAwarded": true,
+    "updatedAt": "2026-09-12T09:28:56.651Z",
+    "updatedBy": "widia",
+    "pointsAwardedTo": "Aril",
+    "pointsEarned": 2
   }
 ]
